@@ -35,10 +35,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# Raw hero PNG sources (~600MB) — keep local only
-/new frames/
-/public/new-frames/
-/frames/
-
-# Compressed frames in /public/hero-frames ARE committed for Vercel

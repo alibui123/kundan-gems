@@ -15,15 +15,15 @@ export function CollectionLanding({ collection, previews }: Props) {
     <div className="min-h-screen bg-ivory">
       <Navigation variant="dark" />
 
-      <section className="relative isolate overflow-hidden bg-void text-white">
+      <section className="relative isolate overflow-hidden bg-ivory text-ink">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_40%,rgba(200,169,106,0.12),transparent_55%)]" />
         <div className="container-luxury relative z-10 grid items-center gap-12 pt-28 pb-20 md:pt-36 md:pb-28 lg:grid-cols-2">
           <div>
-            <nav className="mb-10 text-[11px] tracking-[0.16em] text-white/45 uppercase">
+            <nav className="mb-10 text-[11px] tracking-[0.16em] text-muted uppercase">
               <Link href="/" className="hover:text-gold">
                 Home
               </Link>
-              <span className="mx-2 text-white/25">/</span>
+              <span className="mx-2 text-border">/</span>
               <span className="text-gold">{collection.title}</span>
             </nav>
             <p className="mb-4 text-[11px] tracking-[0.28em] text-gold uppercase">
@@ -32,7 +32,7 @@ export function CollectionLanding({ collection, previews }: Props) {
             <h1 className="font-display text-[clamp(3.5rem,9vw,7rem)] font-light leading-[0.9] tracking-[-0.03em]">
               {collection.title}
             </h1>
-            <p className="mt-6 max-w-md text-[15px] leading-[1.85] text-white/60">
+            <p className="mt-6 max-w-md text-[15px] leading-[1.85] text-muted">
               {collection.description}
             </p>
             <div className="mt-10 flex flex-wrap gap-4">

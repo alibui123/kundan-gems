@@ -7,10 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "node scripts/seed-products.mjs",
-    "sync:frames": "node scripts/sync-hero-frames.mjs",
-    "compress:frames": "node scripts/compress-hero-frames.mjs",
-    "upload:frames": "node --env-file=.env.local scripts/upload-hero-frames.mjs"
+    "seed": "node scripts/seed-products.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

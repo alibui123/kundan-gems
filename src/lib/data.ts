@@ -1,11 +1,13 @@
 export const brand = {
   name: "Kundan",
   tagline: "Crafted For Forever",
+  logo: "/logo.png",
 };
 
 export const navLinks = [
   { label: "Home", href: "#" },
-  { label: "Collections", href: "#collections" },
+  { label: "Catalogs", href: "#catalogs" },
+  { label: "Materials", href: "#materials" },
   { label: "New Arrivals", href: "/collections/new-arrivals" },
   { label: "Best Sellers", href: "#best-sellers" },
   { label: "About", href: "#craftsmanship" },
@@ -25,7 +27,7 @@ export const promises = [
   },
   {
     title: "Complimentary Shipping",
-    description: "Insured worldwide delivery",
+    description: "Insured delivery across Pakistan",
     icon: "ship",
   },
   {

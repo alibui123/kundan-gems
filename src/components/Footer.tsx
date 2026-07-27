@@ -1,19 +1,17 @@
 import Link from "next/link";
 import { brand, navLinks } from "@/lib/data";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export function Footer() {
   return (
-    <footer className="bg-void pb-10 pt-20 text-white">
+    <footer className="border-t border-border bg-ivory pb-10 pt-20 text-ink">
       <div className="container-luxury">
-        <div className="flex flex-col gap-12 border-b border-white/10 pb-14 md:flex-row md:justify-between">
+        <div className="flex flex-col gap-12 border-b border-border pb-14 md:flex-row md:justify-between">
           <div>
-            <Link
-              href="/"
-              className="font-display text-3xl tracking-[0.22em] text-gold uppercase"
-            >
-              {brand.name}
+            <Link href="/" className="inline-block" aria-label={brand.name}>
+              <BrandLogo size="footer" />
             </Link>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/45">
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
               Timeless jewellery, crafted for forever. A boutique for those who
               collect moments in gold and light.
             </p>
@@ -27,17 +25,38 @@ export function Footer() {
               <ul className="space-y-3">
                 <li>
                   <Link
+                    href="/#catalogs"
+                    className="text-sm text-muted transition-colors hover:text-gold"
+                  >
+                    Catalogs
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/#materials"
+                    className="text-sm text-muted transition-colors hover:text-gold"
+                  >
+                    Materials
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     href="/collections/rings"
-                    className="text-sm text-white/55 transition-colors hover:text-gold"
+                    className="text-sm text-muted transition-colors hover:text-gold"
                   >
                     Rings
                   </Link>
                 </li>
-                {navLinks.slice(2).map((link) => (
+                {navLinks
+                  .filter(
+                    (link) =>
+                      !["Home", "Catalogs", "Materials"].includes(link.label)
+                  )
+                  .map((link) => (
                   <li key={link.label}>
                     <a
                       href={link.href.startsWith("#") ? `/${link.href}` : link.href}
-                      className="text-sm text-white/55 transition-colors hover:text-gold"
+                      className="text-sm text-muted transition-colors hover:text-gold"
                     >
                       {link.label}
                     </a>
@@ -49,7 +68,7 @@ export function Footer() {
               <p className="mb-4 text-[11px] tracking-[0.2em] text-gold uppercase">
                 Atelier
               </p>
-              <ul className="space-y-3 text-sm text-white/55">
+              <ul className="space-y-3 text-sm text-muted">
                 <li>
                   <a href="#" className="transition-colors hover:text-gold">
                     Care Guide
@@ -71,7 +90,7 @@ export function Footer() {
               <p className="mb-4 text-[11px] tracking-[0.2em] text-gold uppercase">
                 Connect
               </p>
-              <ul className="space-y-3 text-sm text-white/55">
+              <ul className="space-y-3 text-sm text-muted">
                 <li>
                   <a
                     href="https://www.instagram.com/kundan.atelier/"
@@ -100,7 +119,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col items-start justify-between gap-4 pt-8 text-xs tracking-wide text-white/35 md:flex-row md:items-center">
+        <div className="flex flex-col items-start justify-between gap-4 pt-8 text-xs tracking-wide text-muted md:flex-row md:items-center">
           <p>© {new Date().getFullYear()} Kundan Atelier. All rights reserved.</p>
           <div className="flex gap-6">
             <a href="#" className="hover:text-gold">
@@ -123,7 +142,7 @@ export function Footer() {
           Search
         </a>
         <a
-          href="#collections"
+          href="/#catalogs"
           className="flex flex-1 flex-col items-center gap-1 border-x border-border/60 py-3 text-[10px] tracking-[0.14em] text-ink uppercase"
         >
           <GemIcon />

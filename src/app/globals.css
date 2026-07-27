@@ -43,7 +43,7 @@
   }
 
   body {
-    background: var(--color-void);
+    background: var(--color-ivory);
     color: var(--color-ink);
     font-family: var(--font-body);
     font-weight: 300;
@@ -113,5 +113,30 @@
 
   .scrollbar-none::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* Custom logo loader — colour fills upward over the grayscale mark */
+@keyframes kundan-logo-fill {
+  0% {
+    clip-path: inset(100% 0 0 0);
+  }
+  12% {
+    clip-path: inset(100% 0 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.loader-fill {
+  clip-path: inset(100% 0 0 0);
+  animation: kundan-logo-fill 2.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-fill {
+    clip-path: inset(0 0 0 0);
+    animation: none;
   }
 }

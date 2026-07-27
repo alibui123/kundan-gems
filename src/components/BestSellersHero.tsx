@@ -94,18 +94,18 @@ export function BestSellersHero({
   return (
     <section
       ref={rootRef}
-      className="relative isolate overflow-hidden bg-void text-white"
+      className="relative isolate overflow-hidden bg-ivory text-ink"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_75%_25%,rgba(200,169,106,0.15),transparent_52%)]" />
       <div className="bs-glow pointer-events-none absolute top-[12%] right-[8%] h-[42vw] max-h-[520px] w-[42vw] max-w-[520px] rounded-full bg-[radial-gradient(circle,rgba(255,236,200,0.16),transparent_68%)] blur-2xl" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-void to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-ivory to-transparent" />
 
       <div className="container-luxury relative z-10 pt-28 pb-16 md:pt-36 md:pb-24 lg:pb-28">
-        <nav className="bs-crumb mb-12 text-[11px] tracking-[0.16em] text-white/45 uppercase md:mb-16">
+        <nav className="bs-crumb mb-12 text-[11px] tracking-[0.16em] text-muted uppercase md:mb-16">
           <Link href="/" className="transition-colors hover:text-gold">
             Home
           </Link>
-          <span className="mx-2 text-white/25">/</span>
+          <span className="mx-2 text-border">/</span>
           <span className="text-gold">Best Sellers</span>
         </nav>
 
@@ -131,12 +131,12 @@ export function BestSellersHero({
             </p>
 
             <div className="bs-copy mt-4 max-w-md">
-              <p className="text-[15px] leading-[1.85] text-white/60">
+              <p className="text-[15px] leading-[1.85] text-muted">
                 The pieces clients return for — ranked by desire across the
                 atelier. {topName ? (
                   <>
                     Leading the edit:{" "}
-                    <span className="text-white/85">{topName}</span>.
+                    <span className="text-ink">{topName}</span>.
                   </>
                 ) : null}
               </p>
@@ -151,12 +151,12 @@ export function BestSellersHero({
               </a>
             </div>
 
-            <div className="bs-meta mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/10 pt-6 text-[11px] tracking-[0.18em] text-white/40 uppercase">
+            <div className="bs-meta mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-border pt-6 text-[11px] tracking-[0.18em] text-muted uppercase">
               <span>
                 <em className="not-italic text-gold">{pieceCount}</em> ranked
                 pieces
               </span>
-              <span className="hidden h-3 w-px bg-white/15 sm:block" />
+              <span className="hidden h-3 w-px bg-border sm:block" />
               <span>Updated by demand</span>
             </div>
           </div>
@@ -172,14 +172,14 @@ export function BestSellersHero({
                   sizes="(max-width: 1024px) 90vw, 55vw"
                   className="object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-void/50 via-transparent to-void/10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-ink/10" />
                 <div className="bs-shimmer pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-[-18deg]" />
-                <span className="absolute top-5 left-5 rounded-full bg-void/75 px-4 py-2 text-[10px] tracking-[0.18em] text-gold uppercase backdrop-blur-sm">
+                <span className="absolute top-5 left-5 rounded-full bg-ink/70 px-4 py-2 text-[10px] tracking-[0.18em] text-gold uppercase backdrop-blur-sm">
                   No. 01
                 </span>
               </div>
 
-              <div className="bs-secondary absolute -bottom-6 -left-4 w-[46%] overflow-hidden rounded-[22px] border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:-bottom-8 sm:-left-8 md:w-[42%] lg:-bottom-10 lg:-left-6 xl:-left-10">
+              <div className="bs-secondary absolute -bottom-6 -left-4 w-[46%] overflow-hidden rounded-[22px] border border-border shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:-bottom-8 sm:-left-8 md:w-[42%] lg:-bottom-10 lg:-left-6 xl:-left-10">
                 <div className="relative aspect-square">
                   <Image
                     src={secondaryImage}
@@ -188,7 +188,7 @@ export function BestSellersHero({
                     sizes="(max-width: 1024px) 40vw, 22vw"
                     className="object-cover"
                   />
-                  <div className="absolute inset-0 bg-void/15" />
+                  <div className="absolute inset-0 bg-ink/10" />
                 </div>
               </div>
             </div>

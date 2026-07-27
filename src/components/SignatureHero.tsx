@@ -92,18 +92,18 @@ export function SignatureHero({
   return (
     <section
       ref={rootRef}
-      className="relative isolate overflow-hidden bg-void text-white"
+      className="relative isolate overflow-hidden bg-ivory text-ink"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_30%,rgba(200,169,106,0.16),transparent_50%)]" />
       <div className="sig-glow pointer-events-none absolute top-[8%] left-[4%] h-[48vw] max-h-[560px] w-[48vw] max-w-[560px] rounded-full bg-[radial-gradient(circle,rgba(255,236,200,0.16),transparent_68%)] blur-2xl" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-void to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-ivory to-transparent" />
 
       <div className="container-luxury relative z-10 pt-28 pb-16 md:pt-36 md:pb-24 lg:pb-28">
-        <nav className="sig-crumb mb-12 text-[11px] tracking-[0.16em] text-white/45 uppercase md:mb-16">
+        <nav className="sig-crumb mb-12 text-[11px] tracking-[0.16em] text-muted uppercase md:mb-16">
           <Link href="/" className="transition-colors hover:text-gold">
             Home
           </Link>
-          <span className="mx-2 text-white/25">/</span>
+          <span className="mx-2 text-border">/</span>
           <span className="text-gold">Signature</span>
         </nav>
 
@@ -127,7 +127,7 @@ export function SignatureHero({
             <div className="sig-rule mt-8 h-px w-16 bg-gradient-to-r from-gold to-transparent" />
 
             <div className="sig-copy mt-7 max-w-md">
-              <p className="text-[15px] leading-[1.85] text-white/60">
+              <p className="text-[15px] leading-[1.85] text-muted">
                 A study in restraint and radiance — pieces composed with
                 museum-like precision, where proportion, light, and touch are
                 considered as carefully as the stone itself.
@@ -149,14 +149,14 @@ export function SignatureHero({
               </Link>
             </div>
 
-            <div className="sig-meta mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/10 pt-6 text-[11px] tracking-[0.18em] text-white/40 uppercase">
+            <div className="sig-meta mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-border pt-6 text-[11px] tracking-[0.18em] text-muted uppercase">
               <span>
                 <em className="not-italic text-gold">{pieceCount}</em> signature
                 pieces
               </span>
-              <span className="hidden h-3 w-px bg-white/15 sm:block" />
+              <span className="hidden h-3 w-px bg-border sm:block" />
               <span>Limited editions</span>
-              <span className="hidden h-3 w-px bg-white/15 sm:block" />
+              <span className="hidden h-3 w-px bg-border sm:block" />
               <span>Lifetime care</span>
             </div>
           </div>
@@ -175,11 +175,11 @@ export function SignatureHero({
                   sizes="(max-width: 1024px) 90vw, 55vw"
                   className="object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-void/55 via-transparent to-void/10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-ink/10" />
                 <div className="sig-shimmer pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-[-18deg]" />
               </div>
 
-              <div className="sig-secondary absolute -right-3 -bottom-6 w-[44%] overflow-hidden rounded-[22px] border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:-right-6 sm:-bottom-8 md:w-[40%] lg:-right-4 lg:-bottom-10 xl:-right-8">
+              <div className="sig-secondary absolute -right-3 -bottom-6 w-[44%] overflow-hidden rounded-[22px] border border-border shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:-right-6 sm:-bottom-8 md:w-[40%] lg:-right-4 lg:-bottom-10 xl:-right-8">
                 <div className="relative aspect-[4/5]">
                   <Image
                     src={secondaryImage}
@@ -188,7 +188,7 @@ export function SignatureHero({
                     sizes="(max-width: 1024px) 40vw, 22vw"
                     className="object-cover"
                   />
-                  <div className="absolute inset-0 bg-void/15" />
+                  <div className="absolute inset-0 bg-ink/10" />
                 </div>
               </div>
             </div>

@@ -2,67 +2,80 @@ import Image from "next/image";
 import Link from "next/link";
 import { MATERIALS, materialMeta } from "@/lib/products";
 
+const materialTone: Record<string, string> = {
+  diamond: "text-ink",
+  gold: "text-brown",
+  ruby: "text-[#7a2430]",
+};
+
+/** Secondary browse — material specimens on ivory, type below the photo. */
 export function MaterialsShowcase() {
   return (
     <section
       id="materials"
-      className="section-reveal relative overflow-hidden bg-void py-24 text-white md:py-36"
+      className="section-reveal relative overflow-hidden bg-ivory py-20 md:py-28"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(200,169,106,0.12),transparent_55%)]" />
-
-      <div className="container-luxury relative z-10">
-        <div className="reveal-item mx-auto mb-14 max-w-2xl text-center md:mb-20">
-          <p className="mb-3 text-[11px] font-medium tracking-[0.28em] text-gold uppercase">
-            The materials
-          </p>
-          <h2 className="font-display text-[clamp(2.5rem,5vw,4.25rem)] font-light leading-[1.05]">
-            Diamond, gold
-            <br />
-            <span className="italic text-gold-bright">&amp; ruby</span>
-          </h2>
-          <p className="mx-auto mt-6 max-w-md text-[15px] leading-[1.85] text-white/55">
-            Three languages of light. Each material is a world of its own —
-            enter the atelier edit composed around it.
-          </p>
+      <div className="container-luxury">
+        <div className="reveal-item mb-14 flex flex-col gap-6 md:mb-16 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-lg">
+            <p className="mb-3 text-[11px] font-medium tracking-[0.28em] text-gold uppercase">
+              Shop by material
+            </p>
+            <h2 className="font-display text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.08] text-ink">
+              Diamond, gold
+              <span className="italic text-brown"> &amp; ruby</span>
+            </h2>
+            <p className="mt-4 max-w-md text-[15px] leading-[1.85] text-muted">
+              Second path — filter the atelier by the metal or stone itself.
+            </p>
+          </div>
+          <Link
+            href="#catalogs"
+            className="text-[11px] tracking-[0.2em] text-muted uppercase transition-colors hover:text-gold"
+          >
+              ← Back to catalogs
+          </Link>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-3 lg:gap-6">
+        <div className="grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-10">
           {MATERIALS.map((slug) => {
             const item = materialMeta[slug];
             return (
               <Link
                 key={slug}
                 href={`/materials/${slug}`}
-                className="reveal-item group relative isolate flex min-h-[420px] flex-col justify-end overflow-hidden rounded-[28px] md:min-h-[520px]"
+                className="reveal-item group flex flex-col"
               >
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 33vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-                <div
-                  className={`absolute inset-0 bg-gradient-to-t ${item.accent}`}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-void via-void/35 to-void/10" />
+                <div className="relative aspect-[3/4] overflow-hidden">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  />
+                  {/* Dissolve into ivory — no dark card overlay */}
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ivory via-ivory/70 to-transparent" />
+                </div>
 
-                {/* Signature: fine vertical filament unique to materials band */}
-                <div className="pointer-events-none absolute top-10 left-8 h-16 w-px bg-gradient-to-b from-gold/70 to-transparent opacity-80" />
-
-                <div className="relative z-10 p-8 md:p-10">
-                  <p className="text-[11px] tracking-[0.22em] text-white/55 uppercase">
+                <div className="relative z-10 -mt-6 flex flex-1 flex-col px-1">
+                  <p className="text-[10px] tracking-[0.26em] text-gold uppercase">
                     {item.subtitle}
                   </p>
-                  <h3 className="mt-3 font-display text-4xl font-light tracking-[-0.02em] md:text-5xl">
+                  <h3
+                    className={`mt-2 font-display text-[clamp(2rem,3vw,2.75rem)] font-light leading-none ${materialTone[slug] ?? "text-ink"}`}
+                  >
                     {item.title}
                   </h3>
-                  <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
+                  <p className="mt-4 line-clamp-2 text-[14px] leading-[1.75] text-muted">
                     {item.description}
                   </p>
-                  <span className="mt-8 inline-flex items-center gap-3 text-[11px] tracking-[0.18em] text-gold uppercase">
-                    Enter the edit
-                    <span className="h-px w-8 bg-gold transition-all duration-300 group-hover:w-14" />
+                  <span className="mt-6 inline-flex items-center gap-3 text-[11px] tracking-[0.2em] text-ink uppercase transition-colors group-hover:text-gold">
+                    Explore
+                    <span
+                      className="h-px w-8 origin-left bg-current transition-transform duration-500 group-hover:scale-x-150"
+                      aria-hidden
+                    />
                   </span>
                 </div>
               </Link>

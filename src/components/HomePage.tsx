@@ -9,6 +9,7 @@ import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
 import { BrandPromise } from "@/components/BrandPromise";
 import { FeaturedCollections } from "@/components/FeaturedCollections";
+import { CatalogsShowcase } from "@/components/CatalogsShowcase";
 import { MaterialsShowcase } from "@/components/MaterialsShowcase";
 import { NewArrivals } from "@/components/NewArrivals";
 import { SignatureCollection } from "@/components/SignatureCollection";
@@ -44,7 +45,7 @@ export function HomePage({
 
           if (reduceMotion) return;
 
-          // ——— Hero entrance is handled inside Hero (frame scrub + pin) ———
+          // ——— Hero entrance / ambient motion is handled inside Hero ———
 
           // ——— Curtain reveal into boutique ———
           gsap.fromTo(
@@ -163,12 +164,13 @@ export function HomePage({
         <Navigation />
         <Hero />
         <div className="boutique relative z-10 bg-ivory pb-20 md:pb-0">
-          <BrandPromise />
-          <FeaturedCollections />
+          <CatalogsShowcase />
           <MaterialsShowcase />
+          <FeaturedCollections />
           <NewArrivals products={newArrivals} />
-          <SignatureCollection />
           <BestSellers products={bestSellers} />
+          <BrandPromise />
+          <SignatureCollection />
           <Craftsmanship />
           <Testimonials />
           <InstagramGallery />

@@ -21,7 +21,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       smoothWheel: true,
     });
 
-    // Allow other components (e.g. Hero) to reset scroll after unpinning
+    // Shared Lenis instance for section jumps (hero CTAs, etc.)
     (window as Window & { __lenis?: Lenis }).__lenis = lenis;
 
     lenis.on("scroll", ScrollTrigger.update);

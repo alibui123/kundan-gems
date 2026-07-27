@@ -6,12 +6,12 @@ export function NextCollectionNav({ currentSlug }: { currentSlug: string }) {
   const { prev, next } = getAdjacentCollections(currentSlug);
 
   return (
-    <section className="bg-void text-white">
+    <section className="border-t border-border bg-ivory text-ink">
       <div className="container-luxury py-20 md:py-28">
         <p className="mb-3 text-center text-[11px] tracking-[0.24em] text-gold uppercase">
           Continue the journey
         </p>
-        <h2 className="mb-12 text-center font-display text-[clamp(2rem,4vw,3.25rem)] font-light md:mb-16">
+        <h2 className="mb-12 text-center font-display text-[clamp(2rem,4vw,3.25rem)] font-light text-ink md:mb-16">
           Next collections
         </h2>
 

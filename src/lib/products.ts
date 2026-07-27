@@ -1,10 +1,12 @@
 import { createAnonClient } from "@/lib/supabase";
+import type { Catalog } from "@/lib/catalogs";
 
 export const MATERIALS = ["diamond", "gold", "ruby"] as const;
 export const CATEGORIES = ["rings", "bracelets", "necklaces"] as const;
 
 export type Material = (typeof MATERIALS)[number];
 export type Category = (typeof CATEGORIES)[number];
+export type { Catalog };
 
 export const MATERIAL_FILTERS: { label: string; value: Material | "all" }[] = [
   { label: "All", value: "all" },
@@ -20,6 +22,7 @@ export type Product = {
   description: string;
   material: Material;
   category: Category;
+  catalog: Catalog | null;
   price: number;
   metal: string;
   carat: string;
@@ -204,6 +207,7 @@ function mapProduct(row: Record<string, unknown>): Product {
     description: String(row.description ?? ""),
     material: row.material as Material,
     category: row.category as Category,
+    catalog: (row.catalog as Catalog | null) ?? null,
     price: Number(row.price),
     metal: String(row.metal ?? ""),
     carat: String(row.carat ?? ""),
@@ -225,6 +229,7 @@ function mapProduct(row: Record<string, unknown>): Product {
 export async function getProducts(filters?: {
   material?: Material;
   category?: Category;
+  catalog?: Catalog;
   isNew?: boolean;
   isBestseller?: boolean;
   isSignature?: boolean;
@@ -235,6 +240,7 @@ export async function getProducts(filters?: {
 
   if (filters?.material) query = query.eq("material", filters.material);
   if (filters?.category) query = query.eq("category", filters.category);
+  if (filters?.catalog) query = query.eq("catalog", filters.catalog);
   if (filters?.isNew) query = query.eq("is_new", true);
   if (filters?.isBestseller) query = query.eq("is_bestseller", true);
   if (filters?.isSignature) query = query.eq("is_signature", true);

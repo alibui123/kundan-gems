@@ -104,11 +104,11 @@ export function NecklacesHero({
   return (
     <section
       ref={rootRef}
-      className="relative isolate overflow-hidden bg-void text-white"
+      className="relative isolate overflow-hidden bg-ivory text-ink"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_65%_35%,rgba(200,169,106,0.15),transparent_55%)]" />
       <div className="nh-glow pointer-events-none absolute top-[10%] right-[6%] h-[44vw] max-h-[540px] w-[44vw] max-w-[540px] rounded-full bg-[radial-gradient(circle,rgba(255,236,200,0.18),transparent_68%)] blur-2xl" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-void to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ivory to-transparent" />
 
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.04] mix-blend-overlay"
@@ -119,11 +119,11 @@ export function NecklacesHero({
       />
 
       <div className="container-luxury relative z-10 pt-28 pb-16 md:pt-36 md:pb-24 lg:pb-28">
-        <nav className="nh-crumb mb-12 text-[11px] tracking-[0.16em] text-white/45 uppercase md:mb-16">
+        <nav className="nh-crumb mb-12 text-[11px] tracking-[0.16em] text-muted uppercase md:mb-16">
           <Link href="/" className="transition-colors hover:text-gold">
             Home
           </Link>
-          <span className="mx-2 text-white/25">/</span>
+          <span className="mx-2 text-border">/</span>
           <span className="text-gold">Necklaces</span>
         </nav>
 
@@ -151,7 +151,7 @@ export function NecklacesHero({
 
             <div className="nh-copy mt-8 max-w-md">
               <div className="mb-6 h-px w-12 bg-gradient-to-r from-gold to-transparent" />
-              <p className="text-[15px] leading-[1.85] text-white/60">
+              <p className="text-[15px] leading-[1.85] text-muted">
                 {description} Shop the current edit — and glimpse what is still
                 arriving at the atelier.
               </p>
@@ -172,13 +172,13 @@ export function NecklacesHero({
               </a>
             </div>
 
-            <div className="nh-meta mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/10 pt-6 text-[11px] tracking-[0.18em] text-white/40 uppercase">
+            <div className="nh-meta mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-border pt-6 text-[11px] tracking-[0.18em] text-muted uppercase">
               <span>
                 <em className="not-italic text-gold">{pieceCount}</em> pieces
               </span>
-              <span className="hidden h-3 w-px bg-white/15 sm:block" />
+              <span className="hidden h-3 w-px bg-border sm:block" />
               <span>Pendants &amp; cascades</span>
-              <span className="hidden h-3 w-px bg-white/15 sm:block" />
+              <span className="hidden h-3 w-px bg-border sm:block" />
               <span>Ready to ship</span>
             </div>
           </div>
@@ -194,11 +194,11 @@ export function NecklacesHero({
                   sizes="(max-width: 1024px) 90vw, 55vw"
                   className="object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-void/50 via-transparent to-void/10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-ink/10" />
                 <div className="nh-shimmer pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-[-18deg]" />
               </div>
 
-              <div className="nh-media-secondary absolute -bottom-6 -left-4 w-[46%] overflow-hidden rounded-[22px] border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:-bottom-8 sm:-left-8 md:w-[42%] lg:-bottom-10 lg:-left-6 xl:-left-10">
+              <div className="nh-media-secondary absolute -bottom-6 -left-4 w-[46%] overflow-hidden rounded-[22px] border border-border shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:-bottom-8 sm:-left-8 md:w-[42%] lg:-bottom-10 lg:-left-6 xl:-left-10">
                 <div className="relative aspect-[4/5]">
                   <Image
                     src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=900&q=90"
@@ -207,7 +207,7 @@ export function NecklacesHero({
                     sizes="(max-width: 1024px) 40vw, 22vw"
                     className="object-cover"
                   />
-                  <div className="absolute inset-0 bg-void/15" />
+                  <div className="absolute inset-0 bg-ink/10" />
                 </div>
               </div>
             </div>

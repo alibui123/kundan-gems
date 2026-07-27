@@ -71,12 +71,12 @@ export function RingsHero({ pieceCount }: RingsHeroProps) {
   return (
     <section
       ref={rootRef}
-      className="relative isolate overflow-hidden bg-void text-white"
+      className="relative isolate overflow-hidden bg-ivory text-ink"
     >
       {/* Atmosphere */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_40%,rgba(200,169,106,0.14),transparent_55%)]" />
       <div className="rh-glow pointer-events-none absolute top-[12%] right-[8%] h-[42vw] max-h-[520px] w-[42vw] max-w-[520px] rounded-full bg-[radial-gradient(circle,rgba(255,236,200,0.16),transparent_68%)] blur-2xl" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-void to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ivory to-transparent" />
 
       {/* Fine grain */}
       <div
@@ -88,11 +88,11 @@ export function RingsHero({ pieceCount }: RingsHeroProps) {
       />
 
       <div className="container-luxury relative z-10 pt-28 pb-16 md:pt-36 md:pb-24 lg:pb-28">
-        <nav className="rh-crumb mb-12 text-[11px] tracking-[0.16em] text-white/45 uppercase md:mb-16">
+        <nav className="rh-crumb mb-12 text-[11px] tracking-[0.16em] text-muted uppercase md:mb-16">
           <Link href="/" className="transition-colors hover:text-gold">
             Home
           </Link>
-          <span className="mx-2 text-white/25">/</span>
+          <span className="mx-2 text-border">/</span>
           <span className="text-gold">Rings</span>
         </nav>
 
@@ -116,7 +116,7 @@ export function RingsHero({ pieceCount }: RingsHeroProps) {
 
             <div className="rh-copy mt-8 max-w-md">
               <div className="mb-6 h-px w-12 bg-gradient-to-r from-gold to-transparent" />
-              <p className="text-[15px] leading-[1.85] text-white/60">
+              <p className="text-[15px] leading-[1.85] text-muted">
                 Bands shaped for light, proportion, and the quiet certainty of
                 forever — finished by hand in our atelier.
               </p>
@@ -137,13 +137,13 @@ export function RingsHero({ pieceCount }: RingsHeroProps) {
               </Link>
             </div>
 
-            <div className="rh-meta mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/10 pt-6 text-[11px] tracking-[0.18em] text-white/40 uppercase">
+            <div className="rh-meta mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-border pt-6 text-[11px] tracking-[0.18em] text-muted uppercase">
               <span>
                 <em className="not-italic text-gold">{pieceCount}</em> pieces
               </span>
-              <span className="hidden h-3 w-px bg-white/15 sm:block" />
+              <span className="hidden h-3 w-px bg-border sm:block" />
               <span>Handcrafted</span>
-              <span className="hidden h-3 w-px bg-white/15 sm:block" />
+              <span className="hidden h-3 w-px bg-border sm:block" />
               <span>Certified diamonds</span>
             </div>
           </div>
@@ -161,11 +161,11 @@ export function RingsHero({ pieceCount }: RingsHeroProps) {
                   sizes="(max-width: 1024px) 90vw, 55vw"
                   className="object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-void/50 via-transparent to-void/10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-ink/10" />
               </div>
 
               {/* Secondary overlapping plate — editorial collage */}
-              <div className="rh-media-secondary absolute -bottom-6 -left-4 w-[46%] overflow-hidden rounded-[22px] border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:-bottom-8 sm:-left-8 md:w-[42%] lg:-bottom-10 lg:-left-6 xl:-left-10">
+              <div className="rh-media-secondary absolute -bottom-6 -left-4 w-[46%] overflow-hidden rounded-[22px] border border-border shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:-bottom-8 sm:-left-8 md:w-[42%] lg:-bottom-10 lg:-left-6 xl:-left-10">
                 <div className="relative aspect-[4/5]">
                   <Image
                     src="https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=900&q=90"
@@ -174,7 +174,7 @@ export function RingsHero({ pieceCount }: RingsHeroProps) {
                     sizes="(max-width: 1024px) 40vw, 22vw"
                     className="object-cover"
                   />
-                  <div className="absolute inset-0 bg-void/15" />
+                  <div className="absolute inset-0 bg-ink/10" />
                 </div>
               </div>
             </div>

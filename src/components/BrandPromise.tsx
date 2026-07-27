@@ -46,25 +46,26 @@ const icons = {
   ),
 };
 
+/** Quiet trust ribbon — does not compete with catalogs. */
 export function BrandPromise() {
   return (
-    <section className="section-reveal bg-ivory py-20 md:py-28">
-      <div className="container-luxury grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+    <section className="section-reveal border-y border-border bg-ivory py-12 md:py-14">
+      <div className="container-luxury grid gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
         {promises.map((item) => (
           <article
             key={item.title}
-            className="reveal-item group flex flex-col items-start gap-4"
+            className="reveal-item flex items-start gap-4"
           >
-            <span className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-gold transition-transform duration-500 group-hover:rotate-12">
-              <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden>
+            <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center text-gold">
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>
                 {icons[item.icon]}
               </svg>
             </span>
             <div>
-              <h3 className="font-display text-xl tracking-wide text-ink">
+              <h3 className="font-display text-lg tracking-wide text-ink">
                 {item.title}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">
+              <p className="mt-1 text-[13px] leading-relaxed text-muted">
                 {item.description}
               </p>
             </div>

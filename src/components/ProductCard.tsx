@@ -147,9 +147,13 @@ function CardMedia({
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#efe8dc] to-[#e0d4c4]">
-          <span className="font-display text-2xl tracking-[0.2em] text-gold/70 uppercase">
-            Kundan
-          </span>
+          <Image
+            src="/logo.png"
+            alt="Kundan"
+            width={120}
+            height={130}
+            className="h-16 w-auto opacity-80 object-contain"
+          />
         </div>
       )}
     </div>

@@ -5,53 +5,26 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { brand, navLinks } from "@/lib/data";
 import { useCart } from "@/components/CartProvider";
+import { BrandLogo } from "@/components/BrandLogo";
 
 type NavigationProps = {
-  /** auto: home-style (transparent → ivory). dark: start transparent on dark heroes. light: always ivory */
+  /** Kept for call-site compatibility; site uses shared ivory ground. */
   variant?: "auto" | "light" | "dark";
 };
 
-export function Navigation({ variant = "auto" }: NavigationProps) {
+export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
   const pathname = usePathname();
   const { count, openCart } = useCart();
   const [scrolled, setScrolled] = useState(false);
-  const [heroComplete, setHeroComplete] = useState(false);
   const [open, setOpen] = useState(false);
-
   const isHome = pathname === "/";
-  const startTransparent =
-    variant === "dark" || (variant === "auto" && isHome);
-  // Home: stay transparent over the hero until the final frame, then ivory.
-  const light =
-    variant === "light" ||
-    (startTransparent
-      ? isHome
-        ? heroComplete
-        : scrolled
-      : true);
 
   useEffect(() => {
-    setHeroComplete(false);
-  }, [pathname]);
-
-  useEffect(() => {
-    if (!isHome) return;
-    const onComplete = () => setHeroComplete(true);
-    window.addEventListener("kundan:hero-complete", onComplete);
-    return () => window.removeEventListener("kundan:hero-complete", onComplete);
-  }, [isHome]);
-
-  useEffect(() => {
-    if (!startTransparent) {
-      setScrolled(true);
-      return;
-    }
-    if (isHome) return; // home uses heroComplete instead of early scrollY
     const onScroll = () => setScrolled(window.scrollY > 80);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [startTransparent, isHome]);
+  }, []);
 
   const homeLinks = navLinks.map((link) => ({
     ...link,
@@ -63,7 +36,8 @@ export function Navigation({ variant = "auto" }: NavigationProps) {
   }));
 
   const resolveHref = (link: (typeof homeLinks)[number]) => {
-    if (link.label === "Collections") return "/collections/rings";
+    if (link.label === "Catalogs") return isHome ? "#catalogs" : "/#catalogs";
+    if (link.label === "Materials") return isHome ? "#materials" : "/#materials";
     if (link.label === "Best Sellers") return "/collections/best-sellers";
     if (link.label === "New Arrivals") return "/collections/new-arrivals";
     if (link.href === "#") return "/";
@@ -73,19 +47,14 @@ export function Navigation({ variant = "auto" }: NavigationProps) {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        light
+        scrolled || !isHome
           ? "bg-ivory/95 shadow-[0_1px_20px_rgba(37,37,37,0.06)] backdrop-blur-md"
-          : "bg-transparent"
+          : "bg-ivory/80 backdrop-blur-sm"
       }`}
     >
       <nav className="container-luxury flex h-[72px] items-center justify-between lg:h-20">
-        <Link
-          href="/"
-          className={`font-display text-2xl tracking-[0.2em] uppercase transition-colors duration-500 ${
-            light ? "text-ink" : "text-white"
-          }`}
-        >
-          {brand.name}
+        <Link href="/" className="relative z-10 inline-flex items-center" aria-label={brand.name}>
+          <BrandLogo size="nav" priority />
         </Link>
 
         <ul className="hidden items-center gap-9 lg:flex">
@@ -93,11 +62,7 @@ export function Navigation({ variant = "auto" }: NavigationProps) {
             <li key={link.label}>
               <Link
                 href={resolveHref(link)}
-                className={`group relative text-[11px] font-medium tracking-[0.18em] uppercase transition-colors duration-300 ${
-                  light
-                    ? "text-ink/80 hover:text-ink"
-                    : "text-white/80 hover:text-white"
-                }`}
+                className="group relative text-[11px] font-medium tracking-[0.18em] text-ink/80 uppercase transition-colors duration-300 hover:text-ink"
               >
                 {link.label}
                 <span className="absolute -bottom-1 left-0 h-px w-0 bg-gold transition-all duration-300 group-hover:w-full" />
@@ -110,9 +75,7 @@ export function Navigation({ variant = "auto" }: NavigationProps) {
           <button
             type="button"
             aria-label="Search"
-            className={`transition-colors duration-300 ${
-              light ? "text-ink" : "text-white"
-            }`}
+            className="text-ink transition-colors duration-300"
           >
             <SearchIcon />
           </button>
@@ -120,9 +83,7 @@ export function Navigation({ variant = "auto" }: NavigationProps) {
             type="button"
             aria-label={`Cart, ${count} items`}
             onClick={openCart}
-            className={`relative transition-colors duration-300 ${
-              light ? "text-ink" : "text-white"
-            }`}
+            className="relative text-ink transition-colors duration-300"
           >
             <CartIcon />
             <span className="absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 text-[9px] font-medium text-void">
@@ -132,7 +93,7 @@ export function Navigation({ variant = "auto" }: NavigationProps) {
           <button
             type="button"
             aria-label="Menu"
-            className={`lg:hidden ${light ? "text-ink" : "text-white"}`}
+            className="text-ink lg:hidden"
             onClick={() => setOpen((v) => !v)}
           >
             <MenuIcon open={open} />
