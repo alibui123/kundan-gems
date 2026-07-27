@@ -134,20 +134,20 @@ export function Footer() {
 
       {/* Mobile sticky bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border/60 bg-ivory/95 backdrop-blur-md md:hidden">
-        <a
+        <Link
           href="/collections/new-arrivals"
           className="flex flex-1 flex-col items-center gap-1 py-3 text-[10px] tracking-[0.14em] text-ink uppercase"
         >
           <BagIcon />
           Search
-        </a>
-        <a
+        </Link>
+        <Link
           href="/#catalogs"
           className="flex flex-1 flex-col items-center gap-1 border-x border-border/60 py-3 text-[10px] tracking-[0.14em] text-ink uppercase"
         >
           <GemIcon />
           Shop
-        </a>
+        </Link>
         <button
           type="button"
           className="flex flex-1 flex-col items-center gap-1 py-3 text-[10px] tracking-[0.14em] text-ink uppercase"
