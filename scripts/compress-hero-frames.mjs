@@ -54,10 +54,8 @@ for (let i = 0; i < pngs.length; i += CONCURRENCY) {
 webps.sort((a, b) => Number(a.match(/(\d+)/)[1]) - Number(b.match(/(\d+)/)[1]));
 
 const heroFramesPath = path.resolve("src/lib/heroFrames.ts");
-const out = `/** Hero WebP sequence from public/hero-frames (compressed for git/Vercel). */
-export const HERO_FRAME_DIR = (
-  process.env.NEXT_PUBLIC_HERO_FRAMES_BASE_URL || "/hero-frames"
-).replace(/\\/$/, "");
+const out = `/** Hero WebP sequence from public/hero-frames (same-origin on local + Vercel). */
+export const HERO_FRAME_DIR = "/hero-frames";
 
 export const HERO_FRAME_FILES = ${JSON.stringify(webps, null, 2)} as const;
 

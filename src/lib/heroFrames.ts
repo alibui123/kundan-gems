@@ -1,7 +1,5 @@
-/** Hero WebP sequence from public/hero-frames (compressed for git/Vercel). */
-export const HERO_FRAME_DIR = (
-  process.env.NEXT_PUBLIC_HERO_FRAMES_BASE_URL || "/hero-frames"
-).replace(/\/$/, "");
+/** Hero WebP sequence from public/hero-frames (same-origin on local + Vercel). */
+export const HERO_FRAME_DIR = "/hero-frames";
 
 export const HERO_FRAME_FILES = [
   "frame_00000.webp",

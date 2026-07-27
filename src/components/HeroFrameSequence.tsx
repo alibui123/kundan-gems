@@ -37,6 +37,7 @@ export const HeroFrameSequence = forwardRef<
   HeroFrameHandle,
   HeroFrameSequenceProps
 >(function HeroFrameSequence({ className, onAutoplayReady, onReady }, ref) {
+  const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<(HTMLImageElement | null)[]>(
     Array.from({ length: HERO_FRAME_COUNT }, () => null)
@@ -48,6 +49,7 @@ export const HeroFrameSequence = forwardRef<
   const autoplayReadyRef = useRef(false);
   const [progress, setProgress] = useState(0);
   const [autoplayReady, setAutoplayReady] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   const draw = (index: number) => {
     const canvas = canvasRef.current;
@@ -69,6 +71,8 @@ export const HeroFrameSequence = forwardRef<
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const { width, height } = canvas.getBoundingClientRect();
+    if (width < 2 || height < 2) return;
+
     const w = Math.max(1, Math.floor(width * dpr));
     const h = Math.max(1, Math.floor(height * dpr));
 
@@ -88,27 +92,30 @@ export const HeroFrameSequence = forwardRef<
   };
 
   const loadOne = (i: number, cancelled: () => boolean) =>
-    new Promise<void>((resolve) => {
+    new Promise<boolean>((resolve) => {
       if (cancelled()) {
-        resolve();
+        resolve(false);
         return;
       }
-      if (imagesRef.current[i]?.complete) {
-        resolve();
+      if (imagesRef.current[i]?.complete && imagesRef.current[i]?.naturalWidth) {
+        resolve(true);
         return;
       }
 
       const existing = inflightRef.current.get(i);
       if (existing) {
-        if (existing.complete) {
+        if (existing.complete && existing.naturalWidth) {
           imagesRef.current[i] = existing;
           inflightRef.current.delete(i);
-          resolve();
+          resolve(true);
           return;
         }
-        const done = () => resolve();
+        const done = () =>
+          resolve(Boolean(existing.complete && existing.naturalWidth));
         existing.addEventListener("load", done, { once: true });
-        existing.addEventListener("error", done, { once: true });
+        existing.addEventListener("error", () => resolve(false), {
+          once: true,
+        });
         return;
       }
 
@@ -116,19 +123,19 @@ export const HeroFrameSequence = forwardRef<
       img.decoding = "async";
       inflightRef.current.set(i, img);
 
-      const finish = () => {
+      const finish = (ok: boolean) => {
         inflightRef.current.delete(i);
-        resolve();
+        resolve(ok);
       };
 
       img.onload = () => {
-        if (!cancelled()) imagesRef.current[i] = img;
+        if (!cancelled() && img.naturalWidth) imagesRef.current[i] = img;
         else img.src = "";
-        finish();
+        finish(Boolean(img.naturalWidth));
       };
       img.onerror = () => {
         img.src = "";
-        finish();
+        finish(false);
       };
       img.src = getHeroFrameSrc(i);
     });
@@ -170,28 +177,46 @@ export const HeroFrameSequence = forwardRef<
     };
 
     const loadRange = async (from: number, to: number, batch: number) => {
+      let okCount = 0;
       for (let start = from; start < to; start += batch) {
-        if (cancelledRef.current) return;
+        if (cancelledRef.current) return okCount;
         const end = Math.min(batch, to - start);
         const jobs = Array.from({ length: end }, (_, k) =>
-          loadOne(start + k, isCancelled).then(bump)
+          loadOne(start + k, isCancelled).then((ok) => {
+            bump();
+            return ok;
+          })
         );
-        await Promise.all(jobs);
-        if (cancelledRef.current) return;
+        const results = await Promise.all(jobs);
+        okCount += results.filter(Boolean).length;
+        if (cancelledRef.current) return okCount;
         draw(frameRef.current);
         await new Promise<void>((r) => setTimeout(r, 0));
       }
+      return okCount;
     };
 
     (async () => {
       const autoplayEnd = Math.min(HERO_AUTOPLAY_COUNT, HERO_FRAME_COUNT);
 
-      await loadOne(0, isCancelled).then(bump);
+      const firstOk = await loadOne(0, isCancelled);
+      bump();
       if (cancelledRef.current) return;
+
+      if (!firstOk) {
+        setLoadFailed(true);
+        return;
+      }
+
       draw(0);
 
-      await loadRange(1, autoplayEnd, 4);
+      const ok = await loadRange(1, autoplayEnd, 4);
       if (cancelledRef.current) return;
+
+      if (ok + 1 < Math.min(8, autoplayEnd)) {
+        setLoadFailed(true);
+        return;
+      }
 
       autoplayReadyRef.current = true;
       setAutoplayReady(true);
@@ -208,9 +233,17 @@ export const HeroFrameSequence = forwardRef<
     const onResize = () => draw(frameRef.current);
     window.addEventListener("resize", onResize);
 
+    const root = rootRef.current;
+    const ro =
+      typeof ResizeObserver !== "undefined" && root
+        ? new ResizeObserver(() => draw(frameRef.current))
+        : null;
+    if (root && ro) ro.observe(root);
+
     return () => {
       cancelledRef.current = true;
       window.removeEventListener("resize", onResize);
+      ro?.disconnect();
 
       inflightRef.current.forEach((img) => {
         img.onload = null;
@@ -231,6 +264,7 @@ export const HeroFrameSequence = forwardRef<
 
   return (
     <div
+      ref={rootRef}
       className={`hero-frames relative overflow-hidden bg-[#eceaea] ${className ?? ""}`}
       data-ready={autoplayReady ? "true" : "false"}
     >
@@ -242,21 +276,24 @@ export const HeroFrameSequence = forwardRef<
       {!autoplayReady && (
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3">
           <span className="font-display text-sm tracking-[0.24em] text-ink/40 uppercase">
-            Revealing
+            {loadFailed ? "Unable to load" : "Revealing"}
           </span>
-          <div className="h-px w-24 overflow-hidden bg-border">
-            <div
-              className="h-full bg-gold transition-[width] duration-200"
-              style={{
-                width: `${Math.round(
-                  Math.min(
-                    100,
-                    ((progress * HERO_FRAME_COUNT) / HERO_AUTOPLAY_COUNT) * 100
-                  )
-                )}%`,
-              }}
-            />
-          </div>
+          {!loadFailed && (
+            <div className="h-px w-24 overflow-hidden bg-border">
+              <div
+                className="h-full bg-gold transition-[width] duration-200"
+                style={{
+                  width: `${Math.round(
+                    Math.min(
+                      100,
+                      ((progress * HERO_FRAME_COUNT) / HERO_AUTOPLAY_COUNT) *
+                        100
+                    )
+                  )}%`,
+                }}
+              />
+            </div>
+          )}
         </div>
       )}
       <span className="sr-only">Animated jewellery reveal sequence</span>
