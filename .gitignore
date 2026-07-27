@@ -36,9 +36,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Hero frame sequences (~600MB+) — hosted on Supabase Storage in production
-# Local: keep `new frames/` and run `npm run sync:frames`
-# Upload: `npm run upload:frames`
+# Raw hero PNG sources (~600MB) — keep local only
 /new frames/
 /public/new-frames/
 /frames/
+
+# Compressed frames in /public/hero-frames ARE committed for Vercel
