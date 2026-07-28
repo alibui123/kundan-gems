@@ -9,27 +9,41 @@ import type Lenis from "lenis";
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Frees Lenis / ScrollTrigger as soon as an internal link is pressed so
- * navigations aren't blocked by homepage pin + heavy frame decoding.
+ * Clears overflow locks after route changes.
+ * Teardown Lenis only on confirmed click navigation — never on pointerdown,
+ * which freezes scroll when a touch/drag begins on a link.
  */
 export function RouteScrollCleanup() {
   const pathname = usePathname();
   const prevPath = useRef(pathname);
 
   useEffect(() => {
-    // After a route change, clear overflow locks Lenis may have left behind.
-    // Do not kill ScrollTriggers here — the new page may have just created them.
     if (prevPath.current !== pathname) {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
       document.documentElement.style.height = "";
       document.body.style.height = "";
+
+      const w = window as Window & { __lenis?: Lenis };
+      try {
+        w.__lenis?.start?.();
+      } catch {
+        // ignore
+      }
+
       prevPath.current = pathname;
+      requestAnimationFrame(() => ScrollTrigger.refresh());
     }
   }, [pathname]);
 
   useEffect(() => {
-    const onPointerDown = (event: MouseEvent) => {
+    const onClick = (event: MouseEvent) => {
+      // Ignore modified clicks / middle-click (new tab)
+      if (event.defaultPrevented || event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return;
+      }
+
       const target = event.target as HTMLElement | null;
       const anchor = target?.closest?.("a[href]") as HTMLAnchorElement | null;
       if (!anchor || anchor.target === "_blank") return;
@@ -40,28 +54,49 @@ export function RouteScrollCleanup() {
       let isInternal = href.startsWith("/");
       try {
         if (!isInternal) {
-          isInternal = new URL(href, window.location.href).origin === window.location.origin;
+          isInternal =
+            new URL(href, window.location.href).origin ===
+            window.location.origin;
         }
       } catch {
         return;
       }
       if (!isInternal) return;
 
-      // Same-page hash-only already filtered; ignore pure query self-links lightly
-      if (href === pathname) return;
+      const url = new URL(href, window.location.href);
+      if (
+        url.pathname === pathname &&
+        url.search === window.location.search &&
+        !url.hash
+      ) {
+        return;
+      }
 
+      // Soft teardown — do not leave Lenis permanently stopped if nav aborts
       const w = window as Window & { __lenis?: Lenis };
       try {
-        w.__lenis?.stop?.();
         ScrollTrigger.getAll().forEach((t) => t.kill(false));
       } catch {
         // ignore teardown races
       }
+
+      // Brief pause only; restart shortly in case Next soft-nav is cancelled
+      try {
+        w.__lenis?.stop?.();
+        window.setTimeout(() => {
+          try {
+            w.__lenis?.start?.();
+          } catch {
+            // ignore
+          }
+        }, 800);
+      } catch {
+        // ignore
+      }
     };
 
-    document.addEventListener("pointerdown", onPointerDown, true);
-    return () =>
-      document.removeEventListener("pointerdown", onPointerDown, true);
+    document.addEventListener("click", onClick, true);
+    return () => document.removeEventListener("click", onClick, true);
   }, [pathname]);
 
   return null;

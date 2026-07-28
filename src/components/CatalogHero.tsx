@@ -6,6 +6,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { catalogMeta, type Catalog } from "@/lib/catalogs";
+import { isLocalPublicSrc } from "@/lib/local-image";
 
 gsap.registerPlugin(useGSAP);
 
@@ -59,6 +60,7 @@ export function CatalogHero({ catalog, pieceCount }: CatalogHeroProps) {
           fill
           priority
           sizes="100vw"
+          unoptimized={isLocalPublicSrc(meta.heroImage)}
           className="ch-bg-img object-cover will-change-transform"
           style={{ objectPosition: meta.heroObjectPosition }}
         />

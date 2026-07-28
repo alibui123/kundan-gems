@@ -9,6 +9,7 @@ import type { CatalogMeta, CatalogScene } from "@/lib/catalogs";
 import type { Product } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { formatPrice, productHref } from "@/lib/products";
+import { isLocalPublicSrc } from "@/lib/local-image";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -25,20 +26,29 @@ function SceneRow({
   reverse?: boolean;
 }) {
   return (
-    <div className="lb-scene grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+    <div className="lb-scene grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
       <div
-        className={`lb-scene-media relative aspect-[4/5] overflow-hidden lg:col-span-7 lg:aspect-[5/4] ${
+        className={`lb-scene-media lg:col-span-7 ${
           reverse ? "lg:order-2" : ""
         }`}
       >
-        <Image
-          src={scene.image}
-          alt={scene.title}
-          fill
-          sizes="(max-width: 1024px) 100vw, 58vw"
-          className="lb-parallax-img object-cover will-change-transform"
-          style={{ objectPosition: scene.objectPosition ?? "50% 25%" }}
-        />
+        <div className="lb-frame group relative">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[1.35rem] lg:aspect-[5/4] lg:rounded-[1.75rem]">
+            <Image
+              src={scene.image}
+              alt={scene.title}
+              fill
+              sizes="(max-width: 1024px) 100vw, 58vw"
+              unoptimized={isLocalPublicSrc(scene.image)}
+              className="lb-parallax-img object-cover will-change-transform transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              style={{ objectPosition: scene.objectPosition ?? "50% 25%" }}
+            />
+            <div
+              className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/25"
+              aria-hidden
+            />
+          </div>
+        </div>
       </div>
       <div
         className={`lb-scene-copy max-w-md lg:col-span-5 ${
@@ -260,26 +270,6 @@ export function CatalogLookbook({ meta, products }: CatalogLookbookProps) {
         }
       }
 
-      // Closing trio — rise + stagger offset
-      gsap.utils.toArray<HTMLElement>(".lb-trio-cell").forEach((cell, i) => {
-        gsap.fromTo(
-          cell,
-          { y: 60 + i * 12, autoAlpha: 0 },
-          {
-            y: 0,
-            autoAlpha: 1,
-            duration: 1,
-            delay: i * 0.1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: ".lb-trio",
-              start: "top 85%",
-              once: true,
-            },
-          }
-        );
-      });
-
       // Safety: force visible if ST never fires
       const safety = window.setTimeout(() => {
         root.querySelectorAll(".lb-card, .lb-scene-copy, .lb-scene-media").forEach((el) => {
@@ -316,7 +306,7 @@ export function CatalogLookbook({ meta, products }: CatalogLookbookProps) {
       </div>
 
       <div className="lb-mosaic container-luxury py-12 md:py-16">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 md:gap-5">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:items-end sm:gap-5 md:gap-7">
           {(meta.gallery.length >= 3
             ? meta.gallery.slice(0, 3)
             : [
@@ -327,15 +317,28 @@ export function CatalogLookbook({ meta, products }: CatalogLookbookProps) {
           ).map((src, i) => (
             <div
               key={`${src}-${i}`}
-              className="lb-mosaic-cell group relative aspect-[3/4] overflow-hidden"
+              className={`lb-mosaic-cell lb-frame group ${
+                i === 1 ? "sm:-translate-y-6 md:-translate-y-10" : ""
+              }`}
             >
-              <Image
-                src={src}
-                alt=""
-                fill
-                sizes="(max-width: 640px) 100vw, 33vw"
-                className="object-cover object-[50%_20%] will-change-transform transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-              />
+              <div
+                className={`relative overflow-hidden rounded-[1.35rem] md:rounded-[1.6rem] ${
+                  i === 1 ? "aspect-[3/4.2]" : "aspect-[3/4]"
+                }`}
+              >
+                <Image
+                  src={src}
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 100vw, 33vw"
+                  unoptimized={isLocalPublicSrc(src)}
+                  className="object-cover object-[50%_18%] will-change-transform transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/20"
+                  aria-hidden
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -394,6 +397,7 @@ export function CatalogLookbook({ meta, products }: CatalogLookbookProps) {
           alt=""
           fill
           sizes="100vw"
+          unoptimized={isLocalPublicSrc(meta.image)}
           className="object-cover will-change-transform"
           style={{ objectPosition: meta.objectPosition }}
         />
@@ -445,36 +449,10 @@ export function CatalogLookbook({ meta, products }: CatalogLookbookProps) {
       )}
 
       {third && (
-        <div className="container-luxury py-16 md:py-24">
+        <div className="container-luxury py-16 md:pb-28 md:pt-24 pb-20">
           <SceneRow scene={third} />
         </div>
       )}
-
-      <div className="lb-trio container-luxury pb-20 md:pb-28">
-        <div className="mb-8 text-center">
-          <p className="text-[11px] tracking-[0.24em] text-gold uppercase">
-            From the shoot
-          </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
-          {meta.gallery.map((src, i) => (
-            <div
-              key={src}
-              className={`lb-trio-cell relative overflow-hidden ${
-                i === 1 ? "aspect-[3/4] sm:mt-10" : "aspect-[4/5]"
-              }`}
-            >
-              <Image
-                src={src}
-                alt=""
-                fill
-                sizes="(max-width: 640px) 100vw, 33vw"
-                className="object-cover transition-transform duration-700 ease-out hover:scale-105"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

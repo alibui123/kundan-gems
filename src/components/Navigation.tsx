@@ -9,7 +9,6 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { MenuToggle, MobileMenu } from "@/components/MobileMenu";
 
 type NavigationProps = {
-  /** Kept for call-site compatibility; site uses shared ivory ground. */
   variant?: "auto" | "light" | "dark";
 };
 
@@ -24,13 +23,12 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
   const toggleMenu = useCallback(() => setOpen((v) => !v), []);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
+    const onScroll = () => setScrolled(window.scrollY > 48);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close on route change
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
@@ -61,15 +59,15 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow] duration-400 ${
           open
             ? "bg-ivory"
             : scrolled || !isHome
-              ? "bg-ivory/95 shadow-[0_1px_20px_rgba(37,37,37,0.06)] backdrop-blur-md"
-              : "bg-ivory/80 backdrop-blur-sm"
+              ? "bg-ivory/92 shadow-[0_1px_0_rgba(28,25,23,0.06)] backdrop-blur-md"
+              : "bg-transparent"
         }`}
       >
-        <nav className="relative flex h-[72px] w-full items-center lg:h-20">
+        <nav className="relative flex h-16 w-full items-center lg:h-[4.25rem]">
           <div className="relative z-[70] flex shrink-0 items-center self-stretch pl-1 sm:pl-2">
             <MenuToggle open={open} onClick={toggleMenu} />
           </div>
@@ -83,12 +81,12 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
             <BrandLogo size="nav" priority />
           </Link>
 
-          <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 lg:flex xl:gap-9">
+          <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 lg:flex xl:gap-8">
             {homeLinks.map((link) => (
               <li key={link.label}>
                 <Link
                   href={resolveHref(link)}
-                  className="group relative whitespace-nowrap text-[11px] font-medium tracking-[0.18em] text-ink/80 uppercase transition-colors duration-300 hover:text-ink"
+                  className="group relative whitespace-nowrap text-[12px] font-normal tracking-[0.04em] text-ink/75 transition-colors duration-300 hover:text-ink"
                 >
                   {link.label}
                   <span className="absolute -bottom-1 left-0 h-px w-0 bg-gold transition-all duration-300 group-hover:w-full" />
@@ -97,11 +95,11 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
             ))}
           </ul>
 
-          <div className="relative z-[70] ml-auto flex items-center gap-3 pr-4 sm:gap-5 sm:pr-6 lg:pr-10 xl:pr-12">
+          <div className="relative z-[70] ml-auto flex items-center gap-3 pr-4 sm:gap-4 sm:pr-6 lg:pr-10">
             <button
               type="button"
               aria-label="Search"
-              className="hidden text-ink transition-colors duration-300 sm:inline-flex"
+              className="hidden text-ink/80 transition-colors duration-300 hover:text-ink sm:inline-flex"
             >
               <SearchIcon />
             </button>
@@ -112,12 +110,14 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
                 closeMenu();
                 openCart();
               }}
-              className="relative text-ink transition-colors duration-300"
+              className="relative text-ink/80 transition-colors duration-300 hover:text-ink"
             >
               <CartIcon />
-              <span className="absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 text-[9px] font-medium text-void">
-                {count}
-              </span>
+              {count > 0 && (
+                <span className="absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 text-[9px] font-medium text-void">
+                  {count}
+                </span>
+              )}
             </button>
           </div>
         </nav>
@@ -130,12 +130,12 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
 
 function SearchIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.4" />
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.3" />
       <path
         d="M20 20l-3.5-3.5"
         stroke="currentColor"
-        strokeWidth="1.4"
+        strokeWidth="1.3"
         strokeLinecap="round"
       />
     </svg>
@@ -144,17 +144,17 @@ function SearchIcon() {
 
 function CartIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path
         d="M6 7h12l-1 12H7L6 7z"
         stroke="currentColor"
-        strokeWidth="1.4"
+        strokeWidth="1.3"
         strokeLinejoin="round"
       />
       <path
         d="M9 7V5a3 3 0 016 0v2"
         stroke="currentColor"
-        strokeWidth="1.4"
+        strokeWidth="1.3"
         strokeLinecap="round"
       />
     </svg>

@@ -52,7 +52,7 @@ export function ProductCard({
   };
 
   return (
-    <article className="reveal-item group min-w-[78%] snap-start rounded-[20px] bg-card p-4 shadow-[0_8px_30px_rgba(37,37,37,0.06)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_16px_40px_rgba(37,37,37,0.1)] md:min-w-0">
+    <article className="reveal-item group min-w-[72%] snap-start md:min-w-0">
       <div className="relative">
         {productHref ? (
           <Link href={productHref} className="block">
@@ -77,40 +77,42 @@ export function ProductCard({
           type="button"
           aria-label={liked ? "Remove from wishlist" : "Add to wishlist"}
           onClick={() => setLiked((v) => !v)}
-          className="absolute top-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-card/90 text-ink backdrop-blur-sm transition-colors hover:text-gold"
+          className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-ivory/90 text-ink/70 transition-colors hover:text-gold"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
+          <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden>
             <path
               d="M12 20s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 10c0 5.5-7 10-7 10z"
               fill={liked ? "currentColor" : "none"}
               stroke="currentColor"
-              strokeWidth="1.4"
+              strokeWidth="1.3"
               strokeLinejoin="round"
             />
           </svg>
         </button>
       </div>
 
-      <div className="px-1 pb-2">
+      <div className="mt-4 px-0.5">
         {productHref ? (
           <Link href={productHref} className="block">
-            <h3 className="font-display text-xl text-ink transition-colors hover:text-gold">
+            <h3 className="font-display text-lg font-light text-ink transition-colors hover:text-gold md:text-xl">
               {name}
             </h3>
-            <p className="mt-1 text-sm text-muted">{price}</p>
+            <p className="mt-1 text-[13px] text-muted">{price}</p>
           </Link>
         ) : (
           <>
-            <h3 className="font-display text-xl text-ink">{name}</h3>
-            <p className="mt-1 text-sm text-muted">{price}</p>
+            <h3 className="font-display text-lg font-light text-ink md:text-xl">
+              {name}
+            </h3>
+            <p className="mt-1 text-[13px] text-muted">{price}</p>
           </>
         )}
         <button
           type="button"
           onClick={handleAdd}
-          className="mt-4 w-full rounded-full border border-border py-3 text-[11px] tracking-[0.16em] text-ink uppercase transition-all duration-300 hover:border-gold hover:bg-gold hover:text-void hover:shadow-[0_8px_24px_rgba(200,169,106,0.35)]"
+          className="mt-4 w-full rounded-full border border-border py-2.5 text-[10px] font-medium tracking-[0.14em] text-ink uppercase transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-ivory"
         >
-          Add to Cart
+          Add to cart
         </button>
       </div>
     </article>
@@ -132,7 +134,7 @@ function CardMedia({
 }) {
   return (
     <div
-      className={`relative mb-5 overflow-hidden rounded-[16px] bg-[#efe8dc] ${
+      className={`relative overflow-hidden rounded-2xl bg-[#efe8dc] ${
         aspect === "square" ? "aspect-square" : "aspect-[4/5]"
       }`}
     >
@@ -141,8 +143,8 @@ function CardMedia({
           src={image}
           alt={name}
           fill
-          sizes="(max-width: 768px) 78vw, 25vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          sizes="(max-width: 768px) 72vw, 25vw"
+          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           onError={onImgError}
         />
       ) : (
@@ -152,7 +154,7 @@ function CardMedia({
             alt="Kundan"
             width={120}
             height={130}
-            className="h-16 w-auto opacity-80 object-contain"
+            className="h-14 w-auto object-contain opacity-80"
           />
         </div>
       )}

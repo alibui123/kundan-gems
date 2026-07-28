@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { CATALOGS, catalogMeta, type Catalog } from "@/lib/catalogs";
+import { isLocalPublicSrc } from "@/lib/local-image";
 
 gsap.registerPlugin(useGSAP);
 
@@ -83,6 +84,7 @@ export function CatalogsShowcase() {
             fill
             priority
             sizes="100vw"
+            unoptimized={isLocalPublicSrc(meta.image)}
             className="object-cover"
             style={{ objectPosition: meta.objectPosition }}
           />
@@ -95,16 +97,16 @@ export function CatalogsShowcase() {
       <div className="container-luxury relative z-10 flex min-h-[100svh] flex-col justify-center py-24 lg:py-28">
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-10 lg:items-end">
           <div className="lg:col-span-6 xl:col-span-5">
-            <p className="cat-stage-label mb-3 text-[11px] font-medium tracking-[0.32em] text-gold uppercase">
+            <p className="cat-stage-label label-caps mb-3 text-gold">
               The catalogs
             </p>
-            <h2 className="cat-stage-label font-display text-[clamp(2.4rem,4.5vw,3.75rem)] font-light leading-[1.05] text-ivory">
+            <h2 className="cat-stage-label font-display text-[clamp(2.25rem,4.2vw,3.5rem)] font-light leading-[1.06] tracking-[-0.02em] text-ivory">
               Choose a house.
               <span className="mt-1 block italic text-gold-bright">
                 Wear the story.
               </span>
             </h2>
-            <p className="cat-stage-label mt-5 max-w-sm text-[14px] leading-[1.85] text-ivory/60">
+            <p className="cat-stage-label mt-5 max-w-sm text-[14px] leading-[1.75] text-ivory/55">
               Three named lines — bridal, high jewellery, everyday gold. Hover to
               preview, click a name to enter.
             </p>
@@ -163,13 +165,13 @@ export function CatalogsShowcase() {
             <div className="mt-10 flex flex-wrap items-center gap-6">
               <Link
                 href={`/catalogs/${meta.slug}`}
-                className="inline-flex h-[52px] items-center gap-4 rounded-full border border-gold bg-gold px-8 text-[11px] font-medium tracking-[0.22em] text-void uppercase transition-[color,background-color] duration-500 hover:bg-transparent hover:text-gold"
+                className="inline-flex h-12 items-center rounded-full bg-gold px-7 text-[11px] font-medium tracking-[0.14em] text-void uppercase transition-colors duration-300 hover:bg-ivory hover:text-ink"
               >
                 Enter {meta.title}
               </Link>
               <Link
                 href="#materials"
-                className="text-[11px] tracking-[0.2em] text-ivory/45 uppercase transition-colors hover:text-gold"
+                className="text-[11px] tracking-[0.14em] text-ivory/45 uppercase transition-colors hover:text-gold"
               >
                 Or by material
               </Link>

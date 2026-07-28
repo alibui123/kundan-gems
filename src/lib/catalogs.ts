@@ -47,44 +47,43 @@ export const catalogMeta: Record<Catalog, CatalogMeta> = {
       "Bridal sets and heirloom gold composed for Pakistani weddings — sehra-soft radiance, jhumka weight, and full-neck ceremony pieces.",
     story:
       "Mehr is affection made tangible. Polki, kundan, and warm 22K lines for mehndi, barat, and walima — jewellery that photographs like memory and travels from mother to daughter.",
-    image:
-      "https://images.unsplash.com/photo-1742891603547-950f510710d7?auto=format&fit=crop&w=2400&q=85",
-    heroImage: "/catalogs/mehr-hero.jpg",
-    secondaryImage:
-      "https://images.unsplash.com/photo-1762709414326-67c887a8dc98?auto=format&fit=crop&w=1000&q=85",
+    image: "/catalogs/mehr/homepage.jpg",
+    heroImage: "/catalogs/mehr/hero.jpg",
+    secondaryImage: "/catalogs/mehr/bridal-dress.jpg",
     accent: "from-rose-900/40 via-void/20 to-transparent",
-    objectPosition: "58% 18%",
-    heroObjectPosition: "50% 20%",
+    objectPosition: "50% 18%",
+    heroObjectPosition: "50% 22%",
     scenes: [
       {
-        image:
-          "https://images.unsplash.com/photo-1742891602044-7fdc0a9839ad?auto=format&fit=crop&w=1400&q=85",
-        objectPosition: "50% 18%",
+        image: "/catalogs/mehr/01.jpg",
+        objectPosition: "50% 12%",
         caption: "Mehndi hour",
         title: "Gold that holds the ceremony",
         body: "Layered haar, nath, and choora — composed for the first photographs of the day, when henna is still dark and light is soft.",
       },
       {
-        image:
-          "https://images.unsplash.com/photo-1769500802040-528612c67eed?auto=format&fit=crop&w=1400&q=85",
-        objectPosition: "48% 20%",
+        image: "/catalogs/mehr/03.jpg",
+        objectPosition: "50% 18%",
         caption: "Barat light",
         title: "Presence without noise",
         body: "Statement sets that read clearly in motion — full neck, strong silhouette, warm 22K that photographs as heirloom.",
       },
       {
-        image:
-          "https://images.unsplash.com/photo-1717341829793-7dd4390e59e7?auto=format&fit=crop&w=1400&q=85",
-        objectPosition: "55% 18%",
+        image: "/catalogs/mehr/05.jpg",
+        objectPosition: "48% 20%",
         caption: "Walima evening",
         title: "After the vows",
         body: "Softer layers for the second night — still bridal, still Kundan, ready to travel from one generation to the next.",
       },
     ],
     gallery: [
-      "https://images.unsplash.com/photo-1762709414326-67c887a8dc98?auto=format&fit=crop&w=900&q=85",
-      "https://images.unsplash.com/photo-1742891603547-950f510710d7?auto=format&fit=crop&w=900&q=85",
-      "https://images.unsplash.com/photo-1779253688787-7d860ad39fe0?auto=format&fit=crop&w=900&q=85",
+      "/catalogs/mehr/bride.jpg",
+      "/catalogs/mehr/07.jpg",
+      "/catalogs/mehr/bridal-dress.jpg",
+      "/catalogs/mehr/02.jpg",
+      "/catalogs/mehr/04.jpg",
+      "/catalogs/mehr/06.jpg",
+      "/catalogs/mehr/08.jpg",
     ],
   },
   noor: {

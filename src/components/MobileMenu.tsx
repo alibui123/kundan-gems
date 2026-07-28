@@ -140,7 +140,7 @@ function NestedItem({
             aria-expanded={expanded}
             onClick={() => onExpand(expanded ? null : node.id)}
           >
-            <span className="font-display text-[clamp(1.35rem,2vw,1.65rem)] font-light leading-none tracking-[-0.02em] text-ink transition-colors group-hover:text-brown">
+            <span className="font-display text-[clamp(1.4rem,2vw,1.75rem)] font-light leading-none tracking-[-0.02em] text-ink transition-colors group-hover:text-gold">
               {node.label}
             </span>
             <span
@@ -158,7 +158,7 @@ function NestedItem({
             onClick={onClose}
             className="flex min-w-0 flex-1 items-center justify-between"
           >
-            <span className="font-display text-[clamp(1.35rem,2vw,1.65rem)] font-light leading-none tracking-[-0.02em] text-ink transition-colors group-hover:text-brown">
+            <span className="font-display text-[clamp(1.4rem,2vw,1.75rem)] font-light leading-none tracking-[-0.02em] text-ink transition-colors group-hover:text-gold">
               {node.label}
             </span>
           </Link>
@@ -340,17 +340,15 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
         aria-modal="true"
         aria-label="Site menu"
       >
-        <div className="h-[72px] shrink-0 lg:h-20" aria-hidden />
+        <div className="h-16 shrink-0 lg:h-[4.25rem]" aria-hidden />
 
         <div className="relative flex flex-1 flex-col px-5 pb-8 pt-2 sm:px-6">
           <div className="mb-5">
-            <p className="text-[10px] tracking-[0.28em] text-gold uppercase">
-              Maison menu
-            </p>
-            <p className="mt-2 font-display text-2xl font-light tracking-[0.16em] text-ink uppercase">
+            <p className="label-caps">Menu</p>
+            <p className="mt-2 font-display text-2xl font-light tracking-[0.12em] text-ink uppercase">
               {brand.name}
             </p>
-            <p className="mt-2 text-[11px] leading-relaxed text-muted">
+            <p className="mt-2 text-[12px] leading-relaxed text-muted">
               Hover a chapter to open its rooms.
             </p>
           </div>

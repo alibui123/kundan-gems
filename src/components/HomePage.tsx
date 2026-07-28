@@ -7,16 +7,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
-import { BrandPromise } from "@/components/BrandPromise";
 import { FeaturedCollections } from "@/components/FeaturedCollections";
 import { CatalogsShowcase } from "@/components/CatalogsShowcase";
 import { MaterialsShowcase } from "@/components/MaterialsShowcase";
 import { NewArrivals } from "@/components/NewArrivals";
-import { SignatureCollection } from "@/components/SignatureCollection";
 import { BestSellers } from "@/components/BestSellers";
-import { Craftsmanship } from "@/components/Craftsmanship";
-import { Testimonials } from "@/components/Testimonials";
-import { InstagramGallery } from "@/components/InstagramGallery";
+import { AtelierPromise } from "@/components/AtelierPromise";
 import { Newsletter } from "@/components/Newsletter";
 import { Footer } from "@/components/Footer";
 
@@ -42,46 +38,26 @@ export function HomePage({
         },
         (context) => {
           const { reduceMotion } = context.conditions!;
-
           if (reduceMotion) return;
 
-          // ——— Hero entrance / ambient motion is handled inside Hero ———
-
-          // ——— Curtain reveal into boutique ———
-          gsap.fromTo(
-            ".boutique",
-            { opacity: 0.45 },
-            {
-              opacity: 1,
-              ease: "none",
-              scrollTrigger: {
-                trigger: ".boutique",
-                start: "top bottom",
-                end: "top 25%",
-                scrub: 1,
-              },
-            }
-          );
-
-          // ——— Section reveals: set → to (never leave items stuck hidden) ———
           const revealItems = gsap.utils.toArray<HTMLElement>(".reveal-item");
           const revealImages = gsap.utils.toArray<HTMLElement>(".reveal-image");
 
-          gsap.set(revealItems, { opacity: 0, y: 40 });
-          gsap.set(revealImages, { opacity: 0, scale: 1.06 });
+          gsap.set(revealItems, { opacity: 0, y: 28 });
+          gsap.set(revealImages, { opacity: 0, y: 20 });
 
           ScrollTrigger.batch(revealItems, {
-            start: "top 92%",
+            start: "top 90%",
             once: true,
-            interval: 0.12,
+            interval: 0.1,
             batchMax: 8,
             onEnter: (batch) => {
               gsap.to(batch, {
                 opacity: 1,
                 y: 0,
-                duration: 0.8,
+                duration: 0.7,
                 ease: "power2.out",
-                stagger: 0.1,
+                stagger: 0.08,
                 overwrite: true,
                 clearProps: "transform",
               });
@@ -89,13 +65,13 @@ export function HomePage({
           });
 
           ScrollTrigger.batch(revealImages, {
-            start: "top 90%",
+            start: "top 88%",
             once: true,
             onEnter: (batch) => {
               gsap.to(batch, {
                 opacity: 1,
-                scale: 1,
-                duration: 1.1,
+                y: 0,
+                duration: 0.85,
                 ease: "power2.out",
                 overwrite: true,
                 clearProps: "transform",
@@ -103,7 +79,6 @@ export function HomePage({
             },
           });
 
-          // Safety: if a batch never fires (layout edge case), force visible
           const safety = window.setTimeout(() => {
             revealItems.forEach((el) => {
               if (getComputedStyle(el).opacity === "0") {
@@ -112,32 +87,11 @@ export function HomePage({
             });
             revealImages.forEach((el) => {
               if (getComputedStyle(el).opacity === "0") {
-                gsap.set(el, { opacity: 1, scale: 1, clearProps: "transform" });
+                gsap.set(el, { opacity: 1, y: 0, clearProps: "transform" });
               }
             });
-          }, 2500);
+          }, 2200);
 
-          // Parallax on editorial images
-          revealImages.forEach((wrap) => {
-            const img = wrap.querySelector("img");
-            if (!img) return;
-            gsap.fromTo(
-              img,
-              { yPercent: -5 },
-              {
-                yPercent: 5,
-                ease: "none",
-                scrollTrigger: {
-                  trigger: wrap,
-                  start: "top bottom",
-                  end: "bottom top",
-                  scrub: true,
-                },
-              }
-            );
-          });
-
-          // Recalc after images/fonts settle (Lenis + Next Image)
           const refresh = () => ScrollTrigger.refresh();
           window.addEventListener("load", refresh);
           const raf = requestAnimationFrame(() => {
@@ -163,17 +117,13 @@ export function HomePage({
       <div ref={rootRef} className="relative">
         <Navigation />
         <Hero />
-        <div className="boutique relative z-10 bg-ivory pb-20 md:pb-0">
+        <div className="boutique relative z-10 bg-ivory">
           <CatalogsShowcase />
           <MaterialsShowcase />
           <FeaturedCollections />
           <NewArrivals products={newArrivals} />
           <BestSellers products={bestSellers} />
-          <BrandPromise />
-          <SignatureCollection />
-          <Craftsmanship />
-          <Testimonials />
-          <InstagramGallery />
+          <AtelierPromise />
           <Newsletter />
           <Footer />
         </div>
