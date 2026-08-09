@@ -1,23 +1,27 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Sora:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@300;400;500;600&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --color-void: #0c0b0a;
-  --color-ivory: #f7f3ec;
-  --color-card: #fbf9f5;
-  --color-gold: #b8955a;
-  --color-gold-bright: #c9a86e;
-  --color-ink: #1c1917;
-  --color-muted: #7a7470;
-  --color-border: #e5dccf;
-  --color-brown: #2a2118;
+  --color-void: #0e0c0a;
+  --color-ivory: #ffffff;
+  --color-card: #ffffff;
+  --color-stone: #ffffff;
+  --color-gold: #b89a5e;
+  --color-gold-bright: #cbb07a;
+  --color-ink: #1a1714;
+  --color-muted: #6b6560;
+  --color-border: #e8e8e8;
+  --color-brown: #2a2218;
+  /* Kept for material ruby accents only */
+  --color-lacquer: #5c2a32;
+  --color-chalk: #ffffff;
 
-  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
-  --font-body: "Sora", system-ui, sans-serif;
+  --font-display: "Italiana", "Times New Roman", Georgia, serif;
+  --font-body: "Manrope", system-ui, sans-serif;
 
-  --shadow-soft: 0 12px 32px rgba(28, 25, 23, 0.06);
-  --shadow-lift: 0 18px 40px rgba(28, 25, 23, 0.09);
-  --shadow-gold: 0 8px 20px rgba(184, 149, 90, 0.22);
+  --shadow-soft: 0 10px 28px rgba(14, 12, 10, 0.05);
+  --shadow-lift: 0 16px 36px rgba(14, 12, 10, 0.08);
+  --shadow-gold: 0 8px 20px rgba(184, 154, 94, 0.18);
 }
 
 @layer base {
@@ -48,20 +52,26 @@
     font-family: var(--font-body);
     font-weight: 300;
     font-size: 15px;
-    line-height: 1.65;
+    line-height: 1.7;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--color-gold) 35%, transparent);
+    background: color-mix(in srgb, var(--color-gold) 32%, transparent);
     color: var(--color-ink);
   }
 
   img {
     max-width: 100%;
     height: auto;
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 1px solid var(--color-gold);
+    outline-offset: 3px;
   }
 }
 
@@ -76,7 +86,7 @@
 
   .container-luxury {
     width: 100%;
-    max-width: 1280px;
+    max-width: 1320px;
     margin-inline: auto;
     padding-inline: 20px;
   }
@@ -89,17 +99,17 @@
 
   @media (min-width: 1024px) {
     .container-luxury {
-      padding-inline: 64px;
+      padding-inline: 56px;
     }
   }
 
   .section-y {
-    padding-block: 4.5rem;
+    padding-block: 5rem;
   }
 
   @media (min-width: 768px) {
     .section-y {
-      padding-block: 6.5rem;
+      padding-block: 7rem;
     }
   }
 
@@ -107,7 +117,7 @@
     font-family: var(--font-body);
     font-size: 10px;
     font-weight: 500;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--color-gold);
   }
@@ -118,13 +128,9 @@
 
   .gold-divider {
     height: 1px;
-    width: 40px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--color-gold),
-      transparent
-    );
+    width: 48px;
+    background: var(--color-gold);
+    opacity: 0.7;
   }
 
   .scrollbar-none {
@@ -136,16 +142,13 @@
     display: none;
   }
 
-  /* Catalog lookbook — floated print frames */
   .lb-frame {
-    filter: drop-shadow(0 16px 28px rgba(28, 25, 23, 0.12))
-      drop-shadow(0 4px 10px rgba(28, 25, 23, 0.06));
+    filter: drop-shadow(0 16px 28px rgba(14, 12, 10, 0.1));
     transition: filter 0.45s ease, transform 0.45s ease;
   }
 
   .lb-frame:hover {
-    filter: drop-shadow(0 22px 36px rgba(28, 25, 23, 0.16))
-      drop-shadow(0 6px 14px rgba(184, 149, 90, 0.1));
+    filter: drop-shadow(0 22px 36px rgba(14, 12, 10, 0.14));
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -155,11 +158,8 @@
   }
 }
 
-/* Custom logo loader — colour fills upward over the grayscale mark */
 @keyframes kundan-logo-fill {
-  0% {
-    clip-path: inset(100% 0 0 0);
-  }
+  0%,
   12% {
     clip-path: inset(100% 0 0 0);
   }

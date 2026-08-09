@@ -58,8 +58,7 @@ export const materialMeta: Record<
       "Brilliant cuts and quiet pavé — diamond pieces composed for heirloom radiance.",
     story:
       "Cut for silence as much as sparkle. Our diamonds are chosen for proportion and fire — set so light seems to rest inside the piece rather than shout from it.",
-    image:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1400&q=90",
+    image: "/materials/diamond/river-of-lights.png",
     secondaryImage:
       "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=900&q=90",
     accent: "from-white/20 via-gold/10 to-transparent",
@@ -226,6 +225,33 @@ function mapProduct(row: Record<string, unknown>): Product {
   };
 }
 
+function logProductQueryError(scope: string, error: unknown) {
+  const message =
+    error instanceof Error
+      ? error.message
+      : typeof error === "object" &&
+          error &&
+          "message" in error &&
+          typeof (error as { message: unknown }).message === "string"
+        ? (error as { message: string }).message
+        : String(error);
+
+  const unreachable =
+    /fetch failed|Failed to fetch|ENOTFOUND|ECONNREFUSED|ECONNRESET|ETIMEDOUT|network/i.test(
+      message
+    );
+
+  if (unreachable) {
+    // Network/DNS outages (paused or deleted project) — warn, don't trip the error overlay.
+    console.warn(
+      `[${scope}] Supabase unreachable (${message}). Restore/unpause the project and confirm NEXT_PUBLIC_SUPABASE_URL resolves.`
+    );
+    return;
+  }
+
+  console.error(`[${scope}]`, message);
+}
+
 export async function getProducts(filters?: {
   material?: Material;
   category?: Category;
@@ -235,34 +261,39 @@ export async function getProducts(filters?: {
   isSignature?: boolean;
   limit?: number;
 }) {
-  const supabase = createAnonClient();
-  let query = supabase.from("products").select("*").eq("active", true);
+  try {
+    const supabase = createAnonClient();
+    let query = supabase.from("products").select("*").eq("active", true);
 
-  if (filters?.material) query = query.eq("material", filters.material);
-  if (filters?.category) query = query.eq("category", filters.category);
-  if (filters?.catalog) query = query.eq("catalog", filters.catalog);
-  if (filters?.isNew) query = query.eq("is_new", true);
-  if (filters?.isBestseller) query = query.eq("is_bestseller", true);
-  if (filters?.isSignature) query = query.eq("is_signature", true);
+    if (filters?.material) query = query.eq("material", filters.material);
+    if (filters?.category) query = query.eq("category", filters.category);
+    if (filters?.catalog) query = query.eq("catalog", filters.catalog);
+    if (filters?.isNew) query = query.eq("is_new", true);
+    if (filters?.isBestseller) query = query.eq("is_bestseller", true);
+    if (filters?.isSignature) query = query.eq("is_signature", true);
 
-  if (filters?.isNew) {
-    query = query
-      .order("new_arrival_rank", { ascending: true, nullsFirst: false })
-      .order("created_at", { ascending: false });
-  } else {
-    query = query
-      .order("sort_order", { ascending: true })
-      .order("created_at", { ascending: false });
-  }
+    if (filters?.isNew) {
+      query = query
+        .order("new_arrival_rank", { ascending: true, nullsFirst: false })
+        .order("created_at", { ascending: false });
+    } else {
+      query = query
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false });
+    }
 
-  if (filters?.limit) query = query.limit(filters.limit);
+    if (filters?.limit) query = query.limit(filters.limit);
 
-  const { data, error } = await query;
-  if (error) {
-    console.error("getProducts:", error.message);
+    const { data, error } = await query;
+    if (error) {
+      logProductQueryError("getProducts", error);
+      return [];
+    }
+    return (data ?? []).map(mapProduct);
+  } catch (error) {
+    logProductQueryError("getProducts", error);
     return [];
   }
-  return (data ?? []).map(mapProduct);
 }
 
 /** Products flagged `is_new`, ordered by `new_arrival_rank`. */
@@ -271,20 +302,25 @@ export async function getNewArrivals(limit?: number) {
 }
 
 export async function getProductBySlug(category: Category, slug: string) {
-  const supabase = createAnonClient();
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .eq("active", true)
-    .eq("category", category)
-    .eq("slug", slug)
-    .maybeSingle();
+  try {
+    const supabase = createAnonClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("active", true)
+      .eq("category", category)
+      .eq("slug", slug)
+      .maybeSingle();
 
-  if (error) {
-    console.error("getProductBySlug:", error.message);
+    if (error) {
+      logProductQueryError("getProductBySlug", error);
+      return null;
+    }
+    return data ? mapProduct(data) : null;
+  } catch (error) {
+    logProductQueryError("getProductBySlug", error);
     return null;
   }
-  return data ? mapProduct(data) : null;
 }
 
 export async function getProductsPage(
@@ -312,8 +348,8 @@ export async function getProductsPage(
     .range(from, to);
 
   if (error) {
-    console.error("getProductsPage:", error.message);
-    return {
+      logProductQueryError("getProductsPage", error);
+      return {
       items: [] as Product[],
       page: 1,
       totalPages: 1,
@@ -352,34 +388,39 @@ export type BestsellerProduct = Product & {
 
 /** Ranked best sellers from the `bestsellers` table (future: driven by purchases). */
 export async function getBestsellers(limit?: number): Promise<BestsellerProduct[]> {
-  const supabase = createAnonClient();
-  let query = supabase
-    .from("bestsellers")
-    .select("rank, units_sold, products(*)")
-    .eq("active", true)
-    .order("rank", { ascending: true });
+  try {
+    const supabase = createAnonClient();
+    let query = supabase
+      .from("bestsellers")
+      .select("rank, units_sold, products(*)")
+      .eq("active", true)
+      .order("rank", { ascending: true });
 
-  if (limit) query = query.limit(limit);
+    if (limit) query = query.limit(limit);
 
-  const { data, error } = await query;
-  if (error) {
-    console.error("getBestsellers:", error.message);
+    const { data, error } = await query;
+    if (error) {
+      logProductQueryError("getBestsellers", error);
+      return [];
+    }
+
+    return (data ?? [])
+      .map((row) => {
+        const productRow = Array.isArray(row.products)
+          ? row.products[0]
+          : row.products;
+        if (!productRow || typeof productRow !== "object") return null;
+        const product = mapProduct(productRow as Record<string, unknown>);
+        if (!product.active) return null;
+        return {
+          ...product,
+          rank: Number(row.rank),
+          units_sold: Number(row.units_sold ?? 0),
+        };
+      })
+      .filter((p): p is BestsellerProduct => p !== null);
+  } catch (error) {
+    logProductQueryError("getBestsellers", error);
     return [];
   }
-
-  return (data ?? [])
-    .map((row) => {
-      const productRow = Array.isArray(row.products)
-        ? row.products[0]
-        : row.products;
-      if (!productRow || typeof productRow !== "object") return null;
-      const product = mapProduct(productRow as Record<string, unknown>);
-      if (!product.active) return null;
-      return {
-        ...product,
-        rank: Number(row.rank),
-        units_sold: Number(row.units_sold ?? 0),
-      };
-    })
-    .filter((p): p is BestsellerProduct => p !== null);
 }

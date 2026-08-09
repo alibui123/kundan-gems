@@ -7,11 +7,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
-import { FeaturedCollections } from "@/components/FeaturedCollections";
+import { BrowseIndex } from "@/components/BrowseIndex";
 import { CatalogsShowcase } from "@/components/CatalogsShowcase";
 import { MaterialsShowcase } from "@/components/MaterialsShowcase";
-import { NewArrivals } from "@/components/NewArrivals";
-import { BestSellers } from "@/components/BestSellers";
+import { FeaturedCollections } from "@/components/FeaturedCollections";
+import { MaisonEdit } from "@/components/MaisonEdit";
 import { AtelierPromise } from "@/components/AtelierPromise";
 import { Newsletter } from "@/components/Newsletter";
 import { Footer } from "@/components/Footer";
@@ -43,8 +43,8 @@ export function HomePage({
           const revealItems = gsap.utils.toArray<HTMLElement>(".reveal-item");
           const revealImages = gsap.utils.toArray<HTMLElement>(".reveal-image");
 
-          gsap.set(revealItems, { opacity: 0, y: 28 });
-          gsap.set(revealImages, { opacity: 0, y: 20 });
+          gsap.set(revealItems, { opacity: 0, y: 24 });
+          gsap.set(revealImages, { opacity: 0, y: 18 });
 
           ScrollTrigger.batch(revealItems, {
             start: "top 90%",
@@ -55,9 +55,9 @@ export function HomePage({
               gsap.to(batch, {
                 opacity: 1,
                 y: 0,
-                duration: 0.7,
+                duration: 0.75,
                 ease: "power2.out",
-                stagger: 0.08,
+                stagger: 0.07,
                 overwrite: true,
                 clearProps: "transform",
               });
@@ -71,7 +71,7 @@ export function HomePage({
               gsap.to(batch, {
                 opacity: 1,
                 y: 0,
-                duration: 0.85,
+                duration: 0.9,
                 ease: "power2.out",
                 overwrite: true,
                 clearProps: "transform",
@@ -117,12 +117,12 @@ export function HomePage({
       <div ref={rootRef} className="relative">
         <Navigation />
         <Hero />
-        <div className="boutique relative z-10 bg-ivory">
+        <div className="boutique relative z-10 bg-white">
+          <BrowseIndex />
           <CatalogsShowcase />
           <MaterialsShowcase />
           <FeaturedCollections />
-          <NewArrivals products={newArrivals} />
-          <BestSellers products={bestSellers} />
+          <MaisonEdit newArrivals={newArrivals} bestSellers={bestSellers} />
           <AtelierPromise />
           <Newsletter />
           <Footer />

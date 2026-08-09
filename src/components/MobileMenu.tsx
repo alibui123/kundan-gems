@@ -403,7 +403,7 @@ export function MenuToggle({
       aria-label={open ? "Close menu" : "Open menu"}
       aria-expanded={open}
       onClick={onClick}
-      className={`relative z-[70] flex h-11 w-11 items-center justify-center text-ink ${className}`}
+      className={`relative z-[70] flex h-11 w-11 items-center justify-center ${className || "text-ink"}`}
     >
       <span className="relative block h-[14px] w-[22px]" aria-hidden>
         <span

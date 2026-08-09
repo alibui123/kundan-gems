@@ -45,11 +45,16 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
   const resolveHref = (link: (typeof homeLinks)[number]) => {
     if (link.label === "Catalogs") return isHome ? "#catalogs" : "/#catalogs";
     if (link.label === "Materials") return isHome ? "#materials" : "/#materials";
-    if (link.label === "Best Sellers") return "/collections/best-sellers";
-    if (link.label === "New Arrivals") return "/collections/new-arrivals";
+    if (link.label === "Forms") return isHome ? "#collections" : "/#collections";
+    if (link.label === "The Edit") return isHome ? "#the-edit" : "/#the-edit";
+    if (link.label === "Atelier") return isHome ? "#atelier" : "/#atelier";
     if (link.href === "#") return "/";
     return link.href;
   };
+
+  // Home hero is a light ivory stage — keep ink chrome always.
+  const linkTone = "text-ink/75 hover:text-ink";
+  const iconTone = "text-ink/80 hover:text-ink";
 
   const menuLinks = homeLinks.map((link) => ({
     label: link.label,
@@ -69,7 +74,7 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
       >
         <nav className="relative flex h-16 w-full items-center lg:h-[4.25rem]">
           <div className="relative z-[70] flex shrink-0 items-center self-stretch pl-1 sm:pl-2">
-            <MenuToggle open={open} onClick={toggleMenu} />
+            <MenuToggle open={open} onClick={toggleMenu} className="text-ink" />
           </div>
 
           <Link
@@ -86,7 +91,7 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
               <li key={link.label}>
                 <Link
                   href={resolveHref(link)}
-                  className="group relative whitespace-nowrap text-[12px] font-normal tracking-[0.04em] text-ink/75 transition-colors duration-300 hover:text-ink"
+                  className={`group relative whitespace-nowrap text-[12px] font-normal tracking-[0.04em] transition-colors duration-300 ${linkTone}`}
                 >
                   {link.label}
                   <span className="absolute -bottom-1 left-0 h-px w-0 bg-gold transition-all duration-300 group-hover:w-full" />
@@ -99,7 +104,7 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
             <button
               type="button"
               aria-label="Search"
-              className="hidden text-ink/80 transition-colors duration-300 hover:text-ink sm:inline-flex"
+              className={`hidden transition-colors duration-300 sm:inline-flex ${iconTone}`}
             >
               <SearchIcon />
             </button>
@@ -110,7 +115,7 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
                 closeMenu();
                 openCart();
               }}
-              className="relative text-ink/80 transition-colors duration-300 hover:text-ink"
+              className={`relative transition-colors duration-300 ${iconTone}`}
             >
               <CartIcon />
               {count > 0 && (

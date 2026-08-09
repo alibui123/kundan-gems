@@ -47,29 +47,31 @@ const icons = {
   ),
 };
 
-/** Collapsed atelier section — promise ribbon + short craft story. */
 export function AtelierPromise() {
   return (
-    <section id="atelier" className="section-y border-t border-border bg-ivory">
+    <section
+      id="atelier"
+      className="section-y relative overflow-hidden bg-ivory"
+    >
       <div className="container-luxury">
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="reveal-item lg:col-span-5">
             <p className="label-caps mb-3">Atelier</p>
-            <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-light leading-[1.08] tracking-[-0.02em] text-ink">
+            <h2 className="font-display text-[clamp(2.2rem,4vw,3.25rem)] leading-[1.1] tracking-[0.01em] text-ink">
               Craft without compromise
             </h2>
             <p className="mt-5 max-w-md text-[15px] leading-[1.75] text-muted">
               From first sketch to final polish, every piece travels a quiet path
               of obsession — measured in hours, worn for generations.
             </p>
-            <ol className="mt-10 space-y-6">
+            <ol className="mt-10 space-y-7">
               {craftSteps.slice(0, 3).map((step) => (
                 <li key={step.step} className="reveal-item flex gap-4">
-                  <span className="font-display text-sm text-gold tabular-nums">
+                  <span className="font-display text-sm tracking-wide text-gold">
                     {step.step}
                   </span>
                   <div>
-                    <h3 className="font-display text-xl font-light text-ink">
+                    <h3 className="font-display text-xl tracking-[0.01em] text-ink">
                       {step.title}
                     </h3>
                     <p className="mt-1 text-[13px] leading-relaxed text-muted">
@@ -81,7 +83,7 @@ export function AtelierPromise() {
             </ol>
           </div>
 
-          <div className="reveal-image relative aspect-[4/5] overflow-hidden rounded-2xl lg:col-span-7 lg:aspect-[5/4]">
+          <div className="reveal-image relative aspect-[4/5] overflow-hidden bg-stone lg:col-span-7 lg:aspect-[5/4]">
             <Image
               src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&fit=crop&w=1400&q=85"
               alt="Jeweller crafting a fine piece by hand"
@@ -104,7 +106,7 @@ export function AtelierPromise() {
                 </svg>
               </span>
               <div>
-                <h3 className="font-display text-lg font-light text-ink">
+                <h3 className="font-display text-lg tracking-[0.01em] text-ink">
                   {item.title}
                 </h3>
                 <p className="mt-1 text-[13px] leading-relaxed text-muted">

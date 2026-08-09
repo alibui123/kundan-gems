@@ -1,45 +1,22 @@
 "use client";
 
 import Image from "next/image";
+import { motion, useReducedMotion } from "motion/react";
 import { useCallback, useRef, type MouseEvent } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import { brand } from "@/lib/data";
-import { BrandLogo } from "@/components/BrandLogo";
-
-gsap.registerPlugin(useGSAP);
 
 const NAV_OFFSET = 72;
+/** Studio mockup — Pakistani gold jewellery, light ground for seamless blend */
+const HERO_MODEL = "/hero/blend-model-gold.png";
 
-const PIECES = [
-  {
-    id: "main",
-    src: "https://images.unsplash.com/photo-1680068099049-0263ffbcefd8?auto=format&fit=crop&w=1600&q=90",
-    alt: "Gold and diamond necklace",
-    className:
-      "hero-piece absolute left-[8%] top-[10%] h-[74%] w-[74%] sm:left-[10%] sm:top-[8%] sm:h-[78%] sm:w-[78%]",
-  },
-  {
-    id: "ring",
-    src: "https://images.unsplash.com/photo-1718312267215-58bbba315a15?auto=format&fit=crop&w=1000&q=90",
-    alt: "Pearl and gold strands",
-    className:
-      "hero-piece absolute right-[0%] top-[6%] h-[34%] w-[38%] sm:right-[2%] sm:top-[10%] sm:h-[34%] sm:w-[36%]",
-  },
-  {
-    id: "side",
-    src: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=1000&q=90",
-    alt: "Gold bracelet stack",
-    className:
-      "hero-piece absolute bottom-[6%] left-[4%] h-[28%] w-[38%] sm:bottom-[10%] sm:left-[6%] sm:h-[28%] sm:w-[34%]",
-  },
-] as const;
-
-/** Brand-first landing — quiet motion, clear CTA. */
+/**
+ * Aurélia-style maison hero: ivory stage, left copy, right model
+ * blended into the background (no framed photo box).
+ */
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const mediaRef = useRef<HTMLDivElement>(null);
   const scrollingRef = useRef(false);
+  const reduce = useReducedMotion();
 
   const getLenis = () =>
     (
@@ -47,12 +24,7 @@ export function Hero() {
         __lenis?: {
           scrollTo: (
             target: number | string | HTMLElement,
-            opts?: {
-              immediate?: boolean;
-              offset?: number;
-              duration?: number;
-              onComplete?: () => void;
-            }
+            opts?: { duration?: number; onComplete?: () => void }
           ) => void;
         };
       }
@@ -80,7 +52,7 @@ export function Hero() {
 
       const lenis = getLenis();
       if (lenis) {
-        lenis.scrollTo(y, { duration: 1.1, onComplete: finish });
+        lenis.scrollTo(y, { duration: 1.05, onComplete: finish });
         window.setTimeout(() => {
           if (scrollingRef.current) finish();
         }, 1500);
@@ -92,235 +64,126 @@ export function Hero() {
     []
   );
 
-  useGSAP(
-    () => {
-      const reduce = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
-
-      gsap.set(".hero-brand", { autoAlpha: 0, y: 20 });
-      gsap.set(".hero-rule", { scaleX: 0 });
-      gsap.set(
-        [".hero-eyebrow", ".hero-line", ".hero-support", ".hero-cta"],
-        { autoAlpha: 0, y: 14 }
-      );
-      gsap.set(".hero-piece", { autoAlpha: 0, scale: 0.96 });
-
-      if (reduce) {
-        gsap.set(
-          [
-            ".hero-brand",
-            ".hero-rule",
-            ".hero-eyebrow",
-            ".hero-line",
-            ".hero-support",
-            ".hero-cta",
-            ".hero-piece",
-          ],
-          { clearProps: "all" }
-        );
-        return;
-      }
-
-      const entrance = gsap.timeline({ defaults: { ease: "power3.out" } });
-
-      entrance
-        .to(".hero-eyebrow", { autoAlpha: 1, y: 0, duration: 0.7 }, 0.1)
-        .to(".hero-brand", { autoAlpha: 1, y: 0, duration: 1 }, 0.22)
-        .to(
-          ".hero-rule",
-          { scaleX: 1, duration: 0.8, ease: "power2.inOut" },
-          0.5
-        )
-        .to(".hero-line", { autoAlpha: 1, y: 0, duration: 0.75 }, 0.65)
-        .to(".hero-support", { autoAlpha: 1, y: 0, duration: 0.7 }, 0.78)
-        .to(".hero-cta", { autoAlpha: 1, y: 0, duration: 0.65 }, 0.92)
-        .to(
-          ".hero-piece-main",
-          { autoAlpha: 1, scale: 1, duration: 1.15, ease: "power2.out" },
-          0.28
-        )
-        .to(
-          ".hero-piece-ring",
-          { autoAlpha: 1, scale: 1, duration: 0.95, ease: "power2.out" },
-          0.5
-        )
-        .to(
-          ".hero-piece-side",
-          { autoAlpha: 1, scale: 1, duration: 0.95, ease: "power2.out" },
-          0.65
-        );
-
-      gsap.to(".hero-float-main", {
-        y: -10,
-        duration: 5.5,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      });
-      gsap.to(".hero-float-ring", {
-        y: 8,
-        duration: 4.4,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      });
-      gsap.to(".hero-float-side", {
-        y: -8,
-        duration: 5.8,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      });
-
-      const media = mediaRef.current;
-      if (!media) return;
-
-      const qxMain = gsap.quickTo(".hero-piece-main", "x", {
-        duration: 0.9,
-        ease: "power2.out",
-      });
-      const qyMain = gsap.quickTo(".hero-piece-main", "y", {
-        duration: 0.9,
-        ease: "power2.out",
-      });
-      const qxRing = gsap.quickTo(".hero-piece-ring", "x", {
-        duration: 1,
-        ease: "power2.out",
-      });
-      const qyRing = gsap.quickTo(".hero-piece-ring", "y", {
-        duration: 1,
-        ease: "power2.out",
-      });
-      const qxSide = gsap.quickTo(".hero-piece-side", "x", {
-        duration: 1.05,
-        ease: "power2.out",
-      });
-      const qySide = gsap.quickTo(".hero-piece-side", "y", {
-        duration: 1.05,
-        ease: "power2.out",
-      });
-
-      const onMove = (e: globalThis.MouseEvent) => {
-        const rect = media.getBoundingClientRect();
-        const nx = (e.clientX - rect.left) / rect.width - 0.5;
-        const ny = (e.clientY - rect.top) / rect.height - 0.5;
-        qxMain(nx * 12);
-        qyMain(ny * 8);
-        qxRing(nx * -16);
-        qyRing(ny * 10);
-        qxSide(nx * 10);
-        qySide(ny * -8);
-      };
-
-      const onLeave = () => {
-        qxMain(0);
-        qyMain(0);
-        qxRing(0);
-        qyRing(0);
-        qxSide(0);
-        qySide(0);
-      };
-
-      media.addEventListener("mousemove", onMove);
-      media.addEventListener("mouseleave", onLeave);
-      return () => {
-        media.removeEventListener("mousemove", onMove);
-        media.removeEventListener("mouseleave", onLeave);
-      };
-    },
-    { scope: sectionRef }
-  );
+  const ease = [0.22, 1, 0.36, 1] as const;
 
   return (
     <section
       ref={sectionRef}
       id="hero"
-      className="hero relative h-[100svh] overflow-hidden bg-ivory"
-      aria-label={`${brand.name} — Crafted for forever`}
+      className="hero relative min-h-[100svh] overflow-hidden bg-white"
+      aria-label={`${brand.name} — Embrace timeless brilliance`}
     >
-      <div className="flex h-full flex-col lg:flex-row">
-        <div className="relative z-10 flex w-full shrink-0 flex-col justify-center px-5 py-10 md:px-12 lg:w-[44%] lg:px-16 lg:py-16 xl:w-[42%] xl:pl-20 xl:pr-10">
-          <div className="max-w-md">
-            <p className="hero-eyebrow label-caps">Maison de joaillerie</p>
+      {/* Soft ambient wash — keeps the studio field alive */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        aria-hidden
+        style={{
+          background:
+            "radial-gradient(ellipse 55% 70% at 78% 45%, rgba(255,255,255,0.55) 0%, transparent 70%)",
+        }}
+      />
 
-            <div className="hero-brand mt-5 lg:mt-6">
-              <BrandLogo size="hero" priority className="mb-3 sm:mb-4" />
-              <p className="font-display text-[clamp(2.75rem,6.5vw,5.5rem)] font-light leading-[0.92] tracking-[0.14em] text-ink uppercase">
-                {brand.name}
-              </p>
-            </div>
+      <div className="relative z-10 mx-auto grid min-h-[100svh] max-w-[1440px] items-center lg:grid-cols-12">
+        {/* Copy — left */}
+        <div className="relative z-20 flex flex-col justify-center px-6 pt-28 pb-10 sm:px-10 md:px-14 lg:col-span-5 lg:px-16 lg:pt-24 lg:pb-20 xl:pl-20">
+          <motion.p
+            className="label-caps mb-5 text-gold"
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease, delay: 0.1 }}
+          >
+            {brand.name} · Fine jewellery
+          </motion.p>
 
-            <div className="hero-rule mt-6 h-px w-12 origin-left bg-gold" />
+          <motion.h1
+            className="font-display text-[clamp(2.75rem,6.5vw,4.75rem)] leading-[1.05] tracking-[0.02em] text-ink uppercase"
+            initial={reduce ? false : { opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease, delay: 0.2 }}
+          >
+            Embrace
+            <br />
+            timeless
+            <br />
+            brilliance
+          </motion.h1>
 
-            <h1 className="hero-line mt-6 font-display text-[clamp(1.35rem,2.2vw,1.85rem)] font-light italic leading-snug text-ink/85">
-              Crafted for forever
-            </h1>
+          <motion.p
+            className="mt-6 max-w-sm text-[15px] leading-[1.75] text-muted"
+            initial={reduce ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.85, ease, delay: 0.4 }}
+          >
+            Discover heirloom gold and kundan craftsmanship — composed in
+            Pakistan, designed to last generations.
+          </motion.p>
 
-            <p className="hero-support mt-4 max-w-sm text-[14px] leading-[1.75] text-muted">
-              Bridal catalogs, high jewellery, and everyday gold — composed in
-              Pakistan to be worn across generations.
-            </p>
-
-            <div className="hero-cta mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
-              <a
-                href="#catalogs"
-                onClick={(e) => goToSection(e, "catalogs")}
-                className="inline-flex h-12 items-center rounded-full bg-ink px-7 text-[11px] font-medium tracking-[0.14em] text-ivory uppercase transition-colors duration-300 hover:bg-gold hover:text-void"
-              >
-                Shop catalogs
-              </a>
-              <a
-                href="#materials"
-                onClick={(e) => goToSection(e, "materials")}
-                className="group inline-flex h-12 items-center gap-2 text-[11px] font-medium tracking-[0.14em] text-muted uppercase transition-colors duration-300 hover:text-ink"
-              >
-                The materials
-                <span
-                  className="h-px w-5 bg-current transition-all duration-300 group-hover:w-8 group-hover:bg-gold"
-                  aria-hidden
-                />
-              </a>
-            </div>
-          </div>
+          <motion.div
+            className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4"
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.85, ease, delay: 0.55 }}
+          >
+            <a
+              href="#catalogs"
+              onClick={(e) => goToSection(e, "catalogs")}
+              className="inline-flex h-12 items-center bg-ink px-8 text-[11px] font-medium tracking-[0.18em] text-ivory uppercase transition-colors duration-300 hover:bg-gold hover:text-void"
+            >
+              Shop the collection
+            </a>
+            <a
+              href="#browse"
+              onClick={(e) => goToSection(e, "browse")}
+              className="group inline-flex items-center gap-3 text-[11px] font-medium tracking-[0.16em] text-ink/50 uppercase transition-colors hover:text-ink"
+            >
+              How to shop
+              <span
+                className="h-px w-7 bg-current transition-all duration-300 group-hover:w-10 group-hover:bg-gold"
+                aria-hidden
+              />
+            </a>
+          </motion.div>
         </div>
 
-        <div
-          ref={mediaRef}
-          className="relative order-first min-h-[46svh] flex-1 bg-ivory lg:order-none lg:min-h-0 lg:w-[56%] xl:w-[58%]"
-        >
-          <div
-            className="pointer-events-none absolute -top-[8%] right-[8%] h-[50%] w-[50%] rounded-full bg-[radial-gradient(circle,rgba(184,149,90,0.22)_0%,transparent_70%)] blur-3xl"
-            aria-hidden
-          />
-          <div
-            className="pointer-events-none absolute bottom-[-4%] left-[4%] h-[42%] w-[42%] rounded-full bg-[radial-gradient(circle,rgba(184,149,90,0.14)_0%,transparent_72%)] blur-3xl"
-            aria-hidden
-          />
-
-          {PIECES.map((piece) => (
+        {/* Model — right, blended into ivory (no card / no frame) */}
+        <div className="relative z-10 min-h-[52vh] lg:col-span-7 lg:min-h-[100svh]">
+          <motion.div
+            className="absolute inset-0 lg:inset-y-0 lg:right-0 lg:left-[-8%]"
+            initial={reduce ? false : { opacity: 0, x: 28 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1.15, ease, delay: 0.25 }}
+          >
             <div
-              key={piece.id}
-              className={`hero-piece-${piece.id} ${piece.className}`}
+              className="absolute inset-0"
               style={{
-                WebkitMaskImage:
-                  "radial-gradient(ellipse 68% 68% at 50% 48%, #000 42%, transparent 78%)",
+                // Soft left edge dissolve so she sits in the page, not a box
                 maskImage:
-                  "radial-gradient(ellipse 68% 68% at 50% 48%, #000 42%, transparent 78%)",
+                  "linear-gradient(90deg, transparent 0%, black 18%, black 100%)",
+                WebkitMaskImage:
+                  "linear-gradient(90deg, transparent 0%, black 18%, black 100%)",
               }}
             >
-              <div className={`hero-float-${piece.id} relative h-full w-full`}>
-                <Image
-                  src={piece.src}
-                  alt={piece.alt}
-                  fill
-                  priority={piece.id === "main"}
-                  sizes="(max-width: 1024px) 70vw, 40vw"
-                  className="object-contain mix-blend-multiply"
-                />
-              </div>
+              <Image
+                src={HERO_MODEL}
+                alt="Kundan fine jewellery — Pakistani model in gold haar, jhumkas and bangles"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 60vw"
+                unoptimized
+                className="object-cover object-[68%_center] sm:object-[72%_center] lg:object-[78%_center]"
+              />
             </div>
-          ))}
+
+            {/* Extra ivory wash from the left for a perfect seam */}
+            <div
+              className="pointer-events-none absolute inset-y-0 left-0 w-[42%] bg-gradient-to-r from-ivory via-ivory/85 to-transparent"
+              aria-hidden
+            />
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ivory to-transparent lg:hidden"
+              aria-hidden
+            />
+          </motion.div>
         </div>
       </div>
     </section>

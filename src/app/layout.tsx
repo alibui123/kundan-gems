@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { CartProvider } from "@/components/CartProvider";
 import { CartDrawer } from "@/components/CartDrawer";
 import { RouteScrollCleanup } from "@/components/RouteScrollCleanup";
-import { InitialLoader } from "@/components/InitialLoader";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,7 +22,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <InitialLoader />
         <CartProvider>
           <RouteScrollCleanup />
           {children}

@@ -77,7 +77,7 @@ export function ProductCard({
           type="button"
           aria-label={liked ? "Remove from wishlist" : "Add to wishlist"}
           onClick={() => setLiked((v) => !v)}
-          className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-ivory/90 text-ink/70 transition-colors hover:text-gold"
+          className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center bg-ivory/90 text-ink/70 transition-colors hover:text-gold"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden>
             <path
@@ -110,7 +110,7 @@ export function ProductCard({
         <button
           type="button"
           onClick={handleAdd}
-          className="mt-4 w-full rounded-full border border-border py-2.5 text-[10px] font-medium tracking-[0.14em] text-ink uppercase transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-ivory"
+          className="mt-4 w-full border border-border py-2.5 text-[10px] font-medium tracking-[0.14em] text-ink uppercase transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-ivory"
         >
           Add to cart
         </button>
@@ -134,7 +134,7 @@ function CardMedia({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl bg-[#efe8dc] ${
+      className={`relative overflow-hidden bg-stone ${
         aspect === "square" ? "aspect-square" : "aspect-[4/5]"
       }`}
     >

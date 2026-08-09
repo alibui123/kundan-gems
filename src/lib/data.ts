@@ -8,9 +8,9 @@ export const navLinks = [
   { label: "Home", href: "#" },
   { label: "Catalogs", href: "#catalogs" },
   { label: "Materials", href: "#materials" },
-  { label: "New Arrivals", href: "/collections/new-arrivals" },
-  { label: "Best Sellers", href: "#best-sellers" },
-  { label: "About", href: "#craftsmanship" },
+  { label: "Forms", href: "#collections" },
+  { label: "The Edit", href: "#the-edit" },
+  { label: "Atelier", href: "#atelier" },
   { label: "Contact", href: "#newsletter" },
 ];
 
