@@ -1,5 +1,6 @@
 import { createAnonClient } from "@/lib/supabase";
 import type { Catalog } from "@/lib/catalogs";
+import { kundanProductImages, resolveProductMedia } from "@/lib/product-assets";
 
 export const MATERIALS = ["diamond", "gold", "ruby"] as const;
 export const CATEGORIES = ["rings", "bracelets", "necklaces"] as const;
@@ -49,6 +50,12 @@ export const materialMeta: Record<
     image: string;
     secondaryImage: string;
     accent: string;
+    campaign: {
+      title: string;
+      tagline: string;
+      tag: string;
+      imageAlt: string;
+    };
   }
 > = {
   diamond: {
@@ -59,9 +66,16 @@ export const materialMeta: Record<
     story:
       "Cut for silence as much as sparkle. Our diamonds are chosen for proportion and fire — set so light seems to rest inside the piece rather than shout from it.",
     image: "/materials/diamond/river-of-lights.png",
-    secondaryImage:
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=900&q=90",
+    secondaryImage: kundanProductImages.rings,
     accent: "from-white/20 via-gold/10 to-transparent",
+    campaign: {
+      title: "River of Lights",
+      tagline:
+        "Crafted with fancy intense yellow and flawless white diamonds, in a composition of pure celestial elegance.",
+      tag: "Elegance reimagined",
+      imageAlt:
+        "Diamond high jewellery necklace — fancy yellow and white diamonds",
+    },
   },
   gold: {
     title: "Gold",
@@ -70,11 +84,16 @@ export const materialMeta: Record<
       "Yellow, white, and rose gold — sculptural forms with soft everyday brilliance.",
     story:
       "Gold that feels lived-in from the first wear. We favour warm alloys and considered weight — architecture for the hand, the wrist, the neck.",
-    image:
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1400&q=90",
-    secondaryImage:
-      "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=900&q=90",
+    image: "/materials/gold/river-of-warmth.png",
+    secondaryImage: kundanProductImages.bracelets,
     accent: "from-amber-200/25 via-gold/20 to-transparent",
+    campaign: {
+      title: "River of Warmth",
+      tagline:
+        "Sculptural 18k gold with soft everyday brilliance — warm alloys composed for the hand, the wrist, the neck.",
+      tag: "Permanence reimagined",
+      imageAlt: "Yellow gold high jewellery necklace on celestial campaign backdrop",
+    },
   },
   ruby: {
     title: "Ruby",
@@ -83,11 +102,17 @@ export const materialMeta: Record<
       "Vivid stones set with restraint — ruby jewellery with atelier precision.",
     story:
       "Color held with discipline. Rubies are placed where a single note of red can carry an entire composition — intimate, never theatrical.",
-    image:
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1400&q=90",
-    secondaryImage:
-      "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=900&q=90",
+    image: "/materials/ruby/river-of-fire.png",
+    secondaryImage: kundanProductImages.necklaces,
     accent: "from-rose-400/25 via-gold/10 to-transparent",
+    campaign: {
+      title: "River of Fire",
+      tagline:
+        "Pigeon-blood rubies and white diamonds set with restraint — color that carries the entire composition.",
+      tag: "Color reimagined",
+      imageAlt:
+        "Ruby and diamond high jewellery necklace on celestial campaign backdrop",
+    },
   },
 };
 
@@ -99,22 +124,19 @@ export const categoryMeta: Record<
     title: "Rings",
     subtitle: "Eternal bands",
     description: "Solitaires, halos, and sculptural bands for forever.",
-    image:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
+    image: "/products/kundan-ring.png",
   },
   bracelets: {
     title: "Bracelets",
     subtitle: "Soft brilliance",
     description: "Cuffs and tennis lines with quiet radiance.",
-    image:
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1200&q=85",
+    image: "/products/kundan-bracelet.png",
   },
   necklaces: {
     title: "Necklaces",
     subtitle: "Statement grace",
     description: "Pendants and cascades composed for the collarbone.",
-    image:
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1200&q=85",
+    image: "/products/kundan-necklace.png",
   },
 };
 
@@ -199,9 +221,16 @@ export function toBraceletProduct(p: Product) {
 }
 
 function mapProduct(row: Record<string, unknown>): Product {
+  const slug = String(row.slug);
+  const rawImage = String(row.image);
+  const rawGallery = Array.isArray(row.gallery)
+    ? (row.gallery as string[])
+    : [];
+  const media = resolveProductMedia(row.category as Category, slug, rawImage);
+
   return {
     id: String(row.id),
-    slug: String(row.slug),
+    slug,
     name: String(row.name),
     description: String(row.description ?? ""),
     material: row.material as Material,
@@ -211,8 +240,8 @@ function mapProduct(row: Record<string, unknown>): Product {
     metal: String(row.metal ?? ""),
     carat: String(row.carat ?? ""),
     sizes: Array.isArray(row.sizes) ? (row.sizes as string[]) : [],
-    image: String(row.image),
-    gallery: Array.isArray(row.gallery) ? (row.gallery as string[]) : [],
+    image: media.image,
+    gallery: media.gallery.length ? media.gallery : rawGallery.length ? rawGallery : [media.image],
     badge: (row.badge as string | null) ?? null,
     is_new: Boolean(row.is_new),
     is_bestseller: Boolean(row.is_bestseller),

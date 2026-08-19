@@ -1,20 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
+import { kundanProductImages } from "@/lib/product-assets";
 
 export function SignatureCollection() {
   return (
     <section
       id="signature"
-      className="section-reveal overflow-hidden bg-ivory pb-24 md:pb-36"
+      className="section-reveal overflow-hidden bg-white pb-24 md:pb-36"
     >
       <div className="container-luxury grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-        <div className="reveal-image relative aspect-[4/5] overflow-hidden rounded-[24px] md:aspect-[5/6]">
+        <div className="reveal-image relative aspect-[4/5] overflow-hidden rounded-[24px] bg-white md:aspect-[5/6]">
           <Image
-            src="https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1400&q=85"
-            alt="Signature diamond ring on warm marble"
+            src={kundanProductImages.rings}
+            alt="Kundan signature ring"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
+            unoptimized
+            className="object-contain p-[10%]"
           />
         </div>
 

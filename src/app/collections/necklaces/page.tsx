@@ -45,7 +45,7 @@ export default async function NecklacesPage({ searchParams }: PageProps) {
       : `${activeFilter.charAt(0).toUpperCase()}${activeFilter.slice(1)} necklaces`;
 
   return (
-    <div className="min-h-screen bg-ivory">
+    <div className="min-h-screen bg-white">
       <Navigation variant="dark" />
 
       <NecklacesHero
@@ -123,7 +123,7 @@ export default async function NecklacesPage({ searchParams }: PageProps) {
           )}
         </div>
 
-        <div id="preview" className="border-t border-border bg-card">
+        <div id="preview" className="border-t border-border bg-white">
           <div className="container-luxury scroll-mt-28 py-16 md:py-24">
             <div className="mb-10 flex items-end justify-between gap-6">
               <div>
@@ -147,9 +147,9 @@ export default async function NecklacesPage({ searchParams }: PageProps) {
               {necklacePreviews.map((piece) => (
                 <article
                   key={piece.name}
-                  className="overflow-hidden rounded-[20px] bg-ivory shadow-[0_8px_30px_rgba(37,37,37,0.06)]"
+                  className="overflow-hidden rounded-[20px] bg-white shadow-[0_8px_30px_rgba(37,37,37,0.06)]"
                 >
-                  <div className="relative aspect-square bg-[#efe8dc]">
+                  <div className="relative aspect-square bg-white">
                     <Image
                       src={piece.image}
                       alt={piece.name}
@@ -172,7 +172,7 @@ export default async function NecklacesPage({ searchParams }: PageProps) {
               ))}
             </div>
 
-            <div className="mt-16 rounded-[24px] border border-border bg-ivory px-8 py-12 text-center md:px-12">
+            <div className="mt-16 rounded-[24px] border border-border bg-white px-8 py-12 text-center md:px-12">
               <p className="text-[11px] tracking-[0.24em] text-gold uppercase">
                 Be first
               </p>

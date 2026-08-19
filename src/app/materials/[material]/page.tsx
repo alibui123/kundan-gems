@@ -45,8 +45,8 @@ export default async function MaterialPage({ params }: PageProps) {
   const others = MATERIALS.filter((m) => m !== material);
 
   return (
-    <div className="min-h-screen bg-ivory">
-      <Navigation variant={material === "diamond" ? "light" : "dark"} />
+    <div className="min-h-screen bg-white">
+      <Navigation variant="light" />
 
       <MaterialHero material={material} pieceCount={products.length} />
 

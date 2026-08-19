@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import type { BraceletProduct } from "@/lib/bracelets";
 import { useCart } from "@/components/CartProvider";
+import { ProductImageFrame } from "@/components/ProductImageFrame";
 
 export function BraceletProductDetail({
   product,
@@ -36,14 +36,13 @@ export function BraceletProductDetail({
   return (
     <div className="container-luxury grid gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] bg-[#efe8dc]">
-          <Image
+        <div className="relative">
+          <ProductImageFrame
             src={activeImage}
             alt={product.name}
-            fill
-            priority
             sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
+            priority
+            padding="detail"
           />
           {product.badge && (
             <span className="absolute top-5 left-5 rounded-full bg-void/80 px-4 py-2 text-[10px] tracking-[0.18em] text-gold uppercase backdrop-blur-sm">
@@ -58,11 +57,19 @@ export function BraceletProductDetail({
                 key={src}
                 type="button"
                 onClick={() => setActiveImage(src)}
-                className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border transition-colors ${
-                  activeImage === src ? "border-gold" : "border-transparent"
+                className={`relative h-20 w-20 shrink-0 overflow-hidden border bg-white transition-colors ${
+                  activeImage === src ? "border-gold" : "border-border"
                 }`}
               >
-                <Image src={src} alt="" fill sizes="80px" className="object-cover" />
+                <ProductImageFrame
+                  src={src}
+                  alt=""
+                  sizes="80px"
+                  aspect="square"
+                  padding="thumb"
+                  fillContainer
+                  className="h-full w-full"
+                />
               </button>
             ))}
           </div>

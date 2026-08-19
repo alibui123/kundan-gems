@@ -9,6 +9,7 @@ import {
   getProducts,
   productHref,
 } from "@/lib/products";
+import { kundanProductImages } from "@/lib/product-assets";
 
 export const metadata: Metadata = {
   title: "Signature Collection — Kundan",
@@ -19,15 +20,14 @@ export const metadata: Metadata = {
 export default async function SignatureCollectionPage() {
   const products = await getProducts({ isSignature: true });
   const primary =
-    products[0]?.image ??
-    "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=1400&q=85";
+    products[0]?.image ?? kundanProductImages.rings;
   const secondary =
     products[1]?.image ??
     products[0]?.gallery?.[1] ??
-    "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=900&q=90";
+    kundanProductImages.necklaces;
 
   return (
-    <div className="min-h-screen bg-ivory">
+    <div className="min-h-screen bg-white">
       <Navigation variant="dark" />
 
       <SignatureHero

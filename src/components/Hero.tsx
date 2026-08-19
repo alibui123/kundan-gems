@@ -2,19 +2,20 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
-import { useCallback, useRef, type MouseEvent } from "react";
+import { useCallback, useEffect, useRef, type MouseEvent } from "react";
 import { brand } from "@/lib/data";
 
 const NAV_OFFSET = 72;
-/** Studio mockup — Pakistani gold jewellery, light ground for seamless blend */
-const HERO_MODEL = "/hero/blend-model-gold.png";
+const HERO_FILM = "/hero/bridal-gold.mp4";
+const HERO_POSTER = "/hero/bridal-gold-poster.jpg";
+const EASE = [0.23, 1, 0.32, 1] as const;
 
 /**
- * Aurélia-style maison hero: ivory stage, left copy, right model
- * blended into the background (no framed photo box).
+ * Campaign hero — bridal gold film, maison name, two actions.
  */
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const scrollingRef = useRef(false);
   const reduce = useReducedMotion();
 
@@ -52,10 +53,10 @@ export function Hero() {
 
       const lenis = getLenis();
       if (lenis) {
-        lenis.scrollTo(y, { duration: 1.05, onComplete: finish });
+        lenis.scrollTo(y, { duration: 1.2, onComplete: finish });
         window.setTimeout(() => {
           if (scrollingRef.current) finish();
-        }, 1500);
+        }, 1800);
       } else {
         window.scrollTo({ top: y, behavior: "smooth" });
         window.setTimeout(finish, 700);
@@ -64,126 +65,166 @@ export function Hero() {
     []
   );
 
-  const ease = [0.22, 1, 0.36, 1] as const;
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || reduce) return;
+
+    const syncPlayback = () => {
+      if (document.hidden) {
+        video.pause();
+        return;
+      }
+
+      const boutique = document.querySelector(".boutique");
+      const covered =
+        boutique !== null &&
+        boutique.getBoundingClientRect().top < window.innerHeight * 0.4;
+
+      if (covered) {
+        video.pause();
+        return;
+      }
+
+      if (video.paused) {
+        void video.play().catch(() => {});
+      }
+    };
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        syncPlayback();
+      });
+    };
+
+    void video.play().catch(() => {});
+    syncPlayback();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("visibilitychange", syncPlayback);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("visibilitychange", syncPlayback);
+      video.pause();
+    };
+  }, [reduce]);
 
   return (
     <section
       ref={sectionRef}
       id="hero"
-      className="hero relative min-h-[100svh] overflow-hidden bg-white"
-      aria-label={`${brand.name} — Embrace timeless brilliance`}
+      className="hero sticky top-0 z-0 h-[100svh] min-h-[100svh] overflow-hidden bg-[#1a140e]"
+      aria-label={brand.fullName}
     >
-      {/* Soft ambient wash — keeps the studio field alive */}
       <div
-        className="pointer-events-none absolute inset-0"
-        aria-hidden
-        style={{
-          background:
-            "radial-gradient(ellipse 55% 70% at 78% 45%, rgba(255,255,255,0.55) 0%, transparent 70%)",
-        }}
-      />
-
-      <div className="relative z-10 mx-auto grid min-h-[100svh] max-w-[1440px] items-center lg:grid-cols-12">
-        {/* Copy — left */}
-        <div className="relative z-20 flex flex-col justify-center px-6 pt-28 pb-10 sm:px-10 md:px-14 lg:col-span-5 lg:px-16 lg:pt-24 lg:pb-20 xl:pl-20">
-          <motion.p
-            className="label-caps mb-5 text-gold"
-            initial={reduce ? false : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease, delay: 0.1 }}
+        data-hero-cover
+        className="relative h-full w-full will-change-transform"
+      >
+        <motion.div
+          className="absolute inset-0"
+          initial={
+            reduce ? false : { opacity: 0, clipPath: "inset(6% 8% 6% 8%)" }
+          }
+          animate={{ opacity: 1, clipPath: "inset(0% 0% 0% 0%)" }}
+          transition={{ duration: 1.4, ease: EASE }}
+        >
+          <div
+            data-hero-parallax
+            className="absolute inset-[-6%] will-change-transform"
           >
-            {brand.name} · Fine jewellery
-          </motion.p>
-
-          <motion.h1
-            className="font-display text-[clamp(2.75rem,6.5vw,4.75rem)] leading-[1.05] tracking-[0.02em] text-ink uppercase"
-            initial={reduce ? false : { opacity: 0, y: 22 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease, delay: 0.2 }}
-          >
-            Embrace
-            <br />
-            timeless
-            <br />
-            brilliance
-          </motion.h1>
-
-          <motion.p
-            className="mt-6 max-w-sm text-[15px] leading-[1.75] text-muted"
-            initial={reduce ? false : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.85, ease, delay: 0.4 }}
-          >
-            Discover heirloom gold and kundan craftsmanship — composed in
-            Pakistan, designed to last generations.
-          </motion.p>
-
-          <motion.div
-            className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4"
-            initial={reduce ? false : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.85, ease, delay: 0.55 }}
-          >
-            <a
-              href="#catalogs"
-              onClick={(e) => goToSection(e, "catalogs")}
-              className="inline-flex h-12 items-center bg-ink px-8 text-[11px] font-medium tracking-[0.18em] text-ivory uppercase transition-colors duration-300 hover:bg-gold hover:text-void"
-            >
-              Shop the collection
-            </a>
-            <a
-              href="#browse"
-              onClick={(e) => goToSection(e, "browse")}
-              className="group inline-flex items-center gap-3 text-[11px] font-medium tracking-[0.16em] text-ink/50 uppercase transition-colors hover:text-ink"
-            >
-              How to shop
-              <span
-                className="h-px w-7 bg-current transition-all duration-300 group-hover:w-10 group-hover:bg-gold"
-                aria-hidden
-              />
-            </a>
-          </motion.div>
-        </div>
-
-        {/* Model — right, blended into ivory (no card / no frame) */}
-        <div className="relative z-10 min-h-[52vh] lg:col-span-7 lg:min-h-[100svh]">
-          <motion.div
-            className="absolute inset-0 lg:inset-y-0 lg:right-0 lg:left-[-8%]"
-            initial={reduce ? false : { opacity: 0, x: 28 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.15, ease, delay: 0.25 }}
-          >
-            <div
-              className="absolute inset-0"
-              style={{
-                // Soft left edge dissolve so she sits in the page, not a box
-                maskImage:
-                  "linear-gradient(90deg, transparent 0%, black 18%, black 100%)",
-                WebkitMaskImage:
-                  "linear-gradient(90deg, transparent 0%, black 18%, black 100%)",
-              }}
-            >
+            {reduce ? (
               <Image
-                src={HERO_MODEL}
-                alt="Kundan fine jewellery — Pakistani model in gold haar, jhumkas and bangles"
+                src={HERO_POSTER}
+                alt={`${brand.fullName} — bridal gold jewellery`}
                 fill
                 priority
-                sizes="(max-width: 1024px) 100vw, 60vw"
-                unoptimized
-                className="object-cover object-[68%_center] sm:object-[72%_center] lg:object-[78%_center]"
+                sizes="100vw"
+                className="object-cover object-[40%_28%] sm:object-[44%_center]"
               />
-            </div>
+            ) : (
+              <video
+                ref={videoRef}
+                className="absolute inset-0 h-full w-full object-cover object-[40%_28%] sm:object-[44%_center]"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                poster={HERO_POSTER}
+                disablePictureInPicture
+                aria-hidden
+              >
+                <source src={HERO_FILM} type="video/mp4" />
+              </video>
+            )}
+          </div>
+        </motion.div>
 
-            {/* Extra ivory wash from the left for a perfect seam */}
-            <div
-              className="pointer-events-none absolute inset-y-0 left-0 w-[42%] bg-gradient-to-r from-ivory via-ivory/85 to-transparent"
+        <div
+          className="pointer-events-none absolute inset-0"
+          aria-hidden
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(16,10,6,0.28) 0%, rgba(16,10,6,0.04) 34%, rgba(16,10,6,0.18) 62%, rgba(16,10,6,0.82) 100%)",
+          }}
+        />
+
+        <div className="relative z-10 flex h-full min-h-[100svh] items-end justify-center">
+          <div className="flex w-full max-w-[44rem] flex-col items-center px-6 pb-12 text-center sm:pb-14 md:pb-16">
+            <h1 className="font-display text-[clamp(2.75rem,8vw,5.5rem)] leading-[0.95] tracking-[0.04em] text-ivory [text-shadow:0_2px_32px_rgba(8,4,2,0.4)]">
+              <span className="block overflow-hidden">
+                <motion.span
+                  className="inline-block italic"
+                  initial={reduce ? false : { y: "110%", opacity: 0 }}
+                  animate={{ y: "0%", opacity: 1 }}
+                  transition={{ duration: 0.9, ease: EASE, delay: 0.28 }}
+                >
+                  Kundan
+                </motion.span>
+                <motion.span
+                  className="ml-[0.28em] inline-block"
+                  initial={reduce ? false : { y: "110%", opacity: 0 }}
+                  animate={{ y: "0%", opacity: 1 }}
+                  transition={{ duration: 0.9, ease: EASE, delay: 0.38 }}
+                >
+                  Gems
+                </motion.span>
+              </span>
+            </h1>
+
+            <motion.span
+              className="mt-6 block h-px w-14 origin-center bg-gold"
+              initial={reduce ? false : { scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.8, ease: EASE, delay: 0.72 }}
               aria-hidden
             />
-            <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ivory to-transparent lg:hidden"
-              aria-hidden
-            />
-          </motion.div>
+
+            <motion.div
+              className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
+              initial={reduce ? false : { opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, ease: EASE, delay: 0.86 }}
+            >
+              <a
+                href="#catalogs"
+                onClick={(e) => goToSection(e, "catalogs")}
+                className="btn-gold-liquid"
+              >
+                <span>Shop the collection</span>
+              </a>
+              <a
+                href="#gold"
+                onClick={(e) => goToSection(e, "gold")}
+                className="btn-hero-pearl"
+              >
+                <span>Explore materials</span>
+              </a>
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>

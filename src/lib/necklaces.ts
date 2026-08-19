@@ -1,3 +1,7 @@
+import { kundanProductImages } from "@/lib/product-assets";
+
+const NECKLACE_IMAGE = kundanProductImages.necklaces;
+
 export type NecklaceProduct = {
   id: string;
   slug: string;
@@ -25,12 +29,8 @@ export const necklaces: NecklaceProduct[] = [
     metal: "18k Yellow Gold",
     carat: "0.45 ct",
     length: ["16\"", "18\"", "20\""],
-    image:
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=85",
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1200&q=85",
-    ],
+    image: NECKLACE_IMAGE,
+    gallery: [NECKLACE_IMAGE],
     badge: "Best Seller",
   },
   {
@@ -44,12 +44,8 @@ export const necklaces: NecklaceProduct[] = [
     metal: "Platinum",
     carat: "2.10 ct tw",
     length: ["16\"", "18\""],
-    image:
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1200&q=85",
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=85",
-    ],
+    image: NECKLACE_IMAGE,
+    gallery: [NECKLACE_IMAGE],
     badge: "Signature",
   },
   {
@@ -63,12 +59,8 @@ export const necklaces: NecklaceProduct[] = [
     metal: "18k White Gold",
     carat: "0.85 ct",
     length: ["16\"", "18\"", "20\""],
-    image:
-      "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1200&q=85",
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1200&q=85",
-    ],
+    image: NECKLACE_IMAGE,
+    gallery: [NECKLACE_IMAGE],
     badge: "New",
   },
   {
@@ -82,12 +74,8 @@ export const necklaces: NecklaceProduct[] = [
     metal: "18k Yellow Gold",
     carat: "3.20 ct tw",
     length: ["15\"", "16\""],
-    image:
-      "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=1200&q=85",
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=85",
-    ],
+    image: NECKLACE_IMAGE,
+    gallery: [NECKLACE_IMAGE],
   },
   {
     id: "neck-mira",
@@ -100,12 +88,8 @@ export const necklaces: NecklaceProduct[] = [
     metal: "Platinum",
     carat: "4.00 ct tw",
     length: ["16\"", "17\"", "18\""],
-    image:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=1200&q=85",
-    ],
+    image: NECKLACE_IMAGE,
+    gallery: [NECKLACE_IMAGE],
     badge: "Atelier",
   },
   {
@@ -119,12 +103,8 @@ export const necklaces: NecklaceProduct[] = [
     metal: "18k Rose Gold",
     carat: "0.62 ct tw",
     length: ["Adjustable"],
-    image:
-      "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=1200&q=85",
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1200&q=85",
-    ],
+    image: NECKLACE_IMAGE,
+    gallery: [NECKLACE_IMAGE],
   },
   {
     id: "neck-opaline",
@@ -137,12 +117,8 @@ export const necklaces: NecklaceProduct[] = [
     metal: "18k White Gold",
     carat: "1.40 ct tw",
     length: ["14\"", "15\""],
-    image:
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=1200&q=85",
-      "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1200&q=85",
-    ],
+    image: NECKLACE_IMAGE,
+    gallery: [NECKLACE_IMAGE],
   },
   {
     id: "neck-celeste",
@@ -155,35 +131,27 @@ export const necklaces: NecklaceProduct[] = [
     metal: "18k Yellow Gold",
     carat: "0.35 ct tw",
     length: ["16\"", "18\"", "20\""],
-    image:
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=1200&q=85",
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=85",
-    ],
+    image: NECKLACE_IMAGE,
+    gallery: [NECKLACE_IMAGE],
     badge: "New",
   },
 ];
 
-/** Upcoming atelier releases — not yet for sale */
 export const necklacePreviews = [
   {
     name: "Aurora Fringe",
     eta: "Autumn edit",
-    image:
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=900&q=85&sat=-40",
+    image: NECKLACE_IMAGE,
   },
   {
     name: "Gilded Rivière",
     eta: "Private release",
-    image:
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=900&q=85&sat=-20",
+    image: NECKLACE_IMAGE,
   },
   {
     name: "Moonlit Collar",
     eta: "By appointment",
-    image:
-      "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=900&q=85&sat=-30",
+    image: NECKLACE_IMAGE,
   },
 ];
 

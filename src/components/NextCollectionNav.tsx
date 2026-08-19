@@ -6,7 +6,7 @@ export function NextCollectionNav({ currentSlug }: { currentSlug: string }) {
   const { prev, next } = getAdjacentCollections(currentSlug);
 
   return (
-    <section className="border-t border-border bg-ivory text-ink">
+    <section className="border-t border-border bg-white text-ink">
       <div className="container-luxury py-20 md:py-28">
         <p className="mb-3 text-center text-[11px] tracking-[0.24em] text-gold uppercase">
           Continue the journey

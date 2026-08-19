@@ -52,7 +52,7 @@ function buildTree(links: MenuLink[]): NavNode[] {
       description: materialMeta[slug].subtitle,
       href: `/materials/${slug}`,
     })),
-    { label: "All materials", href: "/#materials", description: "Shop by stone" },
+    { label: "All materials", href: "/#gold", description: "Shop gold" },
   ];
 
   const formChildren: SubLink[] = [
@@ -335,7 +335,7 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
 
       <aside
         ref={panelRef}
-        className="absolute inset-y-0 left-0 flex w-[min(28vw,24rem)] min-w-[18.5rem] max-w-[24rem] flex-col overflow-y-auto overscroll-contain border-r border-border bg-ivory shadow-[12px_0_40px_rgba(37,37,37,0.08)] will-change-transform"
+        className="absolute inset-y-0 left-0 flex w-[min(28vw,24rem)] min-w-[18.5rem] max-w-[24rem] flex-col overflow-y-auto overscroll-contain border-r border-border bg-white shadow-[12px_0_40px_rgba(37,37,37,0.08)] will-change-transform"
         role="dialog"
         aria-modal="true"
         aria-label="Site menu"

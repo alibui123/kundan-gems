@@ -60,7 +60,7 @@ export default async function RingsCollectionPage({ searchParams }: PageProps) {
       : `${activeFilter.charAt(0).toUpperCase()}${activeFilter.slice(1)} rings`;
 
   return (
-    <div className="min-h-screen bg-ivory">
+    <div className="min-h-screen bg-white">
       <Navigation variant="dark" />
       <RingsHero pieceCount={allRings.length} />
 

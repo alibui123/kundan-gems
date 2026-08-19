@@ -1,5 +1,8 @@
+import { kundanProductImages } from "@/lib/product-assets";
+
 export const brand = {
   name: "Kundan",
+  fullName: "Kundan Gems and Jewellers",
   tagline: "Crafted For Forever",
   logo: "/logo.png",
 };
@@ -7,7 +10,7 @@ export const brand = {
 export const navLinks = [
   { label: "Home", href: "#" },
   { label: "Catalogs", href: "#catalogs" },
-  { label: "Materials", href: "#materials" },
+  { label: "Materials", href: "#gold" },
   { label: "Forms", href: "#collections" },
   { label: "The Edit", href: "#the-edit" },
   { label: "Atelier", href: "#atelier" },
@@ -41,22 +44,19 @@ export const collections = [
   {
     title: "Rings",
     subtitle: "Eternal bands",
-    image:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=80",
+    image: kundanProductImages.rings,
     href: "/collections/rings",
   },
   {
     title: "Necklaces",
     subtitle: "Statement grace",
-    image:
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1200&q=80",
+    image: kundanProductImages.necklaces,
     href: "/collections/necklaces",
   },
   {
     title: "Bracelets",
     subtitle: "Soft brilliance",
-    image:
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=1200&q=80",
+    image: kundanProductImages.bracelets,
     href: "/collections/bracelets",
   },
 ];
@@ -69,8 +69,7 @@ export const newArrivals = [
     name: "Aurora Solitaire",
     price: "$4,280",
     priceValue: 4280,
-    image:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=900&q=80",
+    image: kundanProductImages.rings,
   },
   {
     id: "neck-lumen",
@@ -79,8 +78,7 @@ export const newArrivals = [
     name: "Lumen Pendant",
     price: "$2,150",
     priceValue: 2150,
-    image:
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=900&q=80",
+    image: kundanProductImages.necklaces,
   },
   {
     id: "br-veloce",
@@ -89,8 +87,7 @@ export const newArrivals = [
     name: "Véloce Cuff",
     price: "$1,890",
     priceValue: 1890,
-    image:
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=900&q=80",
+    image: kundanProductImages.bracelets,
   },
   {
     id: "ring-soleil",
@@ -99,8 +96,7 @@ export const newArrivals = [
     name: "Soleil Marquise",
     price: "$5,120",
     priceValue: 5120,
-    image:
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=900&q=80",
+    image: kundanProductImages.rings,
   },
 ];
 
@@ -109,29 +105,25 @@ export const bestSellers = [
     id: "bs-1",
     name: "Heritage Halo",
     price: "$6,400",
-    image:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=900&q=80",
+    image: kundanProductImages.rings,
   },
   {
     id: "bs-2",
     name: "Ivory Cascade",
     price: "$3,720",
-    image:
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=900&q=80",
+    image: kundanProductImages.necklaces,
   },
   {
     id: "bs-3",
     name: "Gilded Trace",
     price: "$2,480",
-    image:
-      "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=900&q=80",
+    image: kundanProductImages.bracelets,
   },
   {
     id: "bs-4",
     name: "Celeste Studs",
     price: "$1,240",
-    image:
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=900&q=80",
+    image: kundanProductImages.rings,
   },
 ];
 
@@ -178,10 +170,10 @@ export const testimonials = [
 ];
 
 export const instagram = [
-  "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=700&q=80",
+  kundanProductImages.rings,
+  kundanProductImages.necklaces,
+  kundanProductImages.bracelets,
+  kundanProductImages.rings,
+  kundanProductImages.necklaces,
+  kundanProductImages.bracelets,
 ];

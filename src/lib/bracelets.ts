@@ -1,3 +1,7 @@
+import { kundanProductImages } from "@/lib/product-assets";
+
+const BRACELET_IMAGE = kundanProductImages.bracelets;
+
 export type BraceletProduct = {
   id: string;
   slug: string;
@@ -25,12 +29,8 @@ export const bracelets: BraceletProduct[] = [
     metal: "18k Yellow Gold",
     carat: "—",
     size: ["S", "M", "L"],
-    image:
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1200&q=85",
-      "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=1200&q=85",
-    ],
+    image: BRACELET_IMAGE,
+    gallery: [BRACELET_IMAGE],
     badge: "Best Seller",
   },
   {
@@ -44,12 +44,8 @@ export const bracelets: BraceletProduct[] = [
     metal: "18k Yellow Gold",
     carat: "0.42 ct tw",
     size: ["S", "M", "L"],
-    image:
-      "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=1200&q=85",
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=1200&q=85",
-    ],
+    image: BRACELET_IMAGE,
+    gallery: [BRACELET_IMAGE],
     badge: "Signature",
   },
   {
@@ -63,12 +59,8 @@ export const bracelets: BraceletProduct[] = [
     metal: "Platinum",
     carat: "3.50 ct tw",
     size: ["16 cm", "17 cm", "18 cm", "19 cm"],
-    image:
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=1200&q=85",
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
-    ],
+    image: BRACELET_IMAGE,
+    gallery: [BRACELET_IMAGE],
     badge: "Atelier",
   },
   {
@@ -82,12 +74,8 @@ export const bracelets: BraceletProduct[] = [
     metal: "18k White Gold",
     carat: "0.12 ct",
     size: ["S", "M", "L"],
-    image:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1200&q=85",
-    ],
+    image: BRACELET_IMAGE,
+    gallery: [BRACELET_IMAGE],
     badge: "New",
   },
   {
@@ -101,12 +89,8 @@ export const bracelets: BraceletProduct[] = [
     metal: "18k Yellow Gold",
     carat: "0.18 ct",
     size: ["17 cm", "18 cm", "19 cm", "20 cm"],
-    image:
-      "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1200&q=85",
-      "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=1200&q=85",
-    ],
+    image: BRACELET_IMAGE,
+    gallery: [BRACELET_IMAGE],
   },
   {
     id: "br-mira",
@@ -119,12 +103,8 @@ export const bracelets: BraceletProduct[] = [
     metal: "18k Rose Gold",
     carat: "0.55 ct tw",
     size: ["S", "M", "L"],
-    image:
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=1200&q=85",
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=85",
-    ],
+    image: BRACELET_IMAGE,
+    gallery: [BRACELET_IMAGE],
   },
   {
     id: "br-celeste",
@@ -137,12 +117,8 @@ export const bracelets: BraceletProduct[] = [
     metal: "18k White Gold",
     carat: "0.90 ct tw",
     size: ["S", "M", "L"],
-    image:
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=85",
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1200&q=85",
-    ],
+    image: BRACELET_IMAGE,
+    gallery: [BRACELET_IMAGE],
     badge: "Signature",
   },
   {
@@ -156,12 +132,8 @@ export const bracelets: BraceletProduct[] = [
     metal: "18k Yellow Gold",
     carat: "0.30 ct tw",
     size: ["S", "M", "L"],
-    image:
-      "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=1200&q=85",
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=1200&q=85",
-    ],
+    image: BRACELET_IMAGE,
+    gallery: [BRACELET_IMAGE],
     badge: "New",
   },
 ];
@@ -170,20 +142,17 @@ export const braceletPreviews = [
   {
     name: "Aurora Link",
     eta: "Autumn edit",
-    image:
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=900&q=85&sat=-40",
+    image: BRACELET_IMAGE,
   },
   {
     name: "Heritage Cuff",
     eta: "Private release",
-    image:
-      "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=900&q=85&sat=-20",
+    image: BRACELET_IMAGE,
   },
   {
     name: "Moonlit Tennis",
     eta: "By appointment",
-    image:
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=900&q=85&sat=-30",
+    image: BRACELET_IMAGE,
   },
 ];
 

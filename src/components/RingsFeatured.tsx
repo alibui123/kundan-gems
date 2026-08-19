@@ -4,7 +4,7 @@ import type { RingProduct } from "@/lib/rings";
 
 export function RingsFeatured({ product }: { product: RingProduct }) {
   return (
-    <section className="border-y border-border bg-card">
+    <section className="border-y border-border bg-white">
       <div className="container-luxury grid items-center gap-10 py-16 md:py-24 lg:grid-cols-2 lg:gap-16">
         <div className="relative aspect-[4/5] overflow-hidden rounded-[24px]">
           <Image

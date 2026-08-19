@@ -2,24 +2,25 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
+import { kundanProductImages } from "@/lib/product-assets";
 
 const INSTAGRAM_URL = "https://www.instagram.com/kundan.atelier/";
 
 const posts = [
   {
-    src: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1200&q=85",
+    src: kundanProductImages.rings,
     caption: "Heritage halo — evening light",
   },
   {
-    src: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1200&q=85",
+    src: kundanProductImages.necklaces,
     caption: "Lumen pendant at the collarbone",
   },
   {
-    src: "https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=1200&q=85",
+    src: kundanProductImages.bracelets,
     caption: "Gold cuff, soft geometry",
   },
   {
-    src: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1200&q=85",
+    src: kundanProductImages.rings,
     caption: "Aurora solitaire — atelier desk",
   },
 ] as const;
@@ -54,7 +55,7 @@ export function InstagramGallery() {
   }, [active, paused, next]);
 
   return (
-    <section id="instagram" className="section-reveal bg-ivory pb-24 md:pb-36">
+    <section id="instagram" className="section-reveal bg-white pb-24 md:pb-36">
       <div className="container-luxury">
         <div className="reveal-item mb-10 flex flex-col items-center text-center md:mb-14">
           <a
@@ -84,7 +85,7 @@ export function InstagramGallery() {
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] bg-[#efe8dc] sm:aspect-[16/10]">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] bg-white sm:aspect-[16/10]">
             {posts.map((post, i) => (
               <a
                 key={post.src}
@@ -104,7 +105,7 @@ export function InstagramGallery() {
                   alt={post.caption}
                   fill
                   sizes="(max-width: 896px) 100vw, 896px"
-                  className="object-cover"
+                  className="object-contain p-[8%]"
                   priority={i === 0}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-void/55 via-transparent to-transparent" />
@@ -170,7 +171,7 @@ export function InstagramGallery() {
               type="button"
               onClick={() => goTo(i)}
               aria-label={`Go to post ${i + 1}`}
-              className={`relative aspect-square overflow-hidden rounded-[12px] transition-opacity ${
+              className={`relative aspect-square overflow-hidden rounded-[12px] bg-white transition-opacity ${
                 i === active ? "ring-1 ring-gold opacity-100" : "opacity-55 hover:opacity-90"
               }`}
             >
@@ -179,7 +180,7 @@ export function InstagramGallery() {
                 alt=""
                 fill
                 sizes="25vw"
-                className="object-cover"
+                className="object-contain p-[8%]"
               />
             </button>
           ))}

@@ -15,7 +15,7 @@ const steps = [
 
 export function RingsGuide() {
   return (
-    <section className="bg-ivory py-20 md:py-28">
+    <section className="bg-white py-20 md:py-28">
       <div className="container-luxury">
         <div className="mb-12 max-w-xl md:mb-16">
           <p className="mb-3 text-[11px] font-medium tracking-[0.24em] text-gold uppercase">

@@ -12,10 +12,10 @@ type Props = {
 
 export function CollectionLanding({ collection, previews }: Props) {
   return (
-    <div className="min-h-screen bg-ivory">
+    <div className="min-h-screen bg-white">
       <Navigation variant="dark" />
 
-      <section className="relative isolate overflow-hidden bg-ivory text-ink">
+      <section className="relative isolate overflow-hidden bg-white text-ink">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_40%,rgba(200,169,106,0.12),transparent_55%)]" />
         <div className="container-luxury relative z-10 grid items-center gap-12 pt-28 pb-20 md:pt-36 md:pb-28 lg:grid-cols-2">
           <div>
@@ -84,9 +84,9 @@ export function CollectionLanding({ collection, previews }: Props) {
             {previews.map((piece) => (
               <article
                 key={piece.name}
-                className="overflow-hidden rounded-[20px] bg-card shadow-[0_8px_30px_rgba(37,37,37,0.06)]"
+                className="overflow-hidden rounded-[20px] bg-white shadow-[0_8px_30px_rgba(37,37,37,0.06)]"
               >
-                <div className="relative aspect-square bg-[#efe8dc]">
+                <div className="relative aspect-square bg-white">
                   <Image
                     src={piece.image}
                     alt={piece.name}
@@ -105,7 +105,7 @@ export function CollectionLanding({ collection, previews }: Props) {
             ))}
           </div>
 
-          <div className="mt-16 rounded-[24px] border border-border bg-card px-8 py-12 text-center md:px-12">
+          <div className="mt-16 rounded-[24px] border border-border bg-white px-8 py-12 text-center md:px-12">
             <p className="text-[11px] tracking-[0.24em] text-gold uppercase">
               Be first
             </p>

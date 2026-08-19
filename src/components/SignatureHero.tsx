@@ -92,7 +92,7 @@ export function SignatureHero({
   return (
     <section
       ref={rootRef}
-      className="relative isolate overflow-hidden bg-ivory text-ink"
+      className="relative isolate overflow-hidden bg-white text-ink"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_30%,rgba(200,169,106,0.16),transparent_50%)]" />
       <div className="sig-glow pointer-events-none absolute top-[8%] left-[4%] h-[48vw] max-h-[560px] w-[48vw] max-w-[560px] rounded-full bg-[radial-gradient(circle,rgba(255,236,200,0.16),transparent_68%)] blur-2xl" />

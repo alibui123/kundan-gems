@@ -41,7 +41,7 @@ export default async function RingDetailPage({ params }: PageProps) {
     .slice(0, 4);
 
   return (
-    <div className="min-h-screen bg-ivory">
+    <div className="min-h-screen bg-white">
       <Navigation variant="light" />
 
       <main className="pt-28 pb-16 md:pt-32 md:pb-24">

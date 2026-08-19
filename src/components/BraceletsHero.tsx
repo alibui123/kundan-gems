@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { kundanProductImages } from "@/lib/product-assets";
 
 gsap.registerPlugin(useGSAP);
 
@@ -99,7 +100,7 @@ export function BraceletsHero({
   return (
     <section
       ref={rootRef}
-      className="relative isolate overflow-hidden bg-ivory text-ink"
+      className="relative isolate overflow-hidden bg-white text-ink"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_65%_35%,rgba(200,169,106,0.15),transparent_55%)]" />
       <div className="bh-glow pointer-events-none absolute top-[10%] right-[6%] h-[44vw] max-h-[540px] w-[44vw] max-w-[540px] rounded-full bg-[radial-gradient(circle,rgba(255,236,200,0.18),transparent_68%)] blur-2xl" />
@@ -180,31 +181,16 @@ export function BraceletsHero({
 
           <div className="bh-media relative lg:col-span-7">
             <div className="relative mx-auto aspect-[4/5] max-w-[560px] lg:ml-auto lg:mr-0 lg:max-w-none lg:aspect-[5/6]">
-              <div className="bh-media-primary absolute inset-0 overflow-hidden rounded-[28px] shadow-[0_40px_100px_rgba(0,0,0,0.55)]">
+              <div className="bh-media-primary absolute inset-0 overflow-hidden rounded-[28px] bg-white shadow-[0_24px_60px_rgba(14,12,10,0.08)]">
                 <Image
-                  src={image}
-                  alt="Bracelet from the Kundan collection"
+                  src={kundanProductImages.bracelets}
+                  alt="Kundan bracelet from the collection"
                   fill
                   priority
                   sizes="(max-width: 1024px) 90vw, 55vw"
-                  className="object-cover object-center"
+                  unoptimized
+                  className="object-contain p-[10%]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-ink/10" />
-                {/* Light sweep */}
-                <div className="bh-shimmer pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-[-18deg]" />
-              </div>
-
-              <div className="bh-media-secondary absolute -right-3 -bottom-6 w-[44%] overflow-hidden rounded-[22px] border border-border shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:-right-6 sm:-bottom-8 md:w-[40%] lg:-right-4 lg:-bottom-10 xl:-right-8">
-                <div className="relative aspect-square">
-                  <Image
-                    src="https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=900&q=90"
-                    alt="Tennis bracelet detail"
-                    fill
-                    sizes="(max-width: 1024px) 40vw, 22vw"
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-ink/10" />
-                </div>
               </div>
             </div>
           </div>

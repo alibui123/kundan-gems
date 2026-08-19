@@ -10,7 +10,7 @@ export function MaterialsShowcase() {
   return (
     <section
       id="materials"
-      className="relative overflow-hidden border-y border-border bg-stone section-y"
+      className="relative overflow-hidden border-b border-border bg-white section-y"
       aria-label="Shop by material"
     >
       <div className="container-luxury">
@@ -34,7 +34,7 @@ export function MaterialsShowcase() {
                 href={`/materials/${slug}`}
                 className="reveal-item group"
               >
-                <div className="relative aspect-[4/5] overflow-hidden bg-ivory">
+                <div className="relative aspect-[4/5] overflow-hidden bg-white">
                   <Image
                     src={item.image}
                     alt={item.title}

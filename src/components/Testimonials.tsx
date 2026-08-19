@@ -81,7 +81,7 @@ export function Testimonials() {
   const item = testimonials[active];
 
   return (
-    <section className="section-reveal bg-ivory pb-24 md:pb-36">
+    <section className="section-reveal bg-white pb-24 md:pb-36">
       <div className="container-luxury">
         <div
           className="reveal-item mx-auto max-w-3xl text-center"

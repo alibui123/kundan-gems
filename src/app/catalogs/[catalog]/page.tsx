@@ -46,7 +46,7 @@ export default async function CatalogPage({ params }: PageProps) {
   const others = CATALOGS.filter((c) => c !== catalog);
 
   return (
-    <div className="min-h-screen bg-ivory">
+    <div className="min-h-screen bg-white">
       <Navigation variant="dark" />
 
       <CatalogHero catalog={catalog} pieceCount={products.length} />
@@ -54,29 +54,39 @@ export default async function CatalogPage({ params }: PageProps) {
       <main>
         <CatalogLookbook meta={meta} products={products} />
 
-        <div className="container-luxury border-t border-border pb-16 pt-14 md:pb-24">
-          <p className="mb-6 text-[11px] tracking-[0.24em] text-gold uppercase">
-            Continue exploring
-          </p>
-          <div className="flex flex-wrap gap-4">
-            {others.map((c) => (
-              <Link
-                key={c}
-                href={`/catalogs/${c}`}
-                className="inline-flex h-12 items-center rounded-full border border-border px-6 text-[11px] tracking-[0.16em] text-ink uppercase transition-colors hover:border-gold hover:text-gold"
-              >
-                {catalogMeta[c].title}
-              </Link>
-            ))}
-            {MATERIALS.map((m) => (
-              <Link
-                key={m}
-                href={`/materials/${m}`}
-                className="inline-flex h-12 items-center rounded-full border border-border px-6 text-[11px] tracking-[0.16em] text-ink uppercase transition-colors hover:border-gold hover:text-gold"
-              >
-                {materialMeta[m].title}
-              </Link>
-            ))}
+        <div className="container-luxury border-t border-border py-16 md:py-20">
+          <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="font-display text-[clamp(1.75rem,3vw,2.25rem)] text-ink">
+                Continue exploring
+              </h2>
+              <p className="mt-2 max-w-sm text-[14px] leading-relaxed text-muted">
+                Other houses of the maison, and the materials that compose them.
+              </p>
+            </div>
+            <nav
+              aria-label="Related collections"
+              className="flex flex-wrap gap-x-8 gap-y-3"
+            >
+              {others.map((c) => (
+                <Link
+                  key={c}
+                  href={`/catalogs/${c}`}
+                  className="text-[12px] tracking-[0.14em] text-ink/60 uppercase transition-colors hover:text-gold"
+                >
+                  {catalogMeta[c].title}
+                </Link>
+              ))}
+              {MATERIALS.map((m) => (
+                <Link
+                  key={m}
+                  href={`/materials/${m}`}
+                  className="text-[12px] tracking-[0.14em] text-ink/60 uppercase transition-colors hover:text-gold"
+                >
+                  {materialMeta[m].title}
+                </Link>
+              ))}
+            </nav>
           </div>
         </div>
       </main>

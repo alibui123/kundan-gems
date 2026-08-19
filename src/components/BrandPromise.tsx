@@ -49,7 +49,7 @@ const icons = {
 /** Quiet trust ribbon — does not compete with catalogs. */
 export function BrandPromise() {
   return (
-    <section className="section-reveal border-y border-border bg-ivory py-12 md:py-14">
+    <section className="section-reveal border-y border-border bg-white py-12 md:py-14">
       <div className="container-luxury grid gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
         {promises.map((item) => (
           <article

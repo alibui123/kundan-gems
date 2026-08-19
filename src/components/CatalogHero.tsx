@@ -15,7 +15,7 @@ type CatalogHeroProps = {
   pieceCount: number;
 };
 
-/** Full-bleed poster hero — uses heroImage (distinct from homepage stage). */
+/** Full-bleed catalog hero — calm, photographic, maison-grade. */
 export function CatalogHero({ catalog, pieceCount }: CatalogHeroProps) {
   const meta = catalogMeta[catalog];
   const rootRef = useRef<HTMLElement>(null);
@@ -28,22 +28,20 @@ export function CatalogHero({ catalog, pieceCount }: CatalogHeroProps) {
       if (reduce) return;
 
       gsap.set(".ch-line", { yPercent: 110 });
-      gsap.set(
-        [".ch-crumb", ".ch-eyebrow", ".ch-urdu", ".ch-copy", ".ch-meta", ".ch-cta"],
-        { autoAlpha: 0, y: 24 }
-      );
-      gsap.set(".ch-bg-img", { scale: 1.12 });
+      gsap.set([".ch-crumb", ".ch-urdu", ".ch-copy", ".ch-cta"], {
+        autoAlpha: 0,
+        y: 20,
+      });
+      gsap.set(".ch-bg-img", { scale: 1.08 });
 
       gsap
         .timeline({ defaults: { ease: "power3.out" } })
-        .to(".ch-bg-img", { scale: 1, duration: 2.2, ease: "power2.out" }, 0)
-        .to(".ch-crumb", { autoAlpha: 1, y: 0, duration: 0.7 }, 0.15)
-        .to(".ch-eyebrow", { autoAlpha: 1, y: 0, duration: 0.7 }, 0.25)
-        .to(".ch-urdu", { autoAlpha: 1, y: 0, duration: 0.85 }, 0.32)
-        .to(".ch-line", { yPercent: 0, duration: 1.1 }, 0.4)
-        .to(".ch-copy", { autoAlpha: 1, y: 0, duration: 0.8 }, 0.7)
-        .to(".ch-meta", { autoAlpha: 1, y: 0, duration: 0.7 }, 0.9)
-        .to(".ch-cta", { autoAlpha: 1, y: 0, duration: 0.7 }, 1);
+        .to(".ch-bg-img", { scale: 1, duration: 1.8, ease: "power2.out" }, 0)
+        .to(".ch-crumb", { autoAlpha: 1, y: 0, duration: 0.65 }, 0.2)
+        .to(".ch-urdu", { autoAlpha: 1, y: 0, duration: 0.7 }, 0.3)
+        .to(".ch-line", { yPercent: 0, duration: 1 }, 0.35)
+        .to(".ch-copy", { autoAlpha: 1, y: 0, duration: 0.75 }, 0.55)
+        .to(".ch-cta", { autoAlpha: 1, y: 0, duration: 0.65 }, 0.75);
     },
     { scope: rootRef }
   );
@@ -51,7 +49,8 @@ export function CatalogHero({ catalog, pieceCount }: CatalogHeroProps) {
   return (
     <section
       ref={rootRef}
-      className="relative isolate h-[100svh] overflow-hidden"
+      className="relative isolate min-h-[88svh] overflow-hidden md:min-h-[92svh]"
+      aria-label={`${meta.title} — ${meta.subtitle}`}
     >
       <div className="absolute inset-0 overflow-hidden" aria-hidden>
         <Image
@@ -64,12 +63,12 @@ export function CatalogHero({ catalog, pieceCount }: CatalogHeroProps) {
           className="ch-bg-img object-cover will-change-transform"
           style={{ objectPosition: meta.heroObjectPosition }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/50 to-ink/20" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-ink/25" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/45 to-ink/15" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-transparent to-ink/20" />
       </div>
 
-      <div className="container-luxury relative z-10 flex h-full flex-col justify-end pb-16 pt-28 md:pb-20 md:pt-36">
-        <nav className="ch-crumb mb-10 text-[11px] tracking-[0.16em] text-ivory/50 uppercase md:mb-14">
+      <div className="container-luxury relative z-10 flex min-h-[88svh] flex-col justify-end pb-14 pt-28 md:min-h-[92svh] md:pb-20 md:pt-36">
+        <nav className="ch-crumb mb-auto text-[11px] tracking-[0.16em] text-ivory/50 uppercase">
           <Link href="/" className="transition-colors hover:text-gold">
             Home
           </Link>
@@ -81,37 +80,31 @@ export function CatalogHero({ catalog, pieceCount }: CatalogHeroProps) {
           <span className="text-gold">{meta.title}</span>
         </nav>
 
-        <div className="max-w-xl">
-          <p className="ch-eyebrow mb-4 text-[11px] font-medium tracking-[0.28em] text-gold uppercase">
-            {meta.subtitle}
-          </p>
-          <p className="ch-urdu mb-3 font-display text-3xl font-light text-gold/80">
+        <div className="mt-16 max-w-xl md:mt-20">
+          <p className="ch-urdu font-display text-2xl text-gold/75 md:text-[1.75rem]">
             {meta.urduHint}
           </p>
 
-          <h1 className="font-display text-[clamp(3.25rem,8vw,6rem)] font-light leading-[0.95] tracking-[-0.02em] text-ivory">
+          <h1 className="mt-3 font-display text-[clamp(3.5rem,9vw,6.5rem)] leading-[0.92] tracking-[-0.02em] text-ivory">
             <span className="inline-block overflow-hidden align-bottom">
               <span className="ch-line inline-block">{meta.title}</span>
             </span>
           </h1>
 
-          <p className="ch-copy mt-6 max-w-md text-[15px] leading-[1.85] text-ivory/65">
-            {meta.story}
+          <p className="ch-copy mt-5 max-w-md text-[15px] leading-[1.75] text-ivory/70 md:mt-6">
+            {meta.tagline}
           </p>
 
-          <div className="ch-meta mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-ivory/15 pt-6 text-[11px] tracking-[0.18em] text-ivory/45 uppercase">
-            <span>{pieceCount} pieces</span>
-            <span className="hidden h-3 w-px bg-ivory/20 sm:block" />
-            <span>Pakistan atelier</span>
-          </div>
-
-          <div className="ch-cta mt-10">
+          <div className="ch-cta mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
             <a
               href="#catalog-grid"
-              className="inline-flex h-12 items-center rounded-full bg-gold px-7 text-[11px] tracking-[0.18em] text-void uppercase transition-all hover:-translate-y-0.5 hover:bg-gold-bright"
+              className="inline-flex h-12 items-center bg-gold px-8 text-[11px] font-medium tracking-[0.18em] text-void uppercase transition-colors hover:bg-gold-bright"
             >
-              View the edit
+              View the collection
             </a>
+            <span className="text-[11px] tracking-[0.18em] text-ivory/45 uppercase">
+              {pieceCount > 0 ? `${pieceCount} pieces` : meta.subtitle}
+            </span>
           </div>
         </div>
       </div>

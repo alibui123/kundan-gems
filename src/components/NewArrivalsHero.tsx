@@ -83,7 +83,7 @@ export function NewArrivalsHero({
   return (
     <section
       ref={rootRef}
-      className="relative isolate overflow-hidden bg-ivory text-ink"
+      className="relative isolate overflow-hidden bg-white text-ink"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,rgba(200,169,106,0.14),transparent_55%)]" />
       <div className="na-glow pointer-events-none absolute top-[12%] right-[6%] h-[42vw] max-h-[480px] w-[42vw] max-w-[480px] rounded-full bg-[radial-gradient(circle,rgba(255,236,200,0.14),transparent_68%)] blur-2xl" />

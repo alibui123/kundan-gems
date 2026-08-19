@@ -4,7 +4,7 @@
 export function ManifestoBand() {
   return (
     <section
-      className="relative overflow-hidden border-b border-border bg-ivory"
+      className="relative overflow-hidden border-b border-border bg-white"
       aria-label="Maison manifesto"
     >
       <div className="container-luxury py-14 md:py-16 lg:py-20">

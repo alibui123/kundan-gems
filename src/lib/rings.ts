@@ -1,3 +1,7 @@
+import { kundanProductImages } from "@/lib/product-assets";
+
+const RING_IMAGE = kundanProductImages.rings;
+
 export type RingProduct = {
   id: string;
   slug: string;
@@ -25,13 +29,8 @@ export const rings: RingProduct[] = [
     metal: "18k Yellow Gold",
     carat: "1.02 ct",
     size: ["5", "6", "7", "8"],
-    image:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=1200&q=85",
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=85",
-    ],
+    image: RING_IMAGE,
+    gallery: [RING_IMAGE],
     badge: "Signature",
   },
   {
@@ -45,12 +44,8 @@ export const rings: RingProduct[] = [
     metal: "Platinum",
     carat: "1.50 ct",
     size: ["5", "6", "7", "8", "9"],
-    image:
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=1200&q=85",
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
-    ],
+    image: RING_IMAGE,
+    gallery: [RING_IMAGE],
     badge: "Best Seller",
   },
   {
@@ -64,12 +59,8 @@ export const rings: RingProduct[] = [
     metal: "18k White Gold",
     carat: "0.65 ct tw",
     size: ["5", "6", "7", "8"],
-    image:
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=1200&q=85",
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1200&q=85",
-    ],
+    image: RING_IMAGE,
+    gallery: [RING_IMAGE],
   },
   {
     id: "ring-nocturne",
@@ -82,12 +73,8 @@ export const rings: RingProduct[] = [
     metal: "18k Rose Gold",
     carat: "1.20 ct tw",
     size: ["5", "6", "7", "8"],
-    image:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85&sat=-20",
-    gallery: [
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1200&q=85",
-    ],
+    image: RING_IMAGE,
+    gallery: [RING_IMAGE],
     badge: "New",
   },
   {
@@ -101,12 +88,8 @@ export const rings: RingProduct[] = [
     metal: "18k Yellow Gold",
     carat: "0.18 ct",
     size: ["6", "7", "8", "9", "10"],
-    image:
-      "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=1200&q=85",
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=1200&q=85",
-    ],
+    image: RING_IMAGE,
+    gallery: [RING_IMAGE],
   },
   {
     id: "ring-gilded",
@@ -119,12 +102,8 @@ export const rings: RingProduct[] = [
     metal: "18k Yellow Gold",
     carat: "0.42 ct tw",
     size: ["5", "6", "7", "8"],
-    image:
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1200&q=85",
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
-    ],
+    image: RING_IMAGE,
+    gallery: [RING_IMAGE],
   },
   {
     id: "ring-ivory",
@@ -137,12 +116,8 @@ export const rings: RingProduct[] = [
     metal: "Platinum",
     carat: "0.95 ct tw",
     size: ["5", "6", "7", "8"],
-    image:
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1200&q=85",
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=1200&q=85",
-    ],
+    image: RING_IMAGE,
+    gallery: [RING_IMAGE],
   },
   {
     id: "ring-atelier",
@@ -155,12 +130,8 @@ export const rings: RingProduct[] = [
     metal: "18k Yellow Gold",
     carat: "0.90 ct",
     size: ["5", "6", "7", "8", "9"],
-    image:
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=85",
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
-    ],
+    image: RING_IMAGE,
+    gallery: [RING_IMAGE],
     badge: "Atelier",
   },
   {
@@ -174,12 +145,8 @@ export const rings: RingProduct[] = [
     metal: "Platinum",
     carat: "1.15 ct",
     size: ["5", "6", "7", "8"],
-    image:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85&sat=-30",
-    gallery: [
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=1200&q=85",
-    ],
+    image: RING_IMAGE,
+    gallery: [RING_IMAGE],
     badge: "New",
   },
   {
@@ -193,12 +160,8 @@ export const rings: RingProduct[] = [
     metal: "Mixed Golds",
     carat: "0.28 ct tw",
     size: ["5", "6", "7", "8", "9"],
-    image:
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=1200&q=85",
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1200&q=85",
-    ],
+    image: RING_IMAGE,
+    gallery: [RING_IMAGE],
   },
   {
     id: "ring-opaline",
@@ -211,12 +174,8 @@ export const rings: RingProduct[] = [
     metal: "18k White Gold",
     carat: "0.85 ct",
     size: ["5", "6", "7", "8"],
-    image:
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=1200&q=85",
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=85",
-    ],
+    image: RING_IMAGE,
+    gallery: [RING_IMAGE],
   },
   {
     id: "ring-mira",
@@ -229,12 +188,8 @@ export const rings: RingProduct[] = [
     metal: "18k Rose Gold",
     carat: "1.10 ct",
     size: ["5", "6", "7", "8"],
-    image:
-      "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=1200&q=85",
-    gallery: [
-      "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=1200&q=85",
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
-    ],
+    image: RING_IMAGE,
+    gallery: [RING_IMAGE],
     badge: "Signature",
   },
 ];

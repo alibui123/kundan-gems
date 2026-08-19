@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { formatPrice } from "@/lib/rings";
 import { useCart } from "@/components/CartProvider";
+import { ProductImageFrame } from "@/components/ProductImageFrame";
 
 export function CartDrawer() {
   const {
@@ -26,7 +26,7 @@ export function CartDrawer() {
         aria-hidden={!isOpen}
       />
       <aside
-        className={`fixed top-0 right-0 z-[70] flex h-full w-full max-w-md flex-col bg-ivory shadow-[-20px_0_60px_rgba(0,0,0,0.12)] transition-transform duration-500 ease-out ${
+        className={`fixed top-0 right-0 z-[70] flex h-full w-full max-w-md flex-col bg-white shadow-[-20px_0_60px_rgba(0,0,0,0.12)] transition-transform duration-500 ease-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
         aria-hidden={!isOpen}
@@ -78,14 +78,16 @@ export function CartDrawer() {
                   <Link
                     href={href}
                     onClick={closeCart}
-                    className="relative h-24 w-20 shrink-0 overflow-hidden rounded-xl bg-[#efe8dc]"
+                    className="relative block h-24 w-20 shrink-0 overflow-hidden"
                   >
-                    <Image
+                    <ProductImageFrame
                       src={item.image}
                       alt={item.name}
-                      fill
                       sizes="80px"
-                      className="object-cover"
+                      aspect="portrait"
+                      padding="thumb"
+                      fillContainer
+                      className="h-full w-full"
                     />
                   </Link>
                   <div className="min-w-0 flex-1">

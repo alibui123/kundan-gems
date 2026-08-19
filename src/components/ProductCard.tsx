@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "@/components/CartProvider";
+import { ProductImageFrame } from "@/components/ProductImageFrame";
 
 type ProductCardProps = {
   id: string;
@@ -77,7 +78,7 @@ export function ProductCard({
           type="button"
           aria-label={liked ? "Remove from wishlist" : "Add to wishlist"}
           onClick={() => setLiked((v) => !v)}
-          className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center bg-ivory/90 text-ink/70 transition-colors hover:text-gold"
+          className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center bg-white/90 text-ink/70 shadow-sm transition-colors hover:text-gold"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden>
             <path
@@ -132,32 +133,32 @@ function CardMedia({
   imgError: boolean;
   onImgError: () => void;
 }) {
-  return (
-    <div
-      className={`relative overflow-hidden bg-stone ${
-        aspect === "square" ? "aspect-square" : "aspect-[4/5]"
-      }`}
-    >
-      {!imgError ? (
+  if (imgError) {
+    return (
+      <div
+        className={`relative flex items-center justify-center overflow-hidden bg-white ${
+          aspect === "square" ? "aspect-square" : "aspect-[4/5]"
+        }`}
+      >
         <Image
-          src={image}
-          alt={name}
-          fill
-          sizes="(max-width: 768px) 72vw, 25vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-          onError={onImgError}
+          src="/logo.png"
+          alt="Kundan"
+          width={120}
+          height={130}
+          className="h-14 w-auto object-contain opacity-80"
         />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#efe8dc] to-[#e0d4c4]">
-          <Image
-            src="/logo.png"
-            alt="Kundan"
-            width={120}
-            height={130}
-            className="h-14 w-auto object-contain opacity-80"
-          />
-        </div>
-      )}
-    </div>
+      </div>
+    );
+  }
+
+  return (
+    <ProductImageFrame
+      src={image}
+      alt={name}
+      aspect={aspect}
+      sizes="(max-width: 768px) 72vw, 25vw"
+      onError={onImgError}
+      hoverScale
+    />
   );
 }

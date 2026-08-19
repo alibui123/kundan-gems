@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { kundanProductImages } from "@/lib/product-assets";
 
 gsap.registerPlugin(useGSAP);
 
@@ -71,7 +72,7 @@ export function RingsHero({ pieceCount }: RingsHeroProps) {
   return (
     <section
       ref={rootRef}
-      className="relative isolate overflow-hidden bg-ivory text-ink"
+      className="relative isolate overflow-hidden bg-white text-ink"
     >
       {/* Atmosphere */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_40%,rgba(200,169,106,0.14),transparent_55%)]" />
@@ -152,30 +153,16 @@ export function RingsHero({ pieceCount }: RingsHeroProps) {
           <div className="rh-media relative lg:col-span-7 xl:col-span-7">
             <div className="relative mx-auto aspect-[4/5] max-w-[560px] lg:ml-auto lg:mr-0 lg:max-w-none lg:aspect-[5/6]">
               {/* Primary — edge-aware, dominant plane */}
-              <div className="rh-media-primary absolute inset-0 overflow-hidden rounded-[28px] shadow-[0_40px_100px_rgba(0,0,0,0.55)]">
+              <div className="rh-media-primary absolute inset-0 overflow-hidden rounded-[28px] bg-white shadow-[0_24px_60px_rgba(14,12,10,0.08)]">
                 <Image
-                  src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1400&q=90"
-                  alt="Diamond solitaire ring on dark stone"
+                  src={kundanProductImages.rings}
+                  alt="Kundan ring from the collection"
                   fill
                   priority
                   sizes="(max-width: 1024px) 90vw, 55vw"
-                  className="object-cover object-center"
+                  unoptimized
+                  className="object-contain p-[10%]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-ink/10" />
-              </div>
-
-              {/* Secondary overlapping plate — editorial collage */}
-              <div className="rh-media-secondary absolute -bottom-6 -left-4 w-[46%] overflow-hidden rounded-[22px] border border-border shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:-bottom-8 sm:-left-8 md:w-[42%] lg:-bottom-10 lg:-left-6 xl:-left-10">
-                <div className="relative aspect-[4/5]">
-                  <Image
-                    src="https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=900&q=90"
-                    alt="Heritage halo ring detail"
-                    fill
-                    sizes="(max-width: 1024px) 40vw, 22vw"
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-ink/10" />
-                </div>
               </div>
             </div>
           </div>

@@ -27,11 +27,12 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     }
 
     const lenis = new Lenis({
-      duration: 0.75,
+      duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       syncTouch: false,
-      touchMultiplier: 1.2,
+      touchMultiplier: 1.15,
+      wheelMultiplier: 0.92,
     });
 
     const w = window as Window & { __lenis?: Lenis };

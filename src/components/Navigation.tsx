@@ -44,7 +44,7 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
 
   const resolveHref = (link: (typeof homeLinks)[number]) => {
     if (link.label === "Catalogs") return isHome ? "#catalogs" : "/#catalogs";
-    if (link.label === "Materials") return isHome ? "#materials" : "/#materials";
+    if (link.label === "Materials") return isHome ? "#gold" : "/#gold";
     if (link.label === "Forms") return isHome ? "#collections" : "/#collections";
     if (link.label === "The Edit") return isHome ? "#the-edit" : "/#the-edit";
     if (link.label === "Atelier") return isHome ? "#atelier" : "/#atelier";
@@ -52,9 +52,13 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
     return link.href;
   };
 
-  // Home hero is a light ivory stage — keep ink chrome always.
-  const linkTone = "text-ink/75 hover:text-ink";
-  const iconTone = "text-ink/80 hover:text-ink";
+  const filmChrome = isHome && !scrolled && !open;
+  const linkTone = filmChrome
+    ? "text-ivory/80 hover:text-ivory"
+    : "text-ink/75 hover:text-ink";
+  const iconTone = filmChrome
+    ? "text-ivory/85 hover:text-ivory"
+    : "text-ink/80 hover:text-ink";
 
   const menuLinks = homeLinks.map((link) => ({
     label: link.label,
@@ -66,15 +70,19 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
       <header
         className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow] duration-400 ${
           open
-            ? "bg-ivory"
+            ? "bg-white"
             : scrolled || !isHome
-              ? "bg-ivory/92 shadow-[0_1px_0_rgba(28,25,23,0.06)] backdrop-blur-md"
+              ? "bg-white/92 shadow-[0_1px_0_rgba(28,25,23,0.06)] backdrop-blur-md"
               : "bg-transparent"
         }`}
       >
         <nav className="relative flex h-16 w-full items-center lg:h-[4.25rem]">
           <div className="relative z-[70] flex shrink-0 items-center self-stretch pl-1 sm:pl-2">
-            <MenuToggle open={open} onClick={toggleMenu} className="text-ink" />
+            <MenuToggle
+              open={open}
+              onClick={toggleMenu}
+              className={filmChrome ? "text-ivory" : "text-ink"}
+            />
           </div>
 
           <Link

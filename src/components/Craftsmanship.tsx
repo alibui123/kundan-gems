@@ -5,7 +5,7 @@ export function Craftsmanship() {
   return (
     <section
       id="craftsmanship"
-      className="section-reveal bg-ivory pb-24 md:pb-36"
+      className="section-reveal bg-white pb-24 md:pb-36"
     >
       <div className="container-luxury grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
         <div className="reveal-item order-2 lg:order-1">

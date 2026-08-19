@@ -6,7 +6,7 @@ export function NewArrivals({ products }: { products: Product[] }) {
   return (
     <section
       id="new-arrivals"
-      className="section-y relative overflow-hidden bg-ivory"
+      className="section-y relative overflow-hidden bg-white"
     >
       <div className="container-luxury">
         <div className="reveal-item mb-10 flex flex-col gap-5 md:mb-14 md:flex-row md:items-end md:justify-between">

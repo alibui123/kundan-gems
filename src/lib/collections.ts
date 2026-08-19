@@ -1,3 +1,5 @@
+import { kundanProductImages } from "@/lib/product-assets";
+
 export type CollectionMeta = {
   slug: string;
   title: string;
@@ -14,8 +16,7 @@ export const collectionJourney: CollectionMeta[] = [
     title: "Rings",
     subtitle: "Eternal bands",
     description: "Solitaires, halos, and sculptural bands for forever.",
-    image:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=1200&q=85",
+    image: kundanProductImages.rings,
     href: "/collections/rings",
     status: "live",
   },
@@ -24,8 +25,7 @@ export const collectionJourney: CollectionMeta[] = [
     title: "Necklaces",
     subtitle: "Statement grace",
     description: "Pendants and cascades composed for the collarbone.",
-    image:
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1200&q=85",
+    image: kundanProductImages.necklaces,
     href: "/collections/necklaces",
     status: "live",
   },
@@ -34,8 +34,7 @@ export const collectionJourney: CollectionMeta[] = [
     title: "Bracelets",
     subtitle: "Soft brilliance",
     description: "Cuffs and tennis lines with quiet radiance.",
-    image:
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1200&q=85",
+    image: kundanProductImages.bracelets,
     href: "/collections/bracelets",
     status: "live",
   },

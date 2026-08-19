@@ -55,8 +55,8 @@ export function CatalogsShowcase() {
 
     gsap.fromTo(
       layer,
-      { opacity: 0 },
-      { opacity: 1, duration: 0.75, ease: "power2.out" }
+      { opacity: 0, scale: 1.06 },
+      { opacity: 1, scale: 1, duration: 0.9, ease: "power3.out" }
     );
   }, [active]);
 
@@ -69,17 +69,22 @@ export function CatalogsShowcase() {
     >
       {/* Full-section background — fills entire stage */}
       <div ref={bgRef} className="absolute inset-0 overflow-hidden" aria-hidden>
-        <div key={meta.slug} data-cat-bg className="absolute inset-0">
-          <Image
-            src={meta.image}
-            alt=""
-            fill
-            priority={meta.slug === "mehr"}
-            sizes="100vw"
-            unoptimized={isLocalPublicSrc(meta.image)}
-            className="object-cover"
-            style={{ objectPosition: meta.objectPosition }}
-          />
+        <div
+          data-catalog-stage
+          className="absolute inset-0 will-change-transform"
+        >
+          <div key={meta.slug} data-cat-bg className="absolute inset-0">
+            <Image
+              src={meta.image}
+              alt=""
+              fill
+              priority={meta.slug === "mehr"}
+              sizes="100vw"
+              unoptimized={isLocalPublicSrc(meta.image)}
+              className="object-cover"
+              style={{ objectPosition: meta.objectPosition }}
+            />
+          </div>
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-void/88 via-void/55 to-void/30" />
         <div className="absolute inset-0 bg-gradient-to-t from-void/75 via-transparent to-void/35" />
@@ -87,14 +92,13 @@ export function CatalogsShowcase() {
 
       <div className="container-luxury relative z-10 flex min-h-[85svh] flex-col justify-center py-16 md:min-h-[90svh] md:py-20 lg:py-24">
         <header className="cat-head mb-10 max-w-xl md:mb-14">
-          <p className="label-caps mb-3 text-gold">Catalogs</p>
-          <h2 className="font-display text-[clamp(2.5rem,5vw,4rem)] leading-[1.05] tracking-[0.01em] text-ivory">
-            Shop by occasion
+          <h2 className="font-display text-[clamp(2.5rem,5vw,4.25rem)] leading-[1.05] tracking-[0.01em] text-ivory">
+            Three houses
           </h2>
-          <p className="mt-4 max-w-md text-[15px] leading-[1.75] text-ivory/55">
-            Three houses of the maison. Hover a name — the light changes with
-            the story.
-          </p>
+            <p className="mt-4 max-w-md text-[15px] leading-[1.75] text-ivory/55">
+              Mehr for the dulhan. Noor for the night. Rozana for every day.
+              Hover a house — the salon light changes.
+            </p>
         </header>
 
         <div className="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-12">
@@ -169,15 +173,6 @@ export function CatalogsShowcase() {
                 );
               })}
             </nav>
-
-            <div className="mt-8 flex flex-wrap items-center gap-5">
-              <Link
-                href={`/catalogs/${meta.slug}`}
-                className="inline-flex h-12 items-center bg-gold px-8 text-[11px] font-medium tracking-[0.18em] text-void uppercase transition-colors hover:bg-ivory"
-              >
-                Enter {meta.title}
-              </Link>
-            </div>
           </div>
 
           <div className="lg:col-span-6 xl:col-span-5 xl:col-start-8">

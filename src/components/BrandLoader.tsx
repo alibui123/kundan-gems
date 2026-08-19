@@ -60,7 +60,7 @@ export function BrandLoader({
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-ivory/75 backdrop-blur-md ${className}`}
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/75 backdrop-blur-md ${className}`}
     >
       {mark}
       <p className="mt-8 text-[10px] tracking-[0.32em] text-muted uppercase">
