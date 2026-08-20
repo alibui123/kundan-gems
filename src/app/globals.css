@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/*
+ * Hallmark · genre: editorial · macrostructure: Manifesto · theme: Atelier-voice
+ * (palette locked to project tokens) · enrichment: runway film + look sequence
+ * nav: N6 · footer: Ft1 · mood: runway · designed-as: jewellery-ecommerce
+ * Pre-emit critique: P5 H5 E4 S5 R4 V5
+ * Differs from Photographic on: macrostructure + nav + footer + reveal (sweep)
+ */
+
 @theme {
   --color-void: #0e0c0a;
   --color-ivory: #ffffff;
@@ -15,8 +23,8 @@
   --color-lacquer: #5c2a32;
   --color-chalk: #ffffff;
 
-  --font-display: var(--font-playfair), "Playfair Display", Georgia,
-    "Times New Roman", serif;
+  --font-display: var(--font-cormorant), Cormorant, Georgia, "Times New Roman",
+    serif;
   --font-body: var(--font-inter), Inter, system-ui, sans-serif;
 
   --shadow-soft: 0 10px 28px rgba(14, 12, 10, 0.05);
@@ -116,12 +124,60 @@
   }
 
   .section-y {
-    padding-block: 5rem;
+    padding-block: 6.5rem;
   }
 
   @media (min-width: 768px) {
     .section-y {
-      padding-block: 7rem;
+      padding-block: 9rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .section-y {
+      padding-block: 11rem;
+    }
+  }
+
+  /* Maison homepage rhythm — do not use on Silhouette / Floor */
+  .section-y-maison {
+    padding-block: 8.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .section-y-maison {
+      padding-block: 11.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .section-y-maison {
+      padding-block: 14rem;
+    }
+  }
+
+  .container-maison {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-maison {
+      padding-inline: 2.75rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-maison {
+      padding-inline: 4rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .container-maison {
+      padding-inline: 5rem;
     }
   }
 
@@ -163,6 +219,64 @@
     filter: drop-shadow(0 22px 36px rgba(14, 12, 10, 0.14));
   }
 
+  /* Catalog houses — gallery vitrine around each campaign image */
+  .cat-vitrine {
+    display: block;
+    min-height: 0;
+    background: #ffffff;
+    border: 1px solid color-mix(in srgb, var(--color-gold) 55%, #d4c4a0);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.95) inset,
+      0 0 0 1px rgba(184, 154, 94, 0.12),
+      0 18px 40px rgba(14, 12, 10, 0.08),
+      0 4px 12px rgba(14, 12, 10, 0.04);
+    transition:
+      box-shadow 0.55s var(--ease-out),
+      border-color 0.55s var(--ease-out);
+  }
+
+  .cat-vitrine:hover {
+    border-color: var(--color-gold);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.95) inset,
+      0 0 0 1px color-mix(in srgb, var(--color-gold) 28%, transparent),
+      0 24px 52px rgba(14, 12, 10, 0.1),
+      0 8px 18px rgba(184, 154, 94, 0.12);
+  }
+
+  .cat-vitrine__rail {
+    position: absolute;
+    inset: 7px;
+    border: 1px solid color-mix(in srgb, var(--color-gold) 35%, transparent);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .cat-vitrine__mat {
+    position: absolute;
+    inset: 12px;
+    overflow: hidden;
+    background: var(--color-void);
+    box-shadow: 0 0 0 1px rgba(14, 12, 10, 0.06);
+  }
+
+  .cat-stack-card {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (min-width: 1024px) {
+    .cat-vitrine__mat {
+      inset: 14px;
+    }
+
+    .cat-vitrine__rail {
+      inset: 8px;
+    }
+  }
+
   .product-stage {
     position: relative;
     isolation: isolate;
@@ -173,6 +287,66 @@
     position: relative;
     z-index: 1;
     object-fit: contain;
+  }
+
+  /* Editorial material panels — structure ready for parallax scrub */
+  .editorial-panel {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .editorial-panel__media {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .editorial-panel__parallax {
+    position: absolute;
+    inset: -12%;
+    will-change: transform;
+  }
+
+  .editorial-panel__veil {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      180deg,
+      transparent 35%,
+      rgba(14, 12, 10, 0.55) 100%
+    );
+  }
+
+  .editorial-panel__copy {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .editorial-panel__copy {
+      padding: 2.5rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .editorial-panel__copy {
+      padding: 3.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .editorial-panel__copy {
+      padding: 4.5rem 5rem;
+    }
   }
 
   .btn-gold-liquid {
@@ -556,6 +730,239 @@
   @media (prefers-reduced-motion: reduce) {
     .lb-frame {
       transition: none;
+    }
+  }
+
+  /* —— Refined micro-interactions (transform / opacity only) —— */
+  .link-draw {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.45s var(--ease-out);
+  }
+
+  .link-draw::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.12em;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.55s var(--ease-out);
+  }
+
+  .link-draw:hover::after,
+  .link-draw:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  .link-draw-gold::after {
+    background: var(--color-gold);
+  }
+
+  .nav-link-draw > span.nav-underline {
+    position: absolute;
+    left: 0;
+    bottom: -0.2em;
+    height: 1px;
+    width: 100%;
+    background: var(--color-gold);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.55s var(--ease-out);
+  }
+
+  .nav-link-draw:hover > span.nav-underline,
+  .nav-link-draw:focus-visible > span.nav-underline {
+    transform: scaleX(1);
+  }
+
+  .btn-outline-luxe {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--color-ink) 15%, transparent);
+    background: transparent;
+    color: var(--color-ink);
+    transition:
+      color 0.5s var(--ease-out),
+      border-color 0.5s var(--ease-out),
+      background-color 0.5s var(--ease-out),
+      transform 0.5s var(--ease-out);
+  }
+
+  .btn-outline-luxe:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+    background-color: color-mix(in srgb, var(--color-gold) 4%, transparent);
+  }
+
+  .btn-outline-luxe:active {
+    transform: scale(0.985);
+  }
+
+  .btn-outline-luxe-light {
+    border-color: color-mix(in srgb, var(--color-ivory) 35%, transparent);
+    color: var(--color-ivory);
+  }
+
+  .btn-outline-luxe-light:hover {
+    border-color: var(--color-gold);
+    color: var(--color-ivory);
+    background-color: color-mix(in srgb, var(--color-ivory) 5%, transparent);
+  }
+
+  .btn-solid-luxe {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-gold);
+    color: var(--color-void);
+    transition:
+      background-color 0.5s var(--ease-out),
+      color 0.5s var(--ease-out),
+      transform 0.5s var(--ease-out);
+  }
+
+  .btn-solid-luxe:hover {
+    background-color: var(--color-gold-bright);
+  }
+
+  .btn-solid-luxe:active {
+    transform: scale(0.985);
+  }
+
+  /* Hero primary — restrained maison CTA (gold, sharp, quiet) */
+  .btn-hero-atelier {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.25rem;
+    padding: 0 2.5rem;
+    background: var(--color-gold);
+    color: var(--color-void);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    border: 1px solid var(--color-gold);
+    box-shadow: inset 0 0 0 0 transparent;
+    transition:
+      background-color 0.55s var(--ease-out),
+      color 0.55s var(--ease-out),
+      border-color 0.55s var(--ease-out),
+      box-shadow 0.55s var(--ease-out),
+      transform 0.55s var(--ease-out);
+  }
+
+  .btn-hero-atelier::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 1px solid color-mix(in srgb, var(--color-void) 18%, transparent);
+    pointer-events: none;
+    transition: border-color 0.55s var(--ease-out);
+  }
+
+  .btn-hero-atelier:hover {
+    background: transparent;
+    color: var(--color-gold);
+    border-color: var(--color-gold);
+    box-shadow: 0 12px 28px rgba(14, 12, 10, 0.28);
+    transform: translateY(-1px);
+  }
+
+  .btn-hero-atelier:hover::after {
+    border-color: color-mix(in srgb, var(--color-gold) 45%, transparent);
+  }
+
+  .btn-hero-atelier:active {
+    transform: translateY(0);
+  }
+
+  .btn-hero-atelier span {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-hero-atelier,
+    .btn-hero-atelier::after {
+      transition: none;
+    }
+
+    .btn-hero-atelier:hover {
+      transform: none;
+    }
+  }
+
+  .poster-zoom-img {
+    transform: scale(1);
+    transition: transform 1.15s var(--ease-out);
+    will-change: transform;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .group\/poster:hover .poster-zoom-img,
+    .editorial-panel.group:hover .poster-zoom-img {
+      transform: scale(1.05);
+    }
+
+    .group\/poster:hover .poster-glow,
+    .editorial-panel.group:hover .poster-glow {
+      opacity: 1;
+    }
+  }
+
+  .poster-glow {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+    box-shadow: inset 0 0 90px rgba(184, 154, 94, 0.14);
+    transition: opacity 0.9s var(--ease-out);
+  }
+
+  .input-luxe {
+    transition: border-color 0.45s var(--ease-out);
+  }
+
+  .input-luxe:focus {
+    border-color: color-mix(in srgb, var(--color-gold) 50%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .link-draw::after,
+    .nav-link-draw > span.nav-underline,
+    .btn-outline-luxe,
+    .btn-outline-luxe-light,
+    .btn-solid-luxe,
+    .poster-zoom-img,
+    .poster-glow,
+    .input-luxe {
+      transition: none;
+    }
+
+    .group\/poster:hover .poster-zoom-img,
+    .editorial-panel.group:hover .poster-zoom-img {
+      transform: none;
+    }
+
+    .btn-outline-luxe:hover,
+    .btn-outline-luxe:active,
+    .btn-solid-luxe:hover,
+    .btn-solid-luxe:active {
+      transform: none;
+    }
+
+    .link-draw:hover::after,
+    .nav-link-draw:hover > span.nav-underline {
+      transform: scaleX(1);
     }
   }
 }

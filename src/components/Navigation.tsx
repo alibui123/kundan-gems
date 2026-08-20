@@ -12,6 +12,10 @@ type NavigationProps = {
   variant?: "auto" | "light" | "dark";
 };
 
+/**
+ * On homepage hero: logo only.
+ * After scroll: white field fades in + full masthead.
+ */
 export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
   const pathname = usePathname();
   const { count, openCart } = useCart();
@@ -23,117 +27,200 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
   const toggleMenu = useCallback(() => setOpen((v) => !v), []);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 48);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    const sync = () => {
+      if (!isHome) {
+        setScrolled(true);
+        return;
+      }
+      const boutique = document.querySelector(".boutique");
+      if (boutique) {
+        setScrolled(
+          boutique.getBoundingClientRect().top < window.innerHeight * 0.88
+        );
+        return;
+      }
+      setScrolled(window.scrollY > 64);
+    };
+
+    sync();
+    window.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+
+    type LenisLike = {
+      on: (e: string, cb: () => void) => void;
+      off: (e: string, cb: () => void) => void;
+    };
+    const getLenis = () =>
+      (window as Window & { __lenis?: LenisLike }).__lenis;
+
+    getLenis()?.on("scroll", sync);
+
+    const retry = window.setInterval(() => {
+      const l = getLenis();
+      if (l) {
+        l.on("scroll", sync);
+        window.clearInterval(retry);
+      }
+    }, 200);
+    window.setTimeout(() => window.clearInterval(retry), 3000);
+
+    return () => {
+      window.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+      window.clearInterval(retry);
+      getLenis()?.off("scroll", sync);
+    };
+  }, [isHome]);
 
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
-  const homeLinks = navLinks.map((link) => ({
-    ...link,
-    href: link.href.startsWith("#")
-      ? pathname === "/"
-        ? link.href
-        : `/${link.href}`
-      : link.href,
-  }));
-
-  const resolveHref = (link: (typeof homeLinks)[number]) => {
-    if (link.label === "Catalogs") return isHome ? "#catalogs" : "/#catalogs";
-    if (link.label === "Materials") return isHome ? "#gold" : "/#gold";
-    if (link.label === "Forms") return isHome ? "#collections" : "/#collections";
-    if (link.label === "The Edit") return isHome ? "#the-edit" : "/#the-edit";
-    if (link.label === "Atelier") return isHome ? "#atelier" : "/#atelier";
-    if (link.href === "#") return "/";
-    return link.href;
+  const resolveHref = (label: string, href: string) => {
+    if (label === "Catalogs") return isHome ? "#catalogs" : "/#catalogs";
+    if (label === "Materials") return isHome ? "#materials" : "/#materials";
+    if (label === "Forms") return isHome ? "#collections" : "/#collections";
+    if (label === "The Edit") return isHome ? "#the-edit" : "/#the-edit";
+    if (label === "Atelier") return isHome ? "#atelier" : "/#atelier";
+    if (label === "Contact") return isHome ? "#newsletter" : "/#newsletter";
+    if (href === "#") return "/";
+    return href.startsWith("#") ? (isHome ? href : `/${href}`) : href;
   };
 
-  const filmChrome = isHome && !scrolled && !open;
-  const linkTone = filmChrome
-    ? "text-ivory/80 hover:text-ivory"
-    : "text-ink/75 hover:text-ink";
-  const iconTone = filmChrome
-    ? "text-ivory/85 hover:text-ivory"
-    : "text-ink/80 hover:text-ink";
+  const solid = open || scrolled || !isHome;
+  const logoOnly = isHome && !scrolled && !open;
+  const onFilm = isHome && !solid;
 
-  const menuLinks = homeLinks.map((link) => ({
+  const primaryLinks = navLinks.filter(
+    (l) => !["Home", "Contact"].includes(l.label)
+  );
+
+  const menuLinks = navLinks.map((link) => ({
     label: link.label,
-    href: resolveHref(link),
+    href: resolveHref(link.label, link.href),
   }));
 
   return (
     <>
-      <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow] duration-400 ${
-          open
-            ? "bg-white"
-            : scrolled || !isHome
-              ? "bg-white/92 shadow-[0_1px_0_rgba(28,25,23,0.06)] backdrop-blur-md"
-              : "bg-transparent"
-        }`}
-      >
-        <nav className="relative flex h-16 w-full items-center lg:h-[4.25rem]">
-          <div className="relative z-[70] flex shrink-0 items-center self-stretch pl-1 sm:pl-2">
-            <MenuToggle
-              open={open}
-              onClick={toggleMenu}
-              className={filmChrome ? "text-ivory" : "text-ink"}
-            />
+      <header className="fixed inset-x-0 top-0 z-50">
+        {/* Glossy glass field — fades in on scroll */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 transition-opacity duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
+          style={{
+            opacity: solid ? 1 : 0,
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.28) 100%)",
+            backdropFilter: "blur(14px) saturate(140%)",
+            WebkitBackdropFilter: "blur(14px) saturate(140%)",
+            boxShadow:
+              "inset 0 1px 0 rgba(255,255,255,0.55), 0 1px 0 rgba(26,23,20,0.04)",
+            borderBottom: "1px solid rgba(255,255,255,0.22)",
+          }}
+        />
+
+        <div
+          className={`nav-mast relative mx-auto w-full max-w-[1600px] px-4 transition-[padding] duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] sm:px-6 lg:px-10 ${
+            logoOnly ? "py-5" : "pt-3 pb-0"
+          }`}
+        >
+          {/* Three-slot bar — logo always dead-center */}
+          <div className="relative grid h-11 grid-cols-[1fr_auto_1fr] items-center lg:h-12">
+            <div
+              className={`flex items-center gap-1 justify-self-start overflow-hidden transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+                logoOnly
+                  ? "pointer-events-none -translate-x-2 opacity-0"
+                  : "translate-x-0 opacity-100"
+              }`}
+            >
+              <MenuToggle
+                open={open}
+                onClick={toggleMenu}
+                className={open || solid ? "text-ink" : "text-ivory"}
+              />
+            </div>
+
+            <Link
+              href="/"
+              className="z-[70] col-start-2 inline-flex justify-self-center"
+              aria-label={brand.name}
+              onClick={closeMenu}
+            >
+              <BrandLogo
+                size="mark"
+                priority
+                className={`h-9 w-auto transition-[filter] duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] lg:h-10 ${
+                  onFilm ? "brightness-0 invert" : ""
+                }`}
+              />
+            </Link>
+
+            <div
+              className={`flex items-center justify-self-end overflow-hidden transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+                logoOnly
+                  ? "pointer-events-none translate-x-2 opacity-0"
+                  : "translate-x-0 opacity-100"
+              }`}
+            >
+              <button
+                type="button"
+                aria-label={`Cart, ${count} items`}
+                tabIndex={logoOnly ? -1 : 0}
+                onClick={() => {
+                  closeMenu();
+                  openCart();
+                }}
+                className={`relative transition-colors duration-700 ${
+                  solid ? "text-ink" : "text-ivory"
+                }`}
+              >
+                <CartIcon />
+                {count > 0 && (
+                  <span className="absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 text-[9px] font-medium text-void">
+                    {count}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
 
-          <Link
-            href="/"
-            className="relative z-[70] ml-1 inline-flex shrink-0 items-center sm:ml-2"
-            aria-label={brand.name}
-            onClick={closeMenu}
+          {/* Links + rule — fade/slide in with the white field */}
+          <div
+            className={`grid transition-[grid-template-rows,opacity] duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+              logoOnly
+                ? "grid-rows-[0fr] opacity-0"
+                : "grid-rows-[1fr] opacity-100"
+            }`}
           >
-            <BrandLogo size="nav" priority />
-          </Link>
+            <div className="overflow-hidden">
+              <nav
+                aria-label="Primary"
+                className="mt-2 hidden justify-center pb-3 lg:flex"
+                aria-hidden={logoOnly}
+              >
+                <ul className="flex items-center gap-8 xl:gap-10">
+                  {primaryLinks.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        href={resolveHref(link.label, link.href)}
+                        tabIndex={logoOnly ? -1 : 0}
+                        className="nav-link-draw relative text-[10px] font-medium tracking-[0.26em] text-ink/70 uppercase transition-colors duration-500 hover:text-ink"
+                      >
+                        {link.label}
+                        <span className="nav-underline" aria-hidden />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
 
-          <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 lg:flex xl:gap-8">
-            {homeLinks.map((link) => (
-              <li key={link.label}>
-                <Link
-                  href={resolveHref(link)}
-                  className={`group relative whitespace-nowrap text-[12px] font-normal tracking-[0.04em] transition-colors duration-300 ${linkTone}`}
-                >
-                  {link.label}
-                  <span className="absolute -bottom-1 left-0 h-px w-0 bg-gold transition-all duration-300 group-hover:w-full" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <div className="relative z-[70] ml-auto flex items-center gap-3 pr-4 sm:gap-4 sm:pr-6 lg:pr-10">
-            <button
-              type="button"
-              aria-label="Search"
-              className={`hidden transition-colors duration-300 sm:inline-flex ${iconTone}`}
-            >
-              <SearchIcon />
-            </button>
-            <button
-              type="button"
-              aria-label={`Cart, ${count} items`}
-              onClick={() => {
-                closeMenu();
-                openCart();
-              }}
-              className={`relative transition-colors duration-300 ${iconTone}`}
-            >
-              <CartIcon />
-              {count > 0 && (
-                <span className="absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 text-[9px] font-medium text-void">
-                  {count}
-                </span>
-              )}
-            </button>
+              <div
+                className="mt-1 h-[3px] border-t border-b border-ink/8"
+                aria-hidden
+              />
+            </div>
           </div>
-        </nav>
+        </div>
       </header>
 
       <MobileMenu open={open} onClose={closeMenu} links={menuLinks} />
@@ -141,33 +228,19 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
   );
 }
 
-function SearchIcon() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.3" />
-      <path
-        d="M20 20l-3.5-3.5"
-        stroke="currentColor"
-        strokeWidth="1.3"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
 function CartIcon() {
   return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path
         d="M6 7h12l-1 12H7L6 7z"
         stroke="currentColor"
-        strokeWidth="1.3"
+        strokeWidth="1.35"
         strokeLinejoin="round"
       />
       <path
         d="M9 7V5a3 3 0 016 0v2"
         stroke="currentColor"
-        strokeWidth="1.3"
+        strokeWidth="1.35"
         strokeLinecap="round"
       />
     </svg>

@@ -5,9 +5,11 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SmoothScroll } from "@/components/SmoothScroll";
+import { ScrollProgress } from "@/components/ScrollProgress";
 import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
 import { MaisonWelcome } from "@/components/MaisonWelcome";
+import { MaterialsChapter } from "@/components/MaterialsChapter";
 import { CatalogsShowcase } from "@/components/CatalogsShowcase";
 import { GoldSpotlight } from "@/components/GoldSpotlight";
 import { DiamondSpotlight } from "@/components/DiamondSpotlight";
@@ -19,9 +21,17 @@ import { AtelierPromise } from "@/components/AtelierPromise";
 import { VisitMaison } from "@/components/VisitMaison";
 import { Newsletter } from "@/components/Newsletter";
 import { Footer } from "@/components/Footer";
+import { HomeEntrance } from "@/components/HomeEntrance";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
+const EASE = "expo.out";
+const EASE_SOFT = "power2.out";
+
+/**
+ * Hallmark · Manifesto / runway homepage
+ * Horizontal-sweep claims · look-numbered materials · Silhouette/Floor soft-only.
+ */
 export function HomePage({
   newArrivals,
   bestSellers,
@@ -41,104 +51,101 @@ export function HomePage({
         {
           isMotion: "(prefers-reduced-motion: no-preference)",
           reduceMotion: "(prefers-reduced-motion: reduce)",
+          isDesktop: "(min-width: 768px)",
         },
         (context) => {
-          const { reduceMotion } = context.conditions!;
+          const { reduceMotion, isDesktop } = context.conditions!;
           if (reduceMotion) {
             gsap.set(
-              [
-                ".reveal-item",
-                ".reveal-image",
-                ".spotlight-media",
-                ".spotlight-cta",
-              ],
+              [".reveal-item", ".reveal-image", ".spotlight-media", ".spotlight-cta"],
               { clearProps: "all", opacity: 1 }
             );
             return;
           }
 
-          const revealItems = gsap.utils.toArray<HTMLElement>(".reveal-item");
-          const revealImages = gsap.utils.toArray<HTMLElement>(".reveal-image");
+          const softReveals = gsap.utils.toArray<HTMLElement>(
+            "#collections .reveal-item, #the-edit .reveal-item"
+          );
+          const softSet = new Set(softReveals);
+          const revealItems = gsap.utils
+            .toArray<HTMLElement>(".reveal-item")
+            .filter((el) => !softSet.has(el));
 
-          gsap.set(revealItems, { opacity: 0, y: 28, scale: 0.985 });
-          gsap.set(revealImages, { opacity: 0, y: 36, scale: 1.04 });
+          gsap.set(softReveals, { opacity: 0 });
+          gsap.set(revealItems, { opacity: 0, x: -36 });
 
+          ScrollTrigger.batch(softReveals, {
+            start: "top 92%",
+            once: true,
+            onEnter: (batch) => {
+              gsap.to(batch, {
+                opacity: 1,
+                duration: 0.85,
+                ease: EASE_SOFT,
+                stagger: 0.04,
+                overwrite: true,
+              });
+            },
+          });
+
+          /* Manifesto: horizontal sweep */
           ScrollTrigger.batch(revealItems, {
             start: "top 88%",
             once: true,
-            interval: 0.08,
-            batchMax: 8,
             onEnter: (batch) => {
               gsap.to(batch, {
                 opacity: 1,
-                y: 0,
-                scale: 1,
-                duration: 0.95,
-                ease: "power3.out",
-                stagger: 0.06,
+                x: 0,
+                duration: 1.05,
+                ease: EASE,
+                stagger: 0.07,
                 overwrite: true,
-                clearProps: "transform",
               });
             },
           });
 
-          ScrollTrigger.batch(revealImages, {
-            start: "top 86%",
-            once: true,
-            onEnter: (batch) => {
-              gsap.to(batch, {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                duration: 1.15,
-                ease: "power3.out",
-                overwrite: true,
-                clearProps: "transform",
-              });
-            },
-          });
-
-          /* Full-bleed gold / ruby posters — settle + CTA rise */
+          /* Catalogs use their own pinned horizontal runway — skip here */
           gsap.utils
             .toArray<HTMLElement>(".spotlight-stage")
             .forEach((stage) => {
-              const media = stage.querySelector<HTMLElement>(".spotlight-media");
+              const media =
+                stage.querySelector<HTMLElement>(".spotlight-media") ??
+                stage.querySelector<HTMLElement>(".poster-zoom-img");
               const parallax = stage.querySelector<HTMLElement>(
-                ".spotlight-parallax"
+                "[data-parallax-layer]"
               );
               const cta = stage.querySelector<HTMLElement>(".spotlight-cta");
 
-              if (media) {
+              if (media && stage.classList.contains("spotlight-stage")) {
                 gsap.fromTo(
                   media,
-                  { scale: 1.16, opacity: 0.4, clipPath: "inset(12% 8% 12% 8%)" },
+                  { scale: isDesktop ? 1.08 : 1.03, opacity: 0.65 },
                   {
                     scale: 1,
                     opacity: 1,
-                    clipPath: "inset(0% 0% 0% 0%)",
-                    duration: 1.45,
-                    ease: "power3.out",
+                    duration: 1.25,
+                    ease: EASE,
                     scrollTrigger: {
                       trigger: stage,
-                      start: "top 82%",
+                      start: "top 80%",
                       once: true,
                     },
                   }
                 );
               }
 
-              if (parallax) {
+              if (parallax && isDesktop) {
                 gsap.fromTo(
                   parallax,
-                  { yPercent: -7 },
+                  { yPercent: -8 },
                   {
-                    yPercent: 7,
+                    yPercent: 8,
                     ease: "none",
                     scrollTrigger: {
                       trigger: stage,
                       start: "top bottom",
                       end: "bottom top",
-                      scrub: true,
+                      scrub: 0.65,
                     },
                   }
                 );
@@ -147,17 +154,15 @@ export function HomePage({
               if (cta) {
                 gsap.fromTo(
                   cta,
-                  { opacity: 0, y: 28, scale: 0.96 },
+                  { opacity: 0, y: 28 },
                   {
                     opacity: 1,
                     y: 0,
-                    scale: 1,
-                    duration: 0.75,
-                    ease: "power3.out",
-                    delay: 0.2,
+                    duration: 1,
+                    ease: EASE,
                     scrollTrigger: {
                       trigger: stage,
-                      start: "top 72%",
+                      start: "top 68%",
                       once: true,
                     },
                   }
@@ -165,27 +170,36 @@ export function HomePage({
               }
             });
 
-          /* Diamond campaign half — soft vertical drift */
-          gsap.utils
-            .toArray<HTMLElement>("[data-parallax-drift]")
-            .forEach((el) => {
-              gsap.fromTo(
-                el,
-                { yPercent: -5 },
-                {
-                  yPercent: 5,
-                  ease: "none",
-                  scrollTrigger: {
-                    trigger: el.parentElement ?? el,
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: true,
-                  },
-                }
-              );
-            });
+          if (isDesktop) {
+            gsap.utils
+              .toArray<HTMLElement>("[data-parallax-layer]")
+              .forEach((el) => {
+                if (
+                  el.closest(".spotlight-stage") ||
+                  el.closest("#catalogs")
+                )
+                  return;
+                const trigger =
+                  el.closest("[data-parallax-media]")?.parentElement ??
+                  el.parentElement ??
+                  el;
+                gsap.fromTo(
+                  el,
+                  { yPercent: -5 },
+                  {
+                    yPercent: 5,
+                    ease: "none",
+                    scrollTrigger: {
+                      trigger,
+                      start: "top bottom",
+                      end: "bottom top",
+                      scrub: 0.7,
+                    },
+                  }
+                );
+              });
+          }
 
-          /* Hero stays pinned; boutique covers it — soft settle underneath */
           const heroCover = document.querySelector<HTMLElement>(
             "[data-hero-cover]"
           );
@@ -193,17 +207,16 @@ export function HomePage({
           if (heroCover && boutique) {
             gsap.fromTo(
               heroCover,
-              { scale: 1, y: 0, filter: "brightness(1)" },
+              { scale: 1, y: 0 },
               {
                 scale: 0.9,
-                y: 48,
-                filter: "brightness(0.78)",
+                y: 64,
                 ease: "none",
                 scrollTrigger: {
                   trigger: boutique,
                   start: "top bottom",
                   end: "top top",
-                  scrub: true,
+                  scrub: 0.5,
                 },
               }
             );
@@ -212,48 +225,30 @@ export function HomePage({
           const heroParallax = document.querySelector<HTMLElement>(
             "[data-hero-parallax]"
           );
-          if (heroParallax) {
+          if (heroParallax && isDesktop) {
             gsap.fromTo(
               heroParallax,
-              { scale: 1.04 },
+              { yPercent: 0, scale: 1.05 },
               {
-                scale: 1.1,
+                yPercent: 10,
+                scale: 1.12,
                 ease: "none",
                 scrollTrigger: {
                   trigger: "#hero",
                   start: "top top",
                   end: "bottom top",
-                  scrub: true,
+                  scrub: 0.55,
                 },
               }
             );
-          }
-
-          /* Catalogs void — slow ken-burns while in view */
-          const catStage = document.querySelector<HTMLElement>(
-            "[data-catalog-stage]"
-          );
-          if (catStage) {
-            gsap.fromTo(
-              catStage,
-              { scale: 1 },
-              {
-                scale: 1.07,
-                ease: "none",
-                scrollTrigger: {
-                  trigger: "#catalogs",
-                  start: "top bottom",
-                  end: "bottom top",
-                  scrub: true,
-                },
-              }
-            );
+          } else if (heroParallax) {
+            gsap.set(heroParallax, { clearProps: "transform" });
           }
 
           const safety = window.setTimeout(() => {
-            [...revealItems, ...revealImages].forEach((el) => {
+            [...softReveals, ...revealItems].forEach((el) => {
               if (getComputedStyle(el).opacity === "0") {
-                gsap.set(el, { opacity: 1, y: 0, clearProps: "transform" });
+                gsap.set(el, { opacity: 1, x: 0, clearProps: "transform" });
               }
             });
             gsap.set(".spotlight-cta", { opacity: 1, clearProps: "transform" });
@@ -261,13 +256,13 @@ export function HomePage({
               opacity: 1,
               clearProps: "transform",
             });
-          }, 2400);
+          }, 3200);
 
           const refresh = () => ScrollTrigger.refresh();
           window.addEventListener("load", refresh);
           const raf = requestAnimationFrame(() => {
             refresh();
-            setTimeout(refresh, 400);
+            setTimeout(refresh, 500);
           });
 
           return () => {
@@ -285,24 +280,32 @@ export function HomePage({
 
   return (
     <SmoothScroll>
-      <div ref={rootRef} className="relative">
-        <Navigation />
-        <Hero />
-        <div className="boutique relative z-10 bg-white shadow-[0_-40px_80px_rgba(14,12,10,0.12)]">
-          <MaisonWelcome />
-          <GoldSpotlight />
-          <DiamondSpotlight products={diamondProducts} />
-          <RubySpotlight />
-          <MaisonTicker />
-          <CatalogsShowcase />
-          <FeaturedCollections />
-          <MaisonEdit newArrivals={newArrivals} bestSellers={bestSellers} />
-          <AtelierPromise />
-          <VisitMaison />
-          <Newsletter />
-          <Footer />
+      <HomeEntrance>
+        <div ref={rootRef} className="relative">
+          <ScrollProgress />
+          <Navigation />
+          <Hero />
+
+          <div className="boutique relative z-10 bg-white shadow-[0_-64px_110px_rgba(14,12,10,0.2)]">
+            <MaisonWelcome />
+            <MaterialsChapter />
+            <GoldSpotlight />
+            <DiamondSpotlight products={diamondProducts} />
+            <RubySpotlight />
+            <MaisonTicker />
+            <CatalogsShowcase />
+
+            {/* Soft fade only — structure untouched */}
+            <FeaturedCollections />
+            <MaisonEdit newArrivals={newArrivals} bestSellers={bestSellers} />
+
+            <AtelierPromise />
+            <VisitMaison />
+            <Newsletter />
+            <Footer />
+          </div>
         </div>
-      </div>
+      </HomeEntrance>
     </SmoothScroll>
   );
 }

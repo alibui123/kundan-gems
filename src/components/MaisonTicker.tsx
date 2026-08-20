@@ -16,7 +16,7 @@ export function MaisonTicker() {
 
   return (
     <section
-      className="overflow-hidden border-y border-border bg-white py-5"
+      className="overflow-hidden border-y border-border bg-white py-7 md:py-8"
       aria-hidden
     >
       <div className="maison-marquee flex w-max items-center gap-10 pr-10">

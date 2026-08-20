@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -8,9 +8,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Smooth scroll for fine-pointer desktops only.
- * Touch / coarse pointers use native scroll — Lenis often "sticks" on mobile
- * and some laptop trackpads when nested with ScrollTrigger.
+ * Site-wide inertia scrolling (fine pointer only).
+ * Syncs Lenis → ScrollTrigger for scrubbed parallax / reveals.
  */
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -27,12 +26,12 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     }
 
     const lenis = new Lenis({
-      duration: 1.15,
+      duration: 1.35,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       syncTouch: false,
-      touchMultiplier: 1.15,
-      wheelMultiplier: 0.92,
+      touchMultiplier: 1.1,
+      wheelMultiplier: 0.88,
     });
 
     const w = window as Window & { __lenis?: Lenis };
@@ -49,7 +48,6 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     requestAnimationFrame(() => ScrollTrigger.refresh());
 
     const onVisibility = () => {
-      // Resume if a prior stop left Lenis frozen after a cancelled nav gesture
       if (document.visibilityState === "visible") {
         lenis.start();
       }

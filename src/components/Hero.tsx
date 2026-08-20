@@ -5,16 +5,16 @@ import { motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useRef, type MouseEvent } from "react";
 import { brand } from "@/lib/data";
 
-const NAV_OFFSET = 72;
+const NAV_OFFSET = 96;
 const HERO_FILM = "/hero/bridal-gold.mp4";
 const HERO_POSTER = "/hero/bridal-gold-poster.jpg";
 const EASE = [0.23, 1, 0.32, 1] as const;
 
 /**
- * Campaign hero — bridal gold film, maison name, two actions.
+ * Hallmark Manifesto × runway — declaration over film.
+ * Roman display only (no italic headers). Oversized solid CTA below the fold cue.
  */
 export function Hero() {
-  const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const scrollingRef = useRef(false);
   const reduce = useReducedMotion();
@@ -34,29 +34,24 @@ export function Hero() {
   const goToSection = useCallback(
     (event: MouseEvent<HTMLAnchorElement>, sectionId: string) => {
       event.preventDefault();
-      event.stopPropagation();
       if (scrollingRef.current) return;
-
       const target = document.getElementById(sectionId);
       if (!target) return;
-
       scrollingRef.current = true;
       const y =
         target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
-
       const finish = () => {
         history.replaceState(null, "", `#${sectionId}`);
         window.setTimeout(() => {
           scrollingRef.current = false;
         }, 120);
       };
-
       const lenis = getLenis();
       if (lenis) {
-        lenis.scrollTo(y, { duration: 1.2, onComplete: finish });
+        lenis.scrollTo(y, { duration: 1.35, onComplete: finish });
         window.setTimeout(() => {
           if (scrollingRef.current) finish();
-        }, 1800);
+        }, 2000);
       } else {
         window.scrollTo({ top: y, behavior: "smooth" });
         window.setTimeout(finish, 700);
@@ -68,72 +63,56 @@ export function Hero() {
   useEffect(() => {
     const video = videoRef.current;
     if (!video || reduce) return;
-
-    const syncPlayback = () => {
+    const sync = () => {
       if (document.hidden) {
         video.pause();
         return;
       }
-
       const boutique = document.querySelector(".boutique");
       const covered =
         boutique !== null &&
-        boutique.getBoundingClientRect().top < window.innerHeight * 0.4;
-
+        boutique.getBoundingClientRect().top < window.innerHeight * 0.36;
       if (covered) {
         video.pause();
         return;
       }
-
-      if (video.paused) {
-        void video.play().catch(() => {});
-      }
+      if (video.paused) void video.play().catch(() => {});
     };
-
     let ticking = false;
     const onScroll = () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
         ticking = false;
-        syncPlayback();
+        sync();
       });
     };
-
     void video.play().catch(() => {});
-    syncPlayback();
+    video.playbackRate = 0.88;
+    sync();
     window.addEventListener("scroll", onScroll, { passive: true });
-    document.addEventListener("visibilitychange", syncPlayback);
-
+    document.addEventListener("visibilitychange", sync);
     return () => {
       window.removeEventListener("scroll", onScroll);
-      document.removeEventListener("visibilitychange", syncPlayback);
+      document.removeEventListener("visibilitychange", sync);
       video.pause();
     };
   }, [reduce]);
 
   return (
     <section
-      ref={sectionRef}
       id="hero"
-      className="hero sticky top-0 z-0 h-[100svh] min-h-[100svh] overflow-hidden bg-[#1a140e]"
+      className="hero sticky top-0 z-0 h-[100svh] min-h-[100svh] overflow-hidden bg-void"
       aria-label={brand.fullName}
     >
       <div
         data-hero-cover
         className="relative h-full w-full will-change-transform"
       >
-        <motion.div
-          className="absolute inset-0"
-          initial={
-            reduce ? false : { opacity: 0, clipPath: "inset(6% 8% 6% 8%)" }
-          }
-          animate={{ opacity: 1, clipPath: "inset(0% 0% 0% 0%)" }}
-          transition={{ duration: 1.4, ease: EASE }}
-        >
+        <div className="absolute inset-0 overflow-hidden">
           <div
             data-hero-parallax
-            className="absolute inset-[-6%] will-change-transform"
+            className="absolute inset-0 will-change-transform md:inset-[-8%]"
           >
             {reduce ? (
               <Image
@@ -142,12 +121,12 @@ export function Hero() {
                 fill
                 priority
                 sizes="100vw"
-                className="object-cover object-[40%_28%] sm:object-[44%_center]"
+                className="object-cover object-[center_32%] sm:object-[48%_28%] md:object-[48%_center]"
               />
             ) : (
               <video
                 ref={videoRef}
-                className="absolute inset-0 h-full w-full object-cover object-[40%_28%] sm:object-[44%_center]"
+                className="absolute inset-0 h-full w-full object-cover object-[center_32%] sm:object-[48%_28%] md:object-[48%_center]"
                 autoPlay
                 muted
                 loop
@@ -161,70 +140,80 @@ export function Hero() {
               </video>
             )}
           </div>
-        </motion.div>
+        </div>
 
         <div
           className="pointer-events-none absolute inset-0"
           aria-hidden
           style={{
             background:
-              "linear-gradient(180deg, rgba(16,10,6,0.28) 0%, rgba(16,10,6,0.04) 34%, rgba(16,10,6,0.18) 62%, rgba(16,10,6,0.82) 100%)",
+              "linear-gradient(180deg, rgba(14,12,10,0.45) 0%, rgba(14,12,10,0.15) 40%, rgba(14,12,10,0.55) 100%)",
           }}
         />
 
-        <div className="relative z-10 flex h-full min-h-[100svh] items-end justify-center">
-          <div className="flex w-full max-w-[44rem] flex-col items-center px-6 pb-12 text-center sm:pb-14 md:pb-16">
-            <h1 className="font-display text-[clamp(2.75rem,8vw,5.5rem)] leading-[0.95] tracking-[0.04em] text-ivory [text-shadow:0_2px_32px_rgba(8,4,2,0.4)]">
-              <span className="block overflow-hidden">
-                <motion.span
-                  className="inline-block italic"
-                  initial={reduce ? false : { y: "110%", opacity: 0 }}
-                  animate={{ y: "0%", opacity: 1 }}
-                  transition={{ duration: 0.9, ease: EASE, delay: 0.28 }}
-                >
-                  Kundan
-                </motion.span>
-                <motion.span
-                  className="ml-[0.28em] inline-block"
-                  initial={reduce ? false : { y: "110%", opacity: 0 }}
-                  animate={{ y: "0%", opacity: 1 }}
-                  transition={{ duration: 0.9, ease: EASE, delay: 0.38 }}
-                >
-                  Gems
-                </motion.span>
-              </span>
-            </h1>
+        <div className="relative z-10 mx-auto flex h-full min-h-[100svh] max-w-[1600px] flex-col items-center justify-end px-6 pb-20 pt-28 text-center sm:px-10 sm:pb-24 md:pb-28 lg:pb-32">
+          <motion.p
+            className="text-[10px] font-medium tracking-[0.4em] text-ivory/50 uppercase"
+            initial={reduce ? false : { opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, ease: EASE, delay: 0.2 }}
+          >
+           
+          </motion.p>
 
-            <motion.span
-              className="mt-6 block h-px w-14 origin-center bg-gold"
-              initial={reduce ? false : { scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.8, ease: EASE, delay: 0.72 }}
-              aria-hidden
-            />
+          <h1 className="mt-8 font-display font-normal text-ivory">
+            <span className="block overflow-hidden">
+              <motion.span
+                className="block text-[clamp(4rem,14vw,9.5rem)] leading-[0.85] tracking-[0.04em] uppercase"
+                initial={reduce ? false : { x: "-12%", opacity: 0 }}
+                animate={{ x: "0%", opacity: 1 }}
+                transition={{ duration: 1.15, ease: EASE, delay: 0.35 }}
+              >
+                Kundan
+              </motion.span>
+            </span>
+            <span className="mt-2 block overflow-hidden">
+              <motion.span
+                className="block text-[clamp(1.5rem,4vw,2.75rem)] leading-none tracking-[0.35em] uppercase text-gold"
+                initial={reduce ? false : { x: "12%", opacity: 0 }}
+                animate={{ x: "0%", opacity: 1 }}
+                transition={{ duration: 1.15, ease: EASE, delay: 0.5 }}
+              >
+                GEMS
+              </motion.span>
+            </span>
+          </h1>
 
-            <motion.div
-              className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
-              initial={reduce ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, ease: EASE, delay: 0.86 }}
+          <motion.p
+            className="mt-10 max-w-md text-[14px] leading-[1.75] text-ivory/65"
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, ease: EASE, delay: 0.85 }}
+          >
+            
+          </motion.p>
+
+          <motion.div
+            className="mt-12 flex flex-wrap items-center justify-center gap-6"
+            initial={reduce ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: EASE, delay: 1.05 }}
+          >
+            <a
+              href="#catalogs"
+              onClick={(e) => goToSection(e, "catalogs")}
+              className="btn-hero-atelier group"
             >
-              <a
-                href="#catalogs"
-                onClick={(e) => goToSection(e, "catalogs")}
-                className="btn-gold-liquid"
-              >
-                <span>Shop the collection</span>
-              </a>
-              <a
-                href="#gold"
-                onClick={(e) => goToSection(e, "gold")}
-                className="btn-hero-pearl"
-              >
-                <span>Explore materials</span>
-              </a>
-            </motion.div>
-          </div>
+              <span>Shop Collection</span>
+            </a>
+            <a
+              href="#materials"
+              onClick={(e) => goToSection(e, "materials")}
+              className="link-draw link-draw-gold text-[10px] font-medium tracking-[0.26em] text-ivory/55 uppercase hover:text-gold"
+            >
+              Materials
+            </a>
+          </motion.div>
         </div>
       </div>
     </section>

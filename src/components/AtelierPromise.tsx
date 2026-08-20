@@ -47,33 +47,61 @@ const icons = {
   ),
 };
 
+/** Runway atelier — bleed image + claim strip. */
 export function AtelierPromise() {
   return (
-    <section
-      id="atelier"
-      className="section-y relative overflow-hidden bg-white"
-    >
-      <div className="container-luxury">
-        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="reveal-item lg:col-span-5">
-            <h2 className="font-display text-[clamp(2.35rem,4.2vw,3.5rem)] leading-[1.08] tracking-[0.01em] text-ink">
-              Craft without compromise
-            </h2>
-            <p className="mt-5 max-w-md text-[15px] leading-[1.75] text-muted">
+    <section id="atelier" className="bg-white">
+      <div className="reveal-image group/poster relative min-h-[80svh] overflow-hidden bg-void md:min-h-[90svh]">
+        <div className="absolute inset-0" data-parallax-media>
+          <div
+            className="absolute inset-[-10%] will-change-transform"
+            data-parallax-layer
+          >
+            <Image
+              src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&fit=crop&w=1600&q=85"
+              alt="Jeweller crafting a fine piece by hand"
+              fill
+              sizes="100vw"
+              className="poster-zoom-img object-cover"
+            />
+          </div>
+        </div>
+        <div
+          className="pointer-events-none absolute inset-0 z-[1]"
+          aria-hidden
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(14,12,10,0.35) 0%, transparent 45%, rgba(14,12,10,0.7) 100%)",
+          }}
+        />
+        <div className="absolute inset-0 z-[2] flex flex-col items-center justify-end px-6 pb-16 text-center sm:pb-20">
+          <p className="text-[10px] tracking-[0.36em] text-gold uppercase">
+            Backstage
+          </p>
+          <h2 className="mt-4 font-display text-[clamp(2.25rem,5vw,4rem)] font-normal tracking-[0.06em] text-ivory uppercase">
+            Craft without compromise
+          </h2>
+        </div>
+      </div>
+
+      <div className="bg-white">
+        <div className="container-maison grid gap-14 px-6 py-20 sm:px-10 md:grid-cols-12 md:gap-10 md:py-28">
+          <div className="reveal-item md:col-span-5">
+            <p className="max-w-sm text-[15px] leading-[1.9] text-muted">
               From first sketch to final polish, every piece travels a quiet path
               of obsession — measured in hours, worn for generations.
             </p>
-            <ol className="mt-10 space-y-7">
+            <ol className="mt-12 space-y-8">
               {craftSteps.slice(0, 3).map((step) => (
-                <li key={step.step} className="reveal-item flex gap-4">
-                  <span className="font-display text-sm tracking-wide text-gold">
+                <li key={step.step} className="reveal-item flex gap-5">
+                  <span className="font-display text-sm text-gold">
                     {step.step}
                   </span>
                   <div>
-                    <h3 className="font-display text-xl tracking-[0.01em] text-ink">
+                    <h3 className="font-display text-lg tracking-[0.01em] text-ink">
                       {step.title}
                     </h3>
-                    <p className="mt-1 text-[13px] leading-relaxed text-muted">
+                    <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
                       {step.description}
                     </p>
                   </div>
@@ -82,42 +110,25 @@ export function AtelierPromise() {
             </ol>
           </div>
 
-          <div className="reveal-image relative aspect-[4/5] overflow-hidden bg-white lg:col-span-7 lg:aspect-[5/4]">
-            <Image
-              src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&fit=crop&w=1400&q=85"
-              alt="Jeweller crafting a fine piece by hand"
-              fill
-              sizes="(max-width: 1024px) 100vw, 55vw"
-              className="object-cover"
-            />
-            <div
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/20 to-transparent"
-              aria-hidden
-            />
+          <div className="reveal-item grid gap-10 border-t border-border pt-10 sm:grid-cols-2 md:col-span-6 md:col-start-7 md:border-t-0 md:border-l md:pt-0 md:pl-10">
+            {promises.map((item) => (
+              <article key={item.title} className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center text-gold">
+                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
+                    {icons[item.icon]}
+                  </svg>
+                </span>
+                <div>
+                  <h3 className="font-display text-base text-ink">
+                    {item.title}
+                  </h3>
+                  <p className="mt-1 text-[12px] leading-relaxed text-muted">
+                    {item.description}
+                  </p>
+                </div>
+              </article>
+            ))}
           </div>
-        </div>
-
-        <div className="mt-16 grid gap-8 border-t border-border pt-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-          {promises.map((item) => (
-            <article
-              key={item.title}
-              className="reveal-item flex items-start gap-3"
-            >
-              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center text-gold">
-                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
-                  {icons[item.icon]}
-                </svg>
-              </span>
-              <div>
-                <h3 className="font-display text-lg tracking-[0.01em] text-ink">
-                  {item.title}
-                </h3>
-                <p className="mt-1 text-[13px] leading-relaxed text-muted">
-                  {item.description}
-                </p>
-              </div>
-            </article>
-          ))}
         </div>
       </div>
     </section>
