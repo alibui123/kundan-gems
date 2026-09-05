@@ -49,41 +49,40 @@ export const catalogMeta: Record<Catalog, CatalogMeta> = {
       "Mehr is affection made tangible. Polki, kundan, and warm 22K lines for mehndi, barat, and walima — jewellery that photographs like memory and travels from mother to daughter.",
     image: "/catalogs/mehr/homepage.jpg",
     heroImage: "/catalogs/mehr/hero.jpg",
-    secondaryImage: "/catalogs/mehr/bridal-dress.jpg",
+    secondaryImage: "/catalogs/mehr/look-01.jpg",
     accent: "from-rose-900/40 via-void/20 to-transparent",
-    objectPosition: "50% 18%",
-    heroObjectPosition: "50% 22%",
+    objectPosition: "50% 45%",
+    heroObjectPosition: "68% 15%",
     scenes: [
       {
-        image: "/catalogs/mehr/01.jpg",
-        objectPosition: "50% 12%",
-        caption: "Mehndi hour",
+        image: "/catalogs/mehr/look-01.jpg",
+        objectPosition: "50% 18%",
+        caption: "Sehra hour",
         title: "Gold that holds the ceremony",
-        body: "Layered haar, nath, and choora — composed for the first photographs of the day, when henna is still dark and light is soft.",
+        body: "Layered haar, nath, and choora — composed for the first photographs of the day, when light is soft and every detail must read.",
       },
       {
-        image: "/catalogs/mehr/03.jpg",
-        objectPosition: "50% 18%",
+        image: "/catalogs/mehr/look-02.jpg",
+        objectPosition: "48% 20%",
         caption: "Barat light",
         title: "Presence without noise",
-        body: "Statement sets that read clearly in motion — full neck, strong silhouette, warm 22K that photographs as heirloom.",
+        body: "Statement sets that read clearly in motion — full neck, strong silhouette, warm gold that photographs as heirloom.",
       },
       {
-        image: "/catalogs/mehr/05.jpg",
-        objectPosition: "48% 20%",
+        image: "/catalogs/mehr/look-04.jpg",
+        objectPosition: "42% 22%",
         caption: "Walima evening",
         title: "After the vows",
         body: "Softer layers for the second night — still bridal, still Kundan, ready to travel from one generation to the next.",
       },
     ],
     gallery: [
-      "/catalogs/mehr/bride.jpg",
-      "/catalogs/mehr/07.jpg",
-      "/catalogs/mehr/bridal-dress.jpg",
-      "/catalogs/mehr/02.jpg",
-      "/catalogs/mehr/04.jpg",
-      "/catalogs/mehr/06.jpg",
-      "/catalogs/mehr/08.jpg",
+      "/catalogs/mehr/homepage.jpg",
+      "/catalogs/mehr/look-01.jpg",
+      "/catalogs/mehr/look-02.jpg",
+      "/catalogs/mehr/look-03.jpg",
+      "/catalogs/mehr/look-04.jpg",
+      "/catalogs/mehr/feature.jpg",
     ],
   },
   noor: {
@@ -96,45 +95,32 @@ export const catalogMeta: Record<Catalog, CatalogMeta> = {
       "Bespoke-scale diamonds and sculptural gold — the high jewellery edit for soirées, shaadi guest looks, and pieces that lead the room.",
     story:
       "Noor is light held with discipline. Fewer stones, clearer silhouettes — diamond necklaces, cocktail rings, and atelier statements for Karachi nights and Lahore evenings.",
-    image:
-      "https://images.unsplash.com/photo-1762709414326-67c887a8dc98?auto=format&fit=crop&w=2400&q=85",
-    heroImage:
-      "https://images.unsplash.com/photo-1717341829793-7dd4390e59e7?auto=format&fit=crop&w=2400&q=85",
-    secondaryImage:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1000&q=85",
+    image: "/catalogs/noor/homepage.jpg",
+    heroImage: "/catalogs/noor/hero.jpg",
+    secondaryImage: "/catalogs/noor/look-01.jpg",
     accent: "from-amber-200/20 via-void/30 to-transparent",
-    objectPosition: "50% 22%",
-    heroObjectPosition: "55% 20%",
+    objectPosition: "50% 55%",
+    heroObjectPosition: "50% 38%",
     scenes: [
       {
-        image:
-          "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1400&q=85",
-        objectPosition: "50% 40%",
+        image: "/catalogs/noor/look-01.jpg",
+        objectPosition: "42% 28%",
         caption: "Atelier light",
         title: "One stone, clear architecture",
         body: "High jewellery that leads with proportion — diamonds set so fire feels quiet, never busy.",
       },
       {
-        image:
-          "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=1400&q=85",
+        image: "/catalogs/noor/look-02.jpg",
         objectPosition: "50% 35%",
         caption: "Night edit",
         title: "For rooms that listen",
         body: "Cocktail rings and sculptural gold for evenings when a single piece should carry the look.",
       },
-      {
-        image:
-          "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1400&q=85",
-        objectPosition: "50% 30%",
-        caption: "Guest of honour",
-        title: "Shaadi light, refined",
-        body: "Statement without costume — Noor pieces for the guest who still wants to own the frame.",
-      },
     ],
     gallery: [
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=900&q=85",
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=900&q=85",
-      "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=900&q=85",
+      "/catalogs/noor/look-01.jpg",
+      "/catalogs/noor/look-02.jpg",
+      "/catalogs/noor/homepage.jpg",
     ],
   },
   rozana: {
@@ -147,45 +133,32 @@ export const catalogMeta: Record<Catalog, CatalogMeta> = {
       "Lifestyle gold for daily Pakistan — soft bangles, light chains, and office-to-iftar pieces with quiet brilliance.",
     story:
       "Rozana means every day. Lightweight gold and refined diamond accents you reach for without occasion — modern silhouettes with desi warmth, built for real wear across the week.",
-    image:
-      "https://images.unsplash.com/photo-1688382654723-a7366006519b?auto=format&fit=crop&w=2400&q=85",
-    heroImage:
-      "https://images.unsplash.com/flagged/photo-1551854716-8b811be39e7e?auto=format&fit=crop&w=2400&q=85",
-    secondaryImage:
-      "https://images.unsplash.com/photo-1645856048246-2ea2557cc3e1?auto=format&fit=crop&w=1000&q=85",
+    image: "/catalogs/rozana/homepage.jpg",
+    heroImage: "/catalogs/rozana/hero.jpg",
+    secondaryImage: "/catalogs/rozana/look-01.jpg",
     accent: "from-gold/25 via-void/25 to-transparent",
-    objectPosition: "52% 20%",
-    heroObjectPosition: "50% 22%",
+    objectPosition: "50% 55%",
+    heroObjectPosition: "32% 28%",
     scenes: [
       {
-        image:
-          "https://images.unsplash.com/photo-1688382654723-a7366006519b?auto=format&fit=crop&w=1400&q=85",
-        objectPosition: "52% 18%",
+        image: "/catalogs/rozana/look-01.jpg",
+        objectPosition: "50% 25%",
         caption: "Morning gold",
         title: "Jewellery you forget you’re wearing",
         body: "Light chains and soft bangles for the commute, the meeting, the first chai — still unmistakably Kundan.",
       },
       {
-        image:
-          "https://images.unsplash.com/photo-1645856048246-2ea2557cc3e1?auto=format&fit=crop&w=1400&q=85",
-        objectPosition: "50% 20%",
+        image: "/catalogs/rozana/look-02.jpg",
+        objectPosition: "50% 30%",
         caption: "City hours",
         title: "From desk to iftar",
         body: "Pieces that move with the day — refined enough for evening, easy enough for every hour before.",
       },
-      {
-        image:
-          "https://images.unsplash.com/flagged/photo-1551854716-8b811be39e7e?auto=format&fit=crop&w=1400&q=85",
-        objectPosition: "50% 22%",
-        caption: "Festival ease",
-        title: "Occasion without costume",
-        body: "A little more gold when the calendar asks — still Rozana, still wearable tomorrow.",
-      },
     ],
     gallery: [
-      "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=900&q=85",
-      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=900&q=85",
-      "https://images.unsplash.com/photo-1688382654723-a7366006519b?auto=format&fit=crop&w=900&q=85",
+      "/catalogs/rozana/look-01.jpg",
+      "/catalogs/rozana/look-02.jpg",
+      "/catalogs/rozana/homepage.jpg",
     ],
   },
 };

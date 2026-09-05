@@ -60,7 +60,7 @@ export function MaisonTicker() {
   return (
     <section
       ref={rootRef}
-      className="overflow-hidden border-y border-border bg-white py-7 md:py-8"
+      className="overflow-hidden border-y border-border bg-paper py-7 md:py-8"
       aria-hidden
     >
       <div

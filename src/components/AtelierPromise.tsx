@@ -145,7 +145,7 @@ export function AtelierPromise() {
     <section ref={rootRef} id="atelier" className="bg-white">
       <div
         data-atelier-poster
-        className="reveal-image relative min-h-[78svh] overflow-hidden bg-[#f5efe2] md:min-h-[88svh]"
+        className="reveal-image relative min-h-[78svh] overflow-hidden bg-white md:min-h-[88svh]"
       >
         <div className="absolute inset-0" data-parallax-media>
           <div
@@ -167,7 +167,7 @@ export function AtelierPromise() {
           </div>
         </div>
         <div
-          className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-[#f5efe2] via-[#f5efe2]/45 to-transparent md:bg-gradient-to-r md:from-[#f5efe2] md:via-[#f5efe2]/38 md:to-transparent"
+          className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-white via-white/45 to-transparent md:bg-gradient-to-r md:from-white md:via-white/38 md:to-transparent"
           aria-hidden
         />
         <div className="relative z-[2] flex min-h-[78svh] flex-col items-center justify-end px-6 pb-14 text-center sm:px-10 sm:pb-16 md:min-h-[88svh] md:max-w-md md:items-start md:justify-center md:py-24 md:pl-14 md:text-left lg:pl-20">

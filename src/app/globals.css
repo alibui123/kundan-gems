@@ -1,35 +1,33 @@
 @import "tailwindcss";
 
 /*
- * Hallmark · genre: editorial · macrostructure: Manifesto · theme: Atelier-voice
- * (palette locked to project tokens) · enrichment: runway film + look sequence
- * nav: N6 · footer: Ft1 · mood: runway · designed-as: jewellery-ecommerce
- * Pre-emit critique: P5 H5 E4 S5 R4 V5
- * Differs from Photographic on: macrostructure + nav + footer + reveal (sweep)
+ * Kundan maison — night salon palette.
+ * Midnight void, champagne gold, cool platinum paper.
+ * Type: Bodoni Moda (display) + Manrope (body).
  */
 
 @theme {
-  --color-void: #0e0c0a;
-  --color-ivory: #ffffff;
-  --color-card: #ffffff;
-  --color-stone: #ffffff;
-  --color-gold: #b89a5e;
-  --color-gold-bright: #cbb07a;
-  --color-ink: #1a1714;
-  --color-muted: #6b6560;
-  --color-border: #e8e8e8;
-  --color-brown: #2a2218;
-  /* Kept for material ruby accents only */
-  --color-lacquer: #5c2a32;
-  --color-chalk: #ffffff;
+  --color-void: #07090e;
+  --color-ivory: #f4f1eb;
+  --color-paper: #ebe6dc;
+  --color-card: #f7f4ee;
+  --color-stone: #d8d2c6;
+  --color-gold: #bfa46a;
+  --color-gold-bright: #d4bc82;
+  --color-ink: #12151c;
+  --color-muted: #6e6960;
+  --color-border: #d9d3c8;
+  --color-brown: #1c1814;
+  --color-lacquer: #5c1f2a;
+  --color-chalk: #f7f4ee;
+  --color-platinum: #c5c0b6;
 
-  --font-display: var(--font-cormorant), Cormorant, Georgia, "Times New Roman",
-    serif;
-  --font-body: var(--font-inter), Inter, system-ui, sans-serif;
+  --font-display: var(--font-bodoni), "Bodoni Moda", "Times New Roman", serif;
+  --font-body: var(--font-manrope), Manrope, system-ui, sans-serif;
 
-  --shadow-soft: 0 10px 28px rgba(14, 12, 10, 0.05);
-  --shadow-lift: 0 16px 36px rgba(14, 12, 10, 0.08);
-  --shadow-gold: 0 8px 20px rgba(184, 154, 94, 0.18);
+  --shadow-soft: 0 10px 28px rgba(7, 9, 14, 0.06);
+  --shadow-lift: 0 18px 40px rgba(7, 9, 14, 0.1);
+  --shadow-gold: 0 8px 24px rgba(191, 164, 106, 0.22);
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
@@ -38,7 +36,7 @@
 @layer base {
   html {
     scroll-behavior: auto;
-    background-color: #ffffff;
+    background-color: var(--color-paper);
   }
 
   html.lenis,
@@ -59,7 +57,7 @@
   }
 
   body {
-    background-color: #ffffff;
+    background-color: var(--color-paper);
     color: var(--color-ink);
     font-family: var(--font-body);
     font-weight: 400;

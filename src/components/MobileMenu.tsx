@@ -234,20 +234,6 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
     if (!open) setExpanded(null);
   }, [open]);
 
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
-    };
-  }, [open, onClose]);
-
   useGSAP(
     () => {
       const root = rootRef.current;
@@ -261,10 +247,20 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
         "(prefers-reduced-motion: reduce)"
       ).matches;
 
+      const items = gsap.utils.toArray<HTMLElement>(
+        panel.querySelectorAll("[data-menu-item]")
+      );
+      const head = panel.querySelector<HTMLElement>("[data-menu-head]");
+      const foot = panel.querySelector<HTMLElement>("[data-menu-foot]");
+
       if (!open) {
         gsap.set(root, { autoAlpha: 0, pointerEvents: "none" });
         gsap.set(panel, { xPercent: -100 });
         gsap.set(veil, { autoAlpha: 0 });
+        gsap.set([head, ...items, foot].filter(Boolean), {
+          autoAlpha: 0,
+          x: -16,
+        });
         return;
       }
 
@@ -273,20 +269,45 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
       if (reduce) {
         gsap.set(panel, { xPercent: 0 });
         gsap.set(veil, { autoAlpha: 1 });
+        gsap.set([head, ...items, foot].filter(Boolean), {
+          autoAlpha: 1,
+          x: 0,
+        });
         return;
       }
 
       gsap.set(veil, { autoAlpha: 0 });
       gsap.set(panel, { xPercent: -100 });
+      gsap.set([head, ...items, foot].filter(Boolean), {
+        autoAlpha: 0,
+        x: -20,
+      });
 
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
       tlRef.current = tl;
 
-      tl.to(veil, { autoAlpha: 1, duration: 0.25 }, 0).to(
-        panel,
-        { xPercent: 0, duration: 0.42, ease: "power3.out" },
-        0
-      );
+      tl.to(veil, { autoAlpha: 1, duration: 0.28 }, 0)
+        .to(panel, { xPercent: 0, duration: 0.48, ease: "power3.out" }, 0)
+        .to(
+          head,
+          { autoAlpha: 1, x: 0, duration: 0.35 },
+          0.18
+        )
+        .to(
+          items,
+          {
+            autoAlpha: 1,
+            x: 0,
+            duration: 0.38,
+            stagger: 0.05,
+          },
+          0.26
+        )
+        .to(
+          foot,
+          { autoAlpha: 1, x: 0, duration: 0.35 },
+          0.4
+        );
     },
     { scope: rootRef, dependencies: [open] }
   );
@@ -304,6 +325,12 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
       return;
     }
 
+    const items = gsap.utils.toArray<HTMLElement>(
+      panel.querySelectorAll("[data-menu-item]")
+    );
+    const head = panel.querySelector<HTMLElement>("[data-menu-head]");
+    const foot = panel.querySelector<HTMLElement>("[data-menu-foot]");
+
     tlRef.current?.kill();
     setExpanded(null);
     const tl = gsap.timeline({
@@ -311,12 +338,33 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
       onComplete: onClose,
     });
     tlRef.current = tl;
-    tl.to(panel, { xPercent: -100, duration: 0.32 }, 0).to(
-      veil,
-      { autoAlpha: 0, duration: 0.22 },
-      0.05
-    );
+    tl.to(
+      [foot, ...items.slice().reverse(), head].filter(Boolean),
+      {
+        autoAlpha: 0,
+        x: -14,
+        duration: 0.18,
+        stagger: 0.025,
+      },
+      0
+    )
+      .to(panel, { xPercent: -100, duration: 0.34 }, 0.12)
+      .to(veil, { autoAlpha: 0, duration: 0.24 }, 0.16);
   }, [onClose]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeWithMotion();
+    };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open, closeWithMotion]);
 
   return (
     <div
@@ -343,7 +391,7 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
         <div className="h-16 shrink-0 lg:h-[4.25rem]" aria-hidden />
 
         <div className="relative flex flex-1 flex-col px-5 pb-8 pt-2 sm:px-6">
-          <div className="mb-5">
+          <div className="mb-5" data-menu-head>
             <p className="label-caps">Menu</p>
             <p className="mt-2 font-display text-2xl font-light tracking-[0.12em] text-ink uppercase">
               {brand.name}
@@ -357,19 +405,20 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
 
           <nav aria-label="Primary" className="flex flex-col">
             {tree.map((node, i) => (
-              <NestedItem
-                key={node.id}
-                node={node}
-                index={i}
-                expanded={expanded === node.id}
-                onExpand={onExpand}
-                onClose={closeWithMotion}
-                canHover={canHover}
-              />
+              <div key={node.id} data-menu-item>
+                <NestedItem
+                  node={node}
+                  index={i}
+                  expanded={expanded === node.id}
+                  onExpand={onExpand}
+                  onClose={closeWithMotion}
+                  canHover={canHover}
+                />
+              </div>
             ))}
           </nav>
 
-          <div className="mt-auto border-t border-border pt-6">
+          <div className="mt-auto border-t border-border pt-6" data-menu-foot>
             <p className="text-[10px] tracking-[0.2em] text-muted uppercase">
               Atelier
             </p>
@@ -387,7 +436,7 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
   );
 }
 
-/** Three-line mark that morphs into an X — CSS only. */
+/** Three-line mark that morphs into an X — GSAP open/close. */
 export function MenuToggle({
   open,
   onClick,
@@ -397,8 +446,73 @@ export function MenuToggle({
   onClick: () => void;
   className?: string;
 }) {
+  const rootRef = useRef<HTMLButtonElement>(null);
+  const topRef = useRef<HTMLSpanElement>(null);
+  const midRef = useRef<HTMLSpanElement>(null);
+  const botRef = useRef<HTMLSpanElement>(null);
+
+  useGSAP(
+    () => {
+      const top = topRef.current;
+      const mid = midRef.current;
+      const bot = botRef.current;
+      if (!top || !mid || !bot) return;
+
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+      const dur = reduce ? 0 : 0.28;
+
+      if (open) {
+        gsap.to(top, {
+          top: 6,
+          rotation: 45,
+          duration: dur,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+        gsap.to(mid, {
+          autoAlpha: 0,
+          duration: dur * 0.6,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+        gsap.to(bot, {
+          top: 6,
+          rotation: -45,
+          duration: dur,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+      } else {
+        gsap.to(top, {
+          top: 0,
+          rotation: 0,
+          duration: dur,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+        gsap.to(mid, {
+          autoAlpha: 1,
+          duration: dur,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+        gsap.to(bot, {
+          top: 12,
+          rotation: 0,
+          duration: dur,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+      }
+    },
+    { scope: rootRef, dependencies: [open] }
+  );
+
   return (
     <button
+      ref={rootRef}
       type="button"
       aria-label={open ? "Close menu" : "Open menu"}
       aria-expanded={open}
@@ -407,19 +521,16 @@ export function MenuToggle({
     >
       <span className="relative block h-[14px] w-[22px]" aria-hidden>
         <span
-          className={`absolute left-0 h-[1.5px] w-full origin-center bg-current transition-transform duration-300 ease-out ${
-            open ? "top-[6px] rotate-45" : "top-0 rotate-0"
-          }`}
+          ref={topRef}
+          className="absolute top-0 left-0 h-[1.5px] w-full origin-center bg-current"
         />
         <span
-          className={`absolute top-[6px] left-0 h-[1.5px] w-full origin-center bg-current transition-opacity duration-200 ease-out ${
-            open ? "opacity-0" : "opacity-100"
-          }`}
+          ref={midRef}
+          className="absolute top-[6px] left-0 h-[1.5px] w-full origin-center bg-current"
         />
         <span
-          className={`absolute left-0 h-[1.5px] w-full origin-center bg-current transition-transform duration-300 ease-out ${
-            open ? "top-[6px] -rotate-45" : "top-[12px] rotate-0"
-          }`}
+          ref={botRef}
+          className="absolute top-[12px] left-0 h-[1.5px] w-full origin-center bg-current"
         />
       </span>
     </button>

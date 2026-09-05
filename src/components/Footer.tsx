@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { brand } from "@/lib/data";
 import { BrandLogo } from "@/components/BrandLogo";
+import { CATALOGS, catalogMeta } from "@/lib/catalogs";
 
 /**
  * Hallmark Ft1 — Mast-headed footer.
@@ -35,12 +36,15 @@ export function Footer() {
             aria-label="Maison"
             className="flex flex-wrap gap-x-7 gap-y-3 text-[10px] font-medium tracking-[0.22em] text-muted uppercase"
           >
-            <Link
-              href="/#catalogs"
-              className="link-draw link-draw-gold hover:text-gold"
-            >
-              Catalogs
-            </Link>
+            {CATALOGS.map((slug) => (
+              <Link
+                key={slug}
+                href={`/catalogs/${slug}`}
+                className="link-draw link-draw-gold hover:text-gold"
+              >
+                {catalogMeta[slug].title}
+              </Link>
+            ))}
             <Link
               href="/#materials"
               className="link-draw link-draw-gold hover:text-gold"

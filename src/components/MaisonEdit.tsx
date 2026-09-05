@@ -74,21 +74,21 @@ export function MaisonEdit({ newArrivals, bestSellers }: MaisonEditProps) {
     <section
       ref={rootRef}
       id="the-edit"
-      className="section-y relative overflow-hidden border-t border-border bg-white"
+      className="relative overflow-hidden border-t border-border bg-white py-10 md:py-36 lg:py-44"
       aria-label="The edit"
     >
       <div className="container-luxury">
-        <div className="reveal-item mb-10 flex flex-col gap-8 md:mb-14 md:flex-row md:items-end md:justify-between">
+        <div className="reveal-item mb-6 flex flex-col gap-5 sm:mb-10 sm:gap-8 md:mb-14 md:flex-row md:items-end md:justify-between">
           <div className="max-w-lg">
-            <h2 className="font-display text-[clamp(2.5rem,4.6vw,3.85rem)] leading-[1.06] tracking-[0.01em] text-ink">
+            <h2 className="font-display text-[clamp(1.85rem,6vw,3.85rem)] leading-[1.06] tracking-[0.01em] text-ink sm:text-[clamp(2.5rem,4.6vw,3.85rem)]">
               On the floor
             </h2>
-            <p className="mt-4 max-w-md text-[15px] leading-[1.75] text-muted">
+            <p className="mt-2 max-w-md text-[13px] leading-[1.6] text-muted sm:mt-4 sm:text-[15px] sm:leading-[1.75]">
               New arrivals and enduring favourites, composed for the floor.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-6">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <div
               className="relative flex items-center gap-1"
               role="tablist"
@@ -104,7 +104,7 @@ export function MaisonEdit({ newArrivals, bestSellers }: MaisonEditProps) {
                     tabRefs.current[key] = el;
                   }}
                   onClick={() => setTab(key)}
-                  className={`relative px-1 pb-3 text-[11px] font-medium tracking-[0.16em] uppercase ${
+                  className={`relative px-1 pb-2.5 text-[10px] font-medium tracking-[0.16em] uppercase sm:pb-3 sm:text-[11px] ${
                     tab === key ? "text-ink" : "text-muted"
                   }`}
                 >
@@ -139,7 +139,7 @@ export function MaisonEdit({ newArrivals, bestSellers }: MaisonEditProps) {
         ) : (
           <div
             ref={gridRef}
-            className="-mx-5 flex gap-5 overflow-x-auto overscroll-x-contain px-5 pb-2 snap-x snap-mandatory scrollbar-none md:mx-0 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-4"
+            className="grid grid-cols-2 gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6 md:grid-cols-2 md:gap-6 lg:grid-cols-4"
           >
             {products.map((product) => (
               <ProductCard
@@ -151,14 +151,15 @@ export function MaisonEdit({ newArrivals, bestSellers }: MaisonEditProps) {
                 price={formatPrice(product.price)}
                 priceValue={product.price}
                 image={product.image}
-                aspect={tab === "new" ? "portrait" : "square"}
+                aspect="square"
+                compact
                 size={product.sizes[1] ?? product.sizes[0]}
               />
             ))}
           </div>
         )}
 
-        <div className="mt-8 sm:hidden">
+        <div className="mt-6 sm:mt-8 sm:hidden">
           <Link
             href={viewAllHref}
             className="inline-flex text-[11px] font-medium tracking-[0.16em] text-ink/60 uppercase"

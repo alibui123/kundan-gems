@@ -1,414 +1,479 @@
 "use client";
 
+/**
+ * Houses chapter — vertical cover (same grammar as hero → boutique).
+ * Previous maison stays put; the next rises from below and covers it.
+ * GSAP: cover scrub + image settle + veil lift + SplitText synced.
+ */
+
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
+import { CustomEase } from "gsap/CustomEase";
 import { CATALOGS, catalogMeta, type Catalog } from "@/lib/catalogs";
 import { isLocalPublicSrc } from "@/lib/local-image";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText, CustomEase);
 
-const HOUSE_ACCENTS: Record<Catalog, string> = {
-  mehr: "#e8a5b0",
-  noor: "#e8cf94",
-  rozana: "#d4b385",
-};
+CustomEase.create("maison", "M0,0 C0.16,1 0.3,1 1,1");
 
 const NUMS: Record<Catalog, string> = { mehr: "01", noor: "02", rozana: "03" };
 
-const REST_GROW = 1;
-const LEAD_GROW = 1.15;
-const RECEDES_GROW = 0.62;
-const ACTIVE_GROW = 2.7;
+const ESSENCE: Record<Catalog, string> = {
+  mehr: "Bridal warmth",
+  noor: "High jewellery light",
+  rozana: "Gold for every hour",
+};
 
-const MOBILE_IDLE_H = 58;
-const MOBILE_DECK_GAP = 8;
+type HouseLayer = {
+  key: Catalog;
+  panel: HTMLElement;
+  media: HTMLElement | null;
+  veil: HTMLElement | null;
+  edge: HTMLElement | null;
+  copy: HTMLElement | null;
+  hit: HTMLElement | null;
+  title: HTMLElement | null;
+  mark: HTMLElement | null;
+  essence: HTMLElement | null;
+  urdu: HTMLElement | null;
+  body: HTMLElement | null;
+  cta: HTMLElement | null;
+  split: SplitText | null;
+};
 
-/**
- * The houses — desktop triptych + mobile scroll deck.
- * Mobile: pinned stage; Mehr expands on enter, then Noor, then Rozana
- * as the user scrolls through the section (viewport-driven GSAP).
- */
 export function CatalogsShowcase() {
   const rootRef = useRef<HTMLElement>(null);
-  const deckRef = useRef<HTMLDivElement>(null);
-  const mobileStageRef = useRef<HTMLDivElement>(null);
-  const [mobileActive, setMobileActive] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
-    (context, contextSafe) => {
+    () => {
+      const root = rootRef.current;
+      const track = trackRef.current;
+      const stage = stageRef.current;
+      if (!root || !track || !stage) return;
+
       const reduce = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       ).matches;
-      const finePointer = window.matchMedia(
-        "(hover: hover) and (pointer: fine)"
-      ).matches;
 
-      const eyebrow = rootRef.current?.querySelector<HTMLElement>(
-        ".houses-eyebrow-inner"
+      const panels = gsap.utils.toArray<HTMLElement>(
+        stage.querySelectorAll("[data-house-panel]")
       );
-      const title = rootRef.current?.querySelector<HTMLElement>(
-        ".houses-title-inner"
+      if (panels.length < 3) return;
+
+      const layers: HouseLayer[] = CATALOGS.map((key, i) => ({
+        key,
+        panel: panels[i],
+        media: panels[i].querySelector<HTMLElement>("[data-house-media]"),
+        veil: panels[i].querySelector<HTMLElement>("[data-house-veil]"),
+        edge: panels[i].querySelector<HTMLElement>("[data-house-edge]"),
+        copy: stage.querySelector<HTMLElement>(`[data-house-copy="${key}"]`),
+        hit: panels[i].querySelector<HTMLElement>("[data-house-hit]"),
+        title: stage.querySelector<HTMLElement>(
+          `[data-house-copy="${key}"] [data-house-title]`
+        ),
+        mark: stage.querySelector<HTMLElement>(
+          `[data-house-copy="${key}"] [data-house-mark]`
+        ),
+        essence: stage.querySelector<HTMLElement>(
+          `[data-house-copy="${key}"] [data-house-essence]`
+        ),
+        urdu: stage.querySelector<HTMLElement>(
+          `[data-house-copy="${key}"] [data-house-urdu]`
+        ),
+        body: stage.querySelector<HTMLElement>(
+          `[data-house-copy="${key}"] [data-house-body]`
+        ),
+        cta: stage.querySelector<HTMLElement>(
+          `[data-house-copy="${key}"] [data-house-cta]`
+        ),
+        split: null,
+      }));
+
+      const thesis = stage.querySelector<HTMLElement>("[data-house-thesis]");
+      const chapter = stage.querySelector<HTMLElement>("[data-house-chapter]");
+      const progressFills = gsap.utils.toArray<HTMLElement>(
+        stage.querySelectorAll("[data-house-progress]")
       );
-      const lede = rootRef.current?.querySelector<HTMLElement>(".houses-lede");
-      const panels = gsap.utils.toArray<HTMLElement>(".house-panel");
-      const deck = deckRef.current;
-      const triptych = rootRef.current?.querySelector<HTMLElement>(
-        ".house-triptych"
-      );
+      const railItems = CATALOGS.map((key) => ({
+        label: stage.querySelector<HTMLElement>(`[data-house-rail="${key}"]`),
+        tick: stage.querySelector<HTMLElement>(
+          `[data-house-rail-tick="${key}"]`
+        ),
+      }));
+
+      const setRail = (index: number, immediate = false) => {
+        railItems.forEach((rail, i) => {
+          const on = i === index;
+          const dur = immediate ? 0 : 0.35;
+          if (rail.label) {
+            gsap.to(rail.label, {
+              opacity: on ? 1 : 0.3,
+              color: on ? "var(--color-gold)" : "var(--color-ivory)",
+              duration: dur,
+              ease: "power2.out",
+              overwrite: "auto",
+            });
+          }
+          if (rail.tick) {
+            gsap.to(rail.tick, {
+              scaleY: on ? 1 : 0.35,
+              opacity: on ? 1 : 0.25,
+              duration: dur,
+              ease: "power2.out",
+              overwrite: "auto",
+            });
+          }
+        });
+      };
+
+      const setProgress = (index: number, immediate = false) => {
+        progressFills.forEach((fill, i) => {
+          gsap.to(fill, {
+            scaleX: i <= index ? 1 : 0,
+            duration: immediate ? 0 : 0.4,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        });
+      };
+
+      const setLook = (index: number) => {
+        layers.forEach((p, i) => {
+          const on = i === index;
+          p.panel.setAttribute("aria-hidden", on ? "false" : "true");
+          if (p.hit) {
+            p.hit.style.pointerEvents = on ? "auto" : "none";
+            p.hit.tabIndex = on ? 0 : -1;
+          }
+          if (!p.copy) return;
+          p.copy.setAttribute("aria-hidden", on ? "false" : "true");
+          p.copy.querySelectorAll("a").forEach((link) => {
+            link.tabIndex = on ? 0 : -1;
+          });
+        });
+        root.dataset.house = CATALOGS[index];
+        setRail(index);
+        setProgress(index);
+      };
+
+      // Mehr in place; Noor & Rozana wait below (like boutique under the fold)
+      gsap.set(layers[0].panel, { top: "0%", y: 0, clearProps: "transform" });
+      gsap.set(layers[1].panel, { top: "100%", y: 0, clearProps: "transform" });
+      gsap.set(layers[2].panel, { top: "100%", y: 0, clearProps: "transform" });
+
+      layers.forEach((p, i) => {
+        gsap.set(p.media, { scale: i === 0 ? 1 : 1.12, yPercent: i === 0 ? 0 : 6 });
+        gsap.set(p.veil, { autoAlpha: i === 0 ? 0 : 0.55 });
+        gsap.set(p.edge, { autoAlpha: 0, scaleY: 0.4 });
+      });
 
       if (reduce) {
-        gsap.set(
-          [
-            ".houses-eyebrow-inner",
-            ".houses-title-inner",
-            ".houses-lede",
-            ".house-panel",
-            ".house-deck",
-            ".house-panel-detail",
-          ],
-          { clearProps: "all", opacity: 1, y: 0, yPercent: 0 }
-        );
+        layers.forEach((p, i) => {
+          gsap.set(p.panel, { top: "0%" });
+          gsap.set(p.media, { scale: 1, yPercent: 0 });
+          gsap.set(p.veil, { autoAlpha: 0 });
+          gsap.set(p.copy, { autoAlpha: i === 0 ? 1 : 0 });
+        });
+        gsap.set([thesis, chapter], { autoAlpha: 1 });
+        setLook(0);
         return;
       }
 
-      if (eyebrow) gsap.set(eyebrow, { yPercent: 110 });
-      if (title) gsap.set(title, { yPercent: 115 });
-      if (lede) gsap.set(lede, { y: 22, autoAlpha: 0 });
-      if (triptych) gsap.set(triptych, { y: 36, autoAlpha: 0 });
-      if (deck) gsap.set(deck, { y: 28, autoAlpha: 0 });
-      if (panels.length) {
-        gsap.set(panels, { autoAlpha: 0, y: 28 });
-        panels.forEach((panel) => {
-          const isLead = panel.classList.contains("house-panel--lead");
-          gsap.set(panel, { flexGrow: isLead ? LEAD_GROW : REST_GROW });
-          const detail = panel.querySelector<HTMLElement>(".house-panel-detail");
-          const heading = panel.querySelector<HTMLElement>(".house-panel-title");
-          if (detail) gsap.set(detail, { height: 0, autoAlpha: 0, marginTop: 0 });
-          if (heading) {
-            gsap.set(heading, { fontSize: "clamp(1.85rem, 3.2vw, 2.6rem)" });
-          }
+      layers.forEach((p) => {
+        gsap.set(p.copy, { autoAlpha: 0 });
+        if (p.title) {
+          p.split = SplitText.create(p.title, {
+            type: "chars",
+            charsClass: "house-char inline-block will-change-transform",
+          });
+          gsap.set(p.split.chars, {
+            yPercent: 130,
+            autoAlpha: 0,
+            rotateX: -55,
+          });
+        }
+        gsap.set([p.mark, p.essence, p.urdu, p.body, p.cta], {
+          autoAlpha: 0,
+          y: 20,
         });
-      }
+      });
 
-      let introPlayed = false;
-      const playIntro = () => {
-        if (introPlayed) return;
-        introPlayed = true;
+      if (thesis) gsap.set(thesis, { autoAlpha: 0, y: 16 });
+      if (chapter) gsap.set(chapter, { autoAlpha: 0, y: 12 });
+      gsap.set(progressFills, { scaleX: 0, transformOrigin: "left center" });
+      setLook(0);
+      setRail(0, true);
+      setProgress(-1, true);
 
-        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-        if (eyebrow) tl.to(eyebrow, { yPercent: 0, duration: 0.85 }, 0);
-        if (title) tl.to(title, { yPercent: 0, duration: 1.05 }, 0.12);
-        if (lede) tl.to(lede, { y: 0, autoAlpha: 1, duration: 0.8 }, 0.32);
-        if (triptych) tl.to(triptych, { y: 0, autoAlpha: 1, duration: 0.95 }, 0.42);
-        if (deck) tl.to(deck, { y: 0, autoAlpha: 1, duration: 0.85 }, 0.38);
-        if (panels.length) {
+      const hideCopy = (p: HouseLayer, at: number, tl: gsap.core.Timeline) => {
+        tl.to(p.copy, { autoAlpha: 0, duration: 0.12, ease: "power2.in" }, at);
+      };
+
+      const showCopy = (p: HouseLayer, at: number, tl: gsap.core.Timeline) => {
+        const chars = p.split?.chars ?? [];
+        tl.set(p.copy, { autoAlpha: 1 }, at)
+          .set(chars, { yPercent: 130, autoAlpha: 0, rotateX: -55 }, at)
+          .set(
+            [p.mark, p.essence, p.urdu, p.body, p.cta],
+            { autoAlpha: 0, y: 20 },
+            at
+          )
+          .to(p.mark, { autoAlpha: 1, y: 0, duration: 0.1 }, at + 0.02)
+          .to(
+            chars,
+            {
+              yPercent: 0,
+              autoAlpha: 1,
+              rotateX: 0,
+              duration: 0.24,
+              ease: "maison",
+              stagger: { each: 0.02, from: "start" },
+            },
+            at + 0.04
+          )
+          .to(
+            p.essence,
+            { autoAlpha: 1, y: 0, duration: 0.12, ease: "power2.out" },
+            at + 0.18
+          )
+          .to(
+            p.urdu,
+            { autoAlpha: 1, y: 0, duration: 0.1, ease: "power2.out" },
+            at + 0.2
+          )
+          .to(
+            p.body,
+            { autoAlpha: 1, y: 0, duration: 0.12, ease: "power2.out" },
+            at + 0.22
+          )
+          .to(
+            p.cta,
+            { autoAlpha: 1, y: 0, duration: 0.1, ease: "power2.out" },
+            at + 0.26
+          );
+      };
+
+      /** Rise from below and cover — with settle, veil, and gold edge. */
+      const coverFromBelow = (
+        incoming: HouseLayer,
+        outgoing: HouseLayer,
+        at: number,
+        tl: gsap.core.Timeline
+      ) => {
+        const dur = 0.42;
+
+        if (incoming.edge) {
+          tl.fromTo(
+            incoming.edge,
+            { autoAlpha: 0, scaleY: 0.3 },
+            { autoAlpha: 0.9, scaleY: 1, duration: 0.12, ease: "power1.out" },
+            at
+          ).to(
+            incoming.edge,
+            { autoAlpha: 0, duration: 0.2, ease: "power2.out" },
+            at + dur * 0.55
+          );
+        }
+
+        tl.to(
+          incoming.panel,
+          { top: "0%", duration: dur, ease: "none" },
+          at
+        );
+
+        if (incoming.media) {
           tl.to(
-            panels,
-            { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.1 },
-            0.5
+            incoming.media,
+            {
+              scale: 1,
+              yPercent: 0,
+              duration: dur + 0.08,
+              ease: "maison",
+            },
+            at
+          );
+        }
+
+        if (incoming.veil) {
+          tl.to(
+            incoming.veil,
+            { autoAlpha: 0, duration: dur * 0.7, ease: "power2.out" },
+            at + 0.08
+          );
+        }
+
+        if (outgoing.media) {
+          tl.to(
+            outgoing.media,
+            {
+              scale: 1.06,
+              yPercent: -4,
+              duration: dur,
+              ease: "power2.inOut",
+            },
+            at
+          );
+        }
+
+        if (outgoing.veil) {
+          tl.to(
+            outgoing.veil,
+            { autoAlpha: 0.35, duration: dur * 0.5, ease: "power1.in" },
+            at
           );
         }
       };
 
-      const st = ScrollTrigger.create({
-        trigger: rootRef.current,
-        start: "top 78%",
-        once: true,
-        invalidateOnRefresh: true,
-        onEnter: playIntro,
-      });
+      const buildTimeline = () => {
+        const tl = gsap.timeline({ defaults: { ease: "none" } });
 
-      const refresh = () => ScrollTrigger.refresh();
-      window.addEventListener("load", refresh);
-      const raf = requestAnimationFrame(() => {
-        refresh();
-        const rect = rootRef.current?.getBoundingClientRect();
-        if (rect && rect.top < window.innerHeight * 0.78) playIntro();
-      });
-      const safety = window.setTimeout(playIntro, 2800);
+        if (chapter) {
+          tl.to(chapter, { autoAlpha: 1, y: 0, duration: 0.1 }, 0);
+        }
+        if (thesis) {
+          tl.to(thesis, { autoAlpha: 1, y: 0, duration: 0.12 }, 0.04);
+        }
 
-      const cleanups: Array<() => void> = [
-        () => {
-          window.clearTimeout(safety);
-          window.removeEventListener("load", refresh);
-          cancelAnimationFrame(raf);
-          st.kill();
-        },
-      ];
+        // Soft settle on Mehr media as chapter opens
+        if (layers[0].media) {
+          tl.fromTo(
+            layers[0].media,
+            { scale: 1.06, yPercent: 3 },
+            { scale: 1, yPercent: 0, duration: 0.2, ease: "maison" },
+            0
+          );
+        }
 
-      if (finePointer && panels.length && triptych && contextSafe) {
-        const activate = contextSafe((active: HTMLElement) => {
-          panels.forEach((panel) => {
-            const isActive = panel === active;
-            const detail = panel.querySelector<HTMLElement>(".house-panel-detail");
-            const heading = panel.querySelector<HTMLElement>(".house-panel-title");
-            const img = panel.querySelector<HTMLElement>("img");
+        showCopy(layers[0], 0.06, tl);
+        tl.to(
+          progressFills[0],
+          { scaleX: 1, duration: 0.1, ease: "maison" },
+          0.08
+        )
+          .addLabel("mehr", 0)
+          .to({}, { duration: 0.12 }, 0.1);
 
-            gsap.to(panel, {
-              flexGrow: isActive ? ACTIVE_GROW : RECEDES_GROW,
-              duration: 0.85,
-              ease: "power3.out",
-              overwrite: "auto",
-            });
+        hideCopy(layers[0], 0.24, tl);
+        coverFromBelow(layers[1], layers[0], 0.26, tl);
+        showCopy(layers[1], 0.52, tl);
+        tl.to(
+          progressFills[1],
+          { scaleX: 1, duration: 0.1, ease: "maison" },
+          0.54
+        )
+          .addLabel("noor", 0.58)
+          .to({}, { duration: 0.1 }, 0.58);
 
-            if (heading) {
-              gsap.to(heading, {
-                fontSize: isActive
-                  ? "clamp(3rem, 5.6vw, 5.25rem)"
-                  : "clamp(1.85rem, 3.2vw, 2.6rem)",
-                duration: 0.7,
-                ease: "power3.out",
-                overwrite: "auto",
-              });
-            }
+        hideCopy(layers[1], 0.7, tl);
+        coverFromBelow(layers[2], layers[1], 0.72, tl);
+        showCopy(layers[2], 0.96, tl);
+        tl.to(
+          progressFills[2],
+          { scaleX: 1, duration: 0.1, ease: "maison" },
+          0.98
+        )
+          .addLabel("rozana", 1.02)
+          .to({}, { duration: 0.08 });
 
-            if (detail) {
-              if (isActive) {
-                gsap.to(detail, {
-                  height: "auto",
-                  autoAlpha: 1,
-                  marginTop: 14,
-                  duration: 0.65,
-                  ease: "power3.out",
-                  overwrite: "auto",
-                });
-              } else {
-                gsap.to(detail, {
-                  height: 0,
-                  autoAlpha: 0,
-                  marginTop: 0,
-                  duration: 0.45,
-                  ease: "power2.inOut",
-                  overwrite: "auto",
-                });
-              }
-            }
-
-            if (img) {
-              gsap.to(img, {
-                scale: isActive ? 1.05 : 1,
-                duration: 1.2,
-                ease: "power2.out",
-                overwrite: "auto",
-              });
-            }
-          });
-        });
-
-        const reset = contextSafe(() => {
-          panels.forEach((panel) => {
-            const isLead = panel.classList.contains("house-panel--lead");
-            const detail = panel.querySelector<HTMLElement>(".house-panel-detail");
-            const heading = panel.querySelector<HTMLElement>(".house-panel-title");
-            const img = panel.querySelector<HTMLElement>("img");
-
-            gsap.to(panel, {
-              flexGrow: isLead ? LEAD_GROW : REST_GROW,
-              duration: 0.85,
-              ease: "power3.out",
-              overwrite: "auto",
-            });
-
-            if (heading) {
-              gsap.to(heading, {
-                fontSize: "clamp(1.85rem, 3.2vw, 2.6rem)",
-                duration: 0.7,
-                ease: "power3.out",
-                overwrite: "auto",
-              });
-            }
-
-            if (detail) {
-              gsap.to(detail, {
-                height: 0,
-                autoAlpha: 0,
-                marginTop: 0,
-                duration: 0.45,
-                ease: "power2.inOut",
-                overwrite: "auto",
-              });
-            }
-
-            if (img) {
-              gsap.to(img, {
-                scale: 1,
-                duration: 1,
-                ease: "power2.out",
-                overwrite: "auto",
-              });
-            }
-          });
-        });
-
-        const handlers = panels.map((panel) => {
-          const enter = () => activate(panel);
-          panel.addEventListener("pointerenter", enter);
-          panel.addEventListener("focus", enter);
-          return { panel, enter };
-        });
-
-        triptych.addEventListener("pointerleave", reset);
-
-        cleanups.push(() => {
-          handlers.forEach(({ panel, enter }) => {
-            panel.removeEventListener("pointerenter", enter);
-            panel.removeEventListener("focus", enter);
-          });
-          triptych.removeEventListener("pointerleave", reset);
-        });
-      }
-
-      return () => cleanups.forEach((fn) => fn());
-    },
-    { scope: rootRef }
-  );
-
-  // Mobile — viewport scroll drives Mehr → Noor → Rozana expands.
-  useGSAP(
-    () => {
-      const stage = mobileStageRef.current;
-      const deck = deckRef.current;
-      if (!stage || !deck) return;
-      if (!window.matchMedia("(max-width: 767px)").matches) return;
-
-      const reduce = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
-
-      const bands = gsap.utils.toArray<HTMLElement>(".house-band", deck);
-      if (bands.length < 3) return;
-
-      const measure = () => {
-        const deckH = deck.clientHeight;
-        const gaps = MOBILE_DECK_GAP * (bands.length - 1);
-        const idle = MOBILE_IDLE_H;
-        const active = Math.max(240, deckH - gaps - idle * (bands.length - 1));
-        return { idle, active };
+        return tl;
       };
 
-      const { idle, active } = measure();
+      let lastIndex = 0;
+      let step = 0;
+      const mm = gsap.matchMedia();
 
-      bands.forEach((band, i) => {
-        const copy = band.querySelector<HTMLElement>(".house-band-copy");
-        const strip = band.querySelector<HTMLElement>(".house-band-strip");
-        const img = band.querySelector<HTMLElement>("img");
-        const on = i === 0;
-        gsap.set(band, { height: on ? active : idle, flexGrow: 0, flexShrink: 0 });
-        if (copy) gsap.set(copy, { autoAlpha: on ? 1 : 0, y: 0 });
-        if (strip) gsap.set(strip, { autoAlpha: on ? 0 : 1 });
-        if (img) gsap.set(img, { scale: on ? 1.02 : 1.08 });
-      });
-      setMobileActive(0);
-
-      if (reduce) return;
-
-      let last = 0;
-      const setActiveVisual = (index: number) => {
-        if (index === last) return;
-        last = index;
-        setMobileActive(index);
+      const progressToIndex = (p: number, mobile: boolean) => {
+        if (mobile) return p < 0.25 ? 0 : p < 0.75 ? 1 : 2;
+        return p < 0.34 ? 0 : p < 0.66 ? 1 : 2;
       };
 
-      const tl = gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: stage,
-          start: "top 12%",
-          end: () => `+=${Math.round(window.innerHeight * 2.1)}`,
-          pin: true,
-          pinSpacing: true,
-          pinType: "fixed",
-          scrub: 0.35,
-          anticipatePin: 1,
+      mm.add("(min-width: 768px)", () => {
+        const tl = buildTimeline();
+        const st = ScrollTrigger.create({
+          animation: tl,
+          trigger: track,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1.05,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            const p = self.progress;
-            setActiveVisual(p < 0.33 ? 0 : p < 0.66 ? 1 : 2);
+            const next = progressToIndex(self.progress, false);
+            if (next !== lastIndex) {
+              lastIndex = next;
+              setLook(next);
+            }
           },
-        },
+        });
+        const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
+        return () => {
+          cancelAnimationFrame(raf);
+          st.kill();
+          tl.kill();
+        };
       });
 
-      // Hold Mehr, then morph to Noor, then Rozana.
-      tl.to({}, { duration: 0.22 })
-
-        // Mehr → Noor
-        .to(bands[0], { height: idle, duration: 0.28 }, 0.22)
-        .to(bands[1], { height: active, duration: 0.28 }, 0.22)
-        .to(
-          bands[0].querySelector(".house-band-copy"),
-          { autoAlpha: 0, y: 8, duration: 0.16 },
-          0.22
-        )
-        .to(
-          bands[0].querySelector(".house-band-strip"),
-          { autoAlpha: 1, duration: 0.16 },
-          0.22
-        )
-        .to(
-          bands[1].querySelector(".house-band-strip"),
-          { autoAlpha: 0, duration: 0.16 },
-          0.22
-        )
-        .to(
-          bands[1].querySelector(".house-band-copy"),
-          { autoAlpha: 1, y: 0, duration: 0.2 },
-          0.3
-        )
-        .to(bands[0].querySelector("img"), { scale: 1.08, duration: 0.28 }, 0.22)
-        .to(bands[1].querySelector("img"), { scale: 1.02, duration: 0.28 }, 0.22)
-
-        .to({}, { duration: 0.18 })
-
-        // Noor → Rozana
-        .to(bands[1], { height: idle, duration: 0.28 }, 0.68)
-        .to(bands[2], { height: active, duration: 0.28 }, 0.68)
-        .to(
-          bands[1].querySelector(".house-band-copy"),
-          { autoAlpha: 0, y: 8, duration: 0.16 },
-          0.68
-        )
-        .to(
-          bands[1].querySelector(".house-band-strip"),
-          { autoAlpha: 1, duration: 0.16 },
-          0.68
-        )
-        .to(
-          bands[2].querySelector(".house-band-strip"),
-          { autoAlpha: 0, duration: 0.16 },
-          0.68
-        )
-        .to(
-          bands[2].querySelector(".house-band-copy"),
-          { autoAlpha: 1, y: 0, duration: 0.2 },
-          0.76
-        )
-        .to(bands[1].querySelector("img"), { scale: 1.08, duration: 0.28 }, 0.68)
-        .to(bands[2].querySelector("img"), { scale: 1.02, duration: 0.28 }, 0.68)
-
-        .to({}, { duration: 0.18 });
-
-      const onResize = () => {
-        const next = measure();
-        const idx = last;
-        bands.forEach((band, i) => {
-          gsap.set(band, { height: i === idx ? next.active : next.idle });
+      mm.add("(max-width: 767px)", () => {
+        const tl = buildTimeline();
+        const st = ScrollTrigger.create({
+          animation: tl,
+          trigger: track,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.85,
+          invalidateOnRefresh: true,
+          onEnter: () => {
+            step = 0;
+          },
+          onEnterBack: () => {
+            step = 2;
+          },
+          snap: {
+            snapTo: (_value, stSnap) => {
+              const dir = stSnap?.direction ?? 0;
+              if (dir > 0) return Math.min(1, (step + 1) / 2);
+              if (dir < 0) return Math.max(0, (step - 1) / 2);
+              return step / 2;
+            },
+            duration: 0.85,
+            delay: 0.04,
+            ease: "power2.inOut",
+            inertia: false,
+            onComplete: (stSnap) => {
+              if (!stSnap) return;
+              const next = progressToIndex(stSnap.progress, true);
+              step = next;
+              if (next !== lastIndex) {
+                lastIndex = next;
+                setLook(next);
+              }
+            },
+          },
+          onUpdate: (self) => {
+            const next = progressToIndex(self.progress, true);
+            if (next !== lastIndex) {
+              lastIndex = next;
+              setLook(next);
+            }
+          },
         });
-        ScrollTrigger.refresh();
-      };
-      window.addEventListener("resize", onResize);
-      const t1 = window.setTimeout(() => ScrollTrigger.refresh(), 400);
-      const t2 = window.setTimeout(() => ScrollTrigger.refresh(), 1200);
+        const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
+        return () => {
+          cancelAnimationFrame(raf);
+          st.kill();
+          tl.kill();
+        };
+      });
 
       return () => {
-        window.removeEventListener("resize", onResize);
-        window.clearTimeout(t1);
-        window.clearTimeout(t2);
-        tl.scrollTrigger?.kill();
-        tl.kill();
+        layers.forEach((p) => p.split?.revert());
+        mm.revert();
       };
     },
     { scope: rootRef }
@@ -418,214 +483,214 @@ export function CatalogsShowcase() {
     <section
       ref={rootRef}
       id="catalogs"
-      className="houses-section relative bg-[#faf9f7] text-ink"
-      aria-label="The houses"
+      data-house="mehr"
+      className="relative z-10 bg-void text-ivory"
+      aria-label="The houses — Mehr, Noor, Rozana"
     >
-      <header className="relative z-10 px-6 pb-10 pt-20 sm:px-10 md:pb-14 md:pt-28 lg:px-14 lg:pt-32">
-        <p className="houses-eyebrow overflow-hidden">
-          <span className="houses-eyebrow-inner block text-[10px] tracking-[0.36em] text-gold uppercase">
-            The houses
-          </span>
-        </p>
-        <h2 className="mt-4 max-w-lg font-display text-[clamp(2.5rem,6vw,4.25rem)] font-normal leading-[0.95] tracking-[0.02em] uppercase">
-          <span className="houses-title block overflow-hidden">
-            <span className="houses-title-inner block">Three names, one hand</span>
-          </span>
-        </h2>
-        <p className="houses-lede mt-5 max-w-md text-[14px] leading-[1.75] text-muted">
-          Bridal warmth, high-jewellery light, and gold for every day —
-          composed under three names, made by the same atelier.{" "}
-          <span className="md:hidden">Scroll to step through each house.</span>
-          <span className="hidden md:inline">
-            Rest a cursor on one to step inside.
-          </span>
-        </p>
-      </header>
-
-      {/* Desktop / fine-pointer — interactive triptych */}
-      <div className="relative z-10 hidden px-6 pb-24 md:block md:px-10 md:pb-28 lg:px-14 lg:pb-36">
-        <div className="house-triptych flex gap-4 overflow-hidden rounded-[1.75rem] shadow-[0_28px_70px_rgba(14,12,10,0.1)] lg:gap-5">
-          {CATALOGS.map((slug) => {
-            const item = catalogMeta[slug];
-            const accent = HOUSE_ACCENTS[slug];
-            const lead = slug === "mehr";
+      <div
+        ref={trackRef}
+        className="relative h-[320vh] bg-void motion-reduce:h-[100svh] md:h-[360vh]"
+      >
+        <div
+          ref={stageRef}
+          className="sticky top-0 h-[100svh] min-h-[100svh] overflow-hidden bg-void"
+        >
+          {CATALOGS.map((key, houseIndex) => {
+            const item = catalogMeta[key];
             return (
-              <Link
-                key={slug}
-                href={`/catalogs/${slug}`}
-                className={`house-panel group relative block h-full overflow-hidden ${
-                  lead ? "house-panel--lead" : ""
-                }`}
-                aria-label={`House ${NUMS[slug]} — ${item.title}. ${item.tagline}`}
+              <div
+                key={key}
+                data-house-panel={key}
+                className="absolute left-0 h-full w-full bg-void"
+                style={{
+                  top: houseIndex === 0 ? "0%" : "100%",
+                  zIndex: houseIndex + 1,
+                }}
+                aria-hidden={houseIndex !== 0}
               >
-                <Image
-                  src={item.image}
-                  alt=""
-                  fill
-                  priority={lead}
-                  sizes="(max-width: 1279px) 45vw, 32vw"
-                  unoptimized={isLocalPublicSrc(item.image)}
-                  className="object-cover will-change-transform"
-                  style={{ objectPosition: item.objectPosition }}
-                />
                 <div
-                  className="pointer-events-none absolute inset-0"
+                  data-house-media
+                  className="absolute inset-0 will-change-transform"
+                >
+                  <Image
+                    src={item.image}
+                    alt=""
+                    fill
+                    sizes="100vw"
+                    priority={houseIndex === 0}
+                    unoptimized={isLocalPublicSrc(item.image)}
+                    className="object-cover"
+                    style={{ objectPosition: item.objectPosition }}
+                  />
+                </div>
+
+                <div
+                  data-house-veil
+                  className="pointer-events-none absolute inset-0 bg-void/50"
+                  aria-hidden
+                />
+
+                {/* Leading edge light as the sheet rises */}
+                <div
+                  data-house-edge
+                  className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 origin-top opacity-0"
                   aria-hidden
                   style={{
                     background:
-                      "linear-gradient(180deg, rgba(14,12,10,0.02) 0%, rgba(14,12,10,0.08) 42%, rgba(14,12,10,0.88) 100%)",
+                      "linear-gradient(180deg, rgba(212,188,130,0.35) 0%, transparent 100%)",
                   }}
                 />
 
-                <div className="absolute inset-x-0 bottom-0 p-6 lg:p-8">
-                  <p
-                    className="text-[10px] font-medium tracking-[0.3em] uppercase"
-                    style={{ color: accent }}
-                  >
-                    House {NUMS[slug]}
-                  </p>
-                  <h3 className="house-panel-title mt-2 font-display font-normal uppercase text-ivory">
-                    {item.title}
-                  </h3>
-                  <p className="mt-1.5 font-display text-lg text-ivory/60">
-                    {item.urduHint}
-                  </p>
-
-                  <div className="house-panel-detail overflow-hidden">
-                    <p className="max-w-xs text-[13px] leading-[1.7] text-ivory/65">
-                      {item.tagline}
-                    </p>
-                    <span className="mt-5 inline-flex items-center gap-3 text-[10px] font-medium tracking-[0.24em] text-ivory uppercase">
-                      Open the house
-                      <span className="h-px w-8 bg-current" aria-hidden />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Mobile — scroll-driven house expands (Mehr → Noor → Rozana) */}
-      <div
-        ref={mobileStageRef}
-        className="relative z-10 px-5 pb-16 sm:px-8 md:hidden"
-      >
-        <div
-          ref={deckRef}
-          className="house-deck flex h-[min(78svh,640px)] flex-col gap-2 overflow-hidden rounded-[1.5rem] shadow-[0_24px_60px_rgba(14,12,10,0.12)]"
-          role="list"
-          aria-label="The three houses"
-        >
-          {CATALOGS.map((slug, i) => {
-            const item = catalogMeta[slug];
-            const accent = HOUSE_ACCENTS[slug];
-            const isActive = i === mobileActive;
-            return (
-              <div
-                key={slug}
-                id={`house-band-${slug}`}
-                className="house-band relative shrink-0 overflow-hidden rounded-[1.15rem]"
-                style={{ flex: "0 0 auto" }}
-                aria-current={isActive ? "true" : undefined}
-              >
-                <Image
-                  src={item.image}
-                  alt=""
-                  fill
-                  sizes="100vw"
-                  priority={i === 0}
-                  unoptimized={isLocalPublicSrc(item.image)}
-                  className="object-cover will-change-transform"
-                  style={{ objectPosition: item.objectPosition }}
+                <div
+                  className="cinematic-grain pointer-events-none absolute inset-0 z-[1] opacity-[0.32]"
+                  aria-hidden
                 />
                 <div
-                  className="pointer-events-none absolute inset-0"
+                  className="pointer-events-none absolute inset-0 z-[1]"
                   aria-hidden
                   style={{
-                    background: isActive
-                      ? "linear-gradient(180deg, rgba(14,12,10,0.05) 0%, transparent 38%, rgba(14,12,10,0.84) 100%)"
-                      : "linear-gradient(90deg, rgba(14,12,10,0.55) 0%, rgba(14,12,10,0.28) 100%)",
+                    background:
+                      "linear-gradient(115deg, rgba(7,9,14,0.9) 0%, rgba(7,9,14,0.48) 38%, rgba(7,9,14,0.16) 58%, rgba(7,9,14,0.74) 100%)",
+                  }}
+                />
+
+                <Link
+                  data-house-hit
+                  href={`/catalogs/${key}`}
+                  aria-label={`Enter ${item.title}`}
+                  tabIndex={houseIndex === 0 ? 0 : -1}
+                  className="absolute inset-0 z-[2]"
+                  style={{
+                    pointerEvents: houseIndex === 0 ? "auto" : "none",
                   }}
                 />
 
                 <div
-                  className="house-band-strip pointer-events-none absolute inset-0 z-[2] flex items-center justify-between px-5"
-                  aria-hidden={isActive}
+                  data-house-copy={key}
+                  className="pointer-events-none absolute inset-0 z-[3] flex flex-col justify-end px-5 pb-16 sm:px-8 sm:pb-20 md:px-14 md:pb-24 lg:px-20"
                 >
-                  <span
-                    className="text-[10px] font-medium tracking-[0.28em] uppercase"
-                    style={{ color: accent }}
-                  >
-                    House {NUMS[slug]}
-                  </span>
-                  <span className="font-display text-[1.35rem] uppercase leading-none tracking-[0.04em] text-ivory">
-                    {item.title}
-                  </span>
-                  <span
-                    className="font-display text-base text-ivory/55"
-                    lang="ur"
-                    dir="rtl"
-                  >
-                    {item.urduHint}
-                  </span>
-                </div>
+                  <div className="w-full max-w-xl">
+                    <p
+                      data-house-mark
+                      className="text-[8px] font-medium tracking-[0.34em] text-gold uppercase sm:text-[10px] sm:tracking-[0.4em]"
+                    >
+                      House {NUMS[key]} · {item.subtitle}
+                    </p>
 
-                <div className="house-band-copy pointer-events-none absolute inset-x-0 bottom-0 z-[2] p-6">
-                  <p
-                    className="text-[10px] font-medium tracking-[0.3em] uppercase"
-                    style={{ color: accent }}
-                  >
-                    House {NUMS[slug]} · {item.subtitle}
-                  </p>
-                  <h3 className="mt-2 font-display text-[clamp(2.25rem,9vw,3rem)] font-normal uppercase leading-[0.95] text-ivory">
-                    {item.title}
-                  </h3>
-                  <p
-                    className="mt-1.5 font-display text-lg text-ivory/60"
-                    lang="ur"
-                    dir="rtl"
-                  >
-                    {item.urduHint}
-                  </p>
-                  <p className="mt-3 max-w-xs text-[13px] leading-[1.65] text-ivory/65">
-                    {item.tagline}
-                  </p>
-                  <Link
-                    href={`/catalogs/${slug}`}
-                    className="pointer-events-auto mt-5 inline-flex items-center gap-3 text-[10px] font-medium tracking-[0.24em] text-ivory uppercase"
-                    tabIndex={isActive ? 0 : -1}
-                  >
-                    Open the house
-                    <span className="h-px w-8 bg-current" aria-hidden />
-                  </Link>
+                    <h2 className="mt-3 font-display text-[clamp(3rem,10vw,7rem)] font-medium leading-[0.9] tracking-[-0.03em] text-ivory uppercase sm:mt-4">
+                      <Link
+                        href={`/catalogs/${key}`}
+                        className="pointer-events-auto transition-colors hover:text-gold"
+                        tabIndex={houseIndex === 0 ? 0 : -1}
+                      >
+                        <span
+                          data-house-title
+                          className="inline-block"
+                          style={{ perspective: "700px" }}
+                        >
+                          {item.title}
+                        </span>
+                      </Link>
+                    </h2>
+
+                    <p
+                      data-house-essence
+                      className="mt-3 font-display text-[clamp(1.15rem,2.8vw,1.85rem)] text-gold/90 sm:mt-4"
+                    >
+                      {ESSENCE[key]}
+                    </p>
+
+                    <p
+                      data-house-urdu
+                      className="mt-2 font-display text-[clamp(1.1rem,2.4vw,1.6rem)] text-ivory/45"
+                      lang="ur"
+                      dir="rtl"
+                    >
+                      {item.urduHint}
+                    </p>
+
+                    <p
+                      data-house-body
+                      className="mt-5 max-w-md text-[13px] leading-[1.75] text-ivory/65 sm:mt-6 sm:text-[14px] md:text-[15px] md:leading-[1.85]"
+                    >
+                      {item.tagline}. Composed under one atelier hand.
+                    </p>
+
+                    <Link
+                      data-house-cta
+                      href={`/catalogs/${key}`}
+                      className="pointer-events-auto mt-7 inline-flex items-center gap-3 text-[10px] font-medium tracking-[0.28em] text-ivory uppercase transition-colors hover:text-gold sm:mt-8"
+                      tabIndex={houseIndex === 0 ? 0 : -1}
+                    >
+                      Enter {item.title}
+                      <span className="h-px w-10 bg-current" aria-hidden />
+                    </Link>
+                  </div>
                 </div>
               </div>
             );
           })}
-        </div>
 
-        <div
-          className="mt-5 flex items-center justify-center gap-2"
-          aria-hidden
-        >
-          {CATALOGS.map((slug, i) => {
-            const isActive = i === mobileActive;
-            return (
-              <span
-                key={slug}
-                className="h-1.5 rounded-full"
-                style={{
-                  width: isActive ? 28 : 8,
-                  backgroundColor: isActive
-                    ? HOUSE_ACCENTS[slug]
-                    : "rgba(14,12,10,0.18)",
-                  transition: "width 0.35s ease, background-color 0.35s ease",
-                }}
-              />
-            );
-          })}
+          <div
+            data-house-chapter
+            className="pointer-events-none absolute top-1/2 left-3 z-20 -translate-y-1/2 sm:left-5 md:left-8"
+            aria-hidden
+          >
+            <p className="origin-left -rotate-90 text-[8px] font-medium tracking-[0.4em] text-gold/75 uppercase sm:text-[9px]">
+              Three seals · One atelier
+            </p>
+          </div>
+
+          <p
+            data-house-thesis
+            className="pointer-events-none absolute top-6 left-5 z-20 max-w-[12rem] font-display text-[clamp(1.15rem,2.6vw,1.65rem)] leading-[1.15] tracking-[0.02em] text-ivory/85 sm:top-8 sm:left-8 md:left-12"
+          >
+            Three names,
+            <br />
+            <span className="text-gold">one hand</span>
+          </p>
+
+          <div
+            className="absolute bottom-6 left-5 z-20 flex w-[min(42vw,240px)] gap-1.5 sm:bottom-8 sm:left-8 md:left-12"
+            aria-hidden
+          >
+            {CATALOGS.map((key) => (
+              <div
+                key={key}
+                className="h-px flex-1 overflow-hidden bg-ivory/15"
+              >
+                <div
+                  data-house-progress
+                  className="h-full w-full origin-left bg-gold"
+                />
+              </div>
+            ))}
+          </div>
+
+          <nav
+            className="absolute top-1/2 right-4 z-20 flex -translate-y-1/2 flex-col items-end gap-4 sm:right-6 md:right-10 lg:right-14"
+            aria-label="House index"
+          >
+            {CATALOGS.map((key) => (
+              <Link
+                key={key}
+                href={`/catalogs/${key}`}
+                className="group flex items-center gap-3"
+              >
+                <span
+                  data-house-rail={key}
+                  className="text-[9px] font-medium tracking-[0.3em] text-ivory uppercase transition-colors group-hover:text-gold sm:text-[10px]"
+                >
+                  {catalogMeta[key].title}
+                </span>
+                <span
+                  data-house-rail-tick={key}
+                  className="h-6 w-px origin-bottom bg-gold transition-colors group-hover:bg-gold-bright"
+                  aria-hidden
+                />
+              </Link>
+            ))}
+          </nav>
         </div>
       </div>
     </section>

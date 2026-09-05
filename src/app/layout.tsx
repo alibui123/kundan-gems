@@ -1,23 +1,25 @@
 import type { Metadata } from "next";
-import { Cormorant, Inter } from "next/font/google";
+import { Bodoni_Moda, Manrope } from "next/font/google";
 import { CartProvider } from "@/components/CartProvider";
 import { CartDrawer } from "@/components/CartDrawer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { RouteScrollCleanup } from "@/components/RouteScrollCleanup";
 import "./globals.css";
 
-const cormorant = Cormorant({
+/* Display: high-fashion Didot lineage (jewellery catalogues).
+   Body: quiet geometric sans — not Inter. */
+const bodoni = Bodoni_Moda({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-cormorant",
+  style: ["normal"],
+  variable: "--font-bodoni",
   display: "swap",
 });
 
-const inter = Inter({
+const manrope = Manrope({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
-  variable: "--font-inter",
+  variable: "--font-manrope",
   display: "swap",
 });
 
@@ -37,8 +39,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
-      <body className={`${inter.className} min-h-screen bg-white antialiased`}>
+    <html lang="en" className={`${bodoni.variable} ${manrope.variable}`}>
+      <body className={`${manrope.className} min-h-screen bg-paper antialiased`}>
         <CartProvider>
           <RouteScrollCleanup />
           {children}

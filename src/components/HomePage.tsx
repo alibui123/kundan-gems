@@ -21,8 +21,8 @@ import { Footer } from "@/components/Footer";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
- * Homepage — single-screen hero, one pinned climax (the materials),
- * then a boutique that rises over the hero on scroll.
+ * Homepage — cinematic hero, dark philosophy salon, materials climax,
+ * then the boutique floor on platinum paper.
  */
 export function HomePage({
   newArrivals,
@@ -106,20 +106,14 @@ export function HomePage({
 
   return (
     <SmoothScroll>
-      <div ref={rootRef} className="relative">
+      <div ref={rootRef} className="relative bg-paper">
         <ScrollProgress />
         <Navigation />
         <Hero />
-
-        {/* White shell only wraps manifesto — materials pin sits on void,
-            so a pin spacer can never flash boutique white. */}
-        <div className="boutique relative z-10 rounded-t-[1.75rem] bg-white shadow-[0_-32px_80px_rgba(14,12,10,0.14)] sm:rounded-t-[2.25rem] md:rounded-t-[2.5rem]">
-          <Manifesto />
-        </div>
-
+        <Manifesto />
         <MaterialsRiver />
 
-        <div className="relative z-10 bg-white">
+        <div className="relative z-10 bg-paper">
           <MaisonTicker />
           <CatalogsShowcase />
           <FeaturedCollections />

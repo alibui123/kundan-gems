@@ -49,7 +49,7 @@ export function CatalogHero({ catalog, pieceCount }: CatalogHeroProps) {
   return (
     <section
       ref={rootRef}
-      className="relative isolate min-h-[88svh] overflow-hidden md:min-h-[92svh]"
+      className="catalog-hero relative isolate min-h-[88svh] overflow-hidden md:min-h-[92svh]"
       aria-label={`${meta.title} — ${meta.subtitle}`}
     >
       <div className="absolute inset-0 overflow-hidden" aria-hidden>
@@ -60,7 +60,7 @@ export function CatalogHero({ catalog, pieceCount }: CatalogHeroProps) {
           priority
           sizes="100vw"
           unoptimized={isLocalPublicSrc(meta.heroImage)}
-          className="ch-bg-img object-cover will-change-transform"
+          className="ch-bg-img object-cover object-center will-change-transform"
           style={{ objectPosition: meta.heroObjectPosition }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/45 to-ink/15" />
