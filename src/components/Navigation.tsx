@@ -49,29 +49,9 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
     window.addEventListener("scroll", sync, { passive: true });
     window.addEventListener("resize", sync);
 
-    type LenisLike = {
-      on: (e: string, cb: () => void) => void;
-      off: (e: string, cb: () => void) => void;
-    };
-    const getLenis = () =>
-      (window as Window & { __lenis?: LenisLike }).__lenis;
-
-    getLenis()?.on("scroll", sync);
-
-    const retry = window.setInterval(() => {
-      const l = getLenis();
-      if (l) {
-        l.on("scroll", sync);
-        window.clearInterval(retry);
-      }
-    }, 200);
-    window.setTimeout(() => window.clearInterval(retry), 3000);
-
     return () => {
       window.removeEventListener("scroll", sync);
       window.removeEventListener("resize", sync);
-      window.clearInterval(retry);
-      getLenis()?.off("scroll", sync);
     };
   }, [isHome]);
 

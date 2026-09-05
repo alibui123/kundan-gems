@@ -22,18 +22,6 @@ export function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const scrollingRef = useRef(false);
 
-  const getLenis = () =>
-    (
-      window as Window & {
-        __lenis?: {
-          scrollTo: (
-            target: number | string | HTMLElement,
-            opts?: { duration?: number; onComplete?: () => void }
-          ) => void;
-        };
-      }
-    ).__lenis;
-
   const goToSection = useCallback(
     (event: MouseEvent<HTMLAnchorElement>, sectionId: string) => {
       event.preventDefault();
@@ -49,16 +37,8 @@ export function Hero() {
           scrollingRef.current = false;
         }, 120);
       };
-      const lenis = getLenis();
-      if (lenis) {
-        lenis.scrollTo(y, { duration: 0.9, onComplete: finish });
-        window.setTimeout(() => {
-          if (scrollingRef.current) finish();
-        }, 1500);
-      } else {
-        window.scrollTo({ top: y, behavior: "smooth" });
-        window.setTimeout(finish, 600);
-      }
+      window.scrollTo({ top: y, behavior: "smooth" });
+      window.setTimeout(finish, 600);
     },
     []
   );

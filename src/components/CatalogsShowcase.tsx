@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useRef, useState, type TouchEvent } from "react";
+import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -24,30 +24,19 @@ const LEAD_GROW = 1.15;
 const RECEDES_GROW = 0.62;
 const ACTIVE_GROW = 2.7;
 
-/** Mobile elastic deck — pixel heights (GSAP owns these; React must not). */
-const MOBILE_IDLE_H = 60;
-const MOBILE_DECK_GAP = 8; // matches gap-2
+const MOBILE_IDLE_H = 58;
+const MOBILE_DECK_GAP = 8;
 
 /**
- * The houses — desktop triptych + mobile elastic deck.
- * Mobile direction from 21st.dev Elastic Gallery / Scrollable Card Stack:
- * one house claims the frame; the other two recede to numbered strips.
- * Swipe or tap to change; GSAP drives the expand.
+ * The houses — desktop triptych + mobile scroll deck.
+ * Mobile: pinned stage; Mehr expands on enter, then Noor, then Rozana
+ * as the user scrolls through the section (viewport-driven GSAP).
  */
 export function CatalogsShowcase() {
   const rootRef = useRef<HTMLElement>(null);
   const deckRef = useRef<HTMLDivElement>(null);
+  const mobileStageRef = useRef<HTMLDivElement>(null);
   const [mobileActive, setMobileActive] = useState(0);
-  const touchStartY = useRef(0);
-  const touchLocked = useRef(false);
-  const deckLaidOut = useRef(false);
-
-  const selectHouse = useCallback((index: number) => {
-    setMobileActive((prev) => {
-      if (index < 0 || index >= CATALOGS.length || index === prev) return prev;
-      return index;
-    });
-  }, []);
 
   useGSAP(
     (context, contextSafe) => {
@@ -90,7 +79,7 @@ export function CatalogsShowcase() {
       if (title) gsap.set(title, { yPercent: 115 });
       if (lede) gsap.set(lede, { y: 22, autoAlpha: 0 });
       if (triptych) gsap.set(triptych, { y: 36, autoAlpha: 0 });
-      if (deck) gsap.set(deck, { y: 36, autoAlpha: 0 });
+      if (deck) gsap.set(deck, { y: 28, autoAlpha: 0 });
       if (panels.length) {
         gsap.set(panels, { autoAlpha: 0, y: 28 });
         panels.forEach((panel) => {
@@ -115,7 +104,7 @@ export function CatalogsShowcase() {
         if (title) tl.to(title, { yPercent: 0, duration: 1.05 }, 0.12);
         if (lede) tl.to(lede, { y: 0, autoAlpha: 1, duration: 0.8 }, 0.32);
         if (triptych) tl.to(triptych, { y: 0, autoAlpha: 1, duration: 0.95 }, 0.42);
-        if (deck) tl.to(deck, { y: 0, autoAlpha: 1, duration: 0.95 }, 0.42);
+        if (deck) tl.to(deck, { y: 0, autoAlpha: 1, duration: 0.85 }, 0.38);
         if (panels.length) {
           tl.to(
             panels,
@@ -278,132 +267,152 @@ export function CatalogsShowcase() {
     { scope: rootRef }
   );
 
-  // Mobile elastic deck — GSAP owns heights/opacity. React must not set the
-  // target flexGrow/opacity on render or the tween has nothing left to animate.
+  // Mobile — viewport scroll drives Mehr → Noor → Rozana expands.
   useGSAP(
     () => {
+      const stage = mobileStageRef.current;
       const deck = deckRef.current;
-      if (!deck) return;
-
-      const bands = gsap.utils.toArray<HTMLElement>(".house-band", deck);
-      if (bands.length === 0) return;
+      if (!stage || !deck) return;
+      if (!window.matchMedia("(max-width: 767px)").matches) return;
 
       const reduce = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       ).matches;
 
-      const sizes = () => {
+      const bands = gsap.utils.toArray<HTMLElement>(".house-band", deck);
+      if (bands.length < 3) return;
+
+      const measure = () => {
         const deckH = deck.clientHeight;
         const gaps = MOBILE_DECK_GAP * (bands.length - 1);
         const idle = MOBILE_IDLE_H;
-        const active = Math.max(
-          220,
-          deckH - gaps - idle * (bands.length - 1)
-        );
+        const active = Math.max(240, deckH - gaps - idle * (bands.length - 1));
         return { idle, active };
       };
 
-      const apply = (animate: boolean) => {
-        const { idle, active } = sizes();
-        const duration = reduce || !animate ? 0 : 0.85;
+      const { idle, active } = measure();
 
-        const tl = gsap.timeline({
-          defaults: { ease: "power3.inOut", overwrite: true },
-        });
+      bands.forEach((band, i) => {
+        const copy = band.querySelector<HTMLElement>(".house-band-copy");
+        const strip = band.querySelector<HTMLElement>(".house-band-strip");
+        const img = band.querySelector<HTMLElement>("img");
+        const on = i === 0;
+        gsap.set(band, { height: on ? active : idle, flexGrow: 0, flexShrink: 0 });
+        if (copy) gsap.set(copy, { autoAlpha: on ? 1 : 0, y: 0 });
+        if (strip) gsap.set(strip, { autoAlpha: on ? 0 : 1 });
+        if (img) gsap.set(img, { scale: on ? 1.02 : 1.08 });
+      });
+      setMobileActive(0);
 
-        bands.forEach((band, i) => {
-          const isActive = i === mobileActive;
-          const copy = band.querySelector<HTMLElement>(".house-band-copy");
-          const strip = band.querySelector<HTMLElement>(".house-band-strip");
-          const img = band.querySelector<HTMLElement>("img");
+      if (reduce) return;
 
-          tl.to(
-            band,
-            {
-              height: isActive ? active : idle,
-              duration,
-            },
-            0
-          );
-
-          if (strip) {
-            tl.to(
-              strip,
-              {
-                autoAlpha: isActive ? 0 : 1,
-                duration: duration ? 0.35 : 0,
-                ease: "power2.out",
-              },
-              0
-            );
-          }
-
-          if (copy) {
-            if (isActive) {
-              tl.fromTo(
-                copy,
-                { autoAlpha: 0, y: 16 },
-                {
-                  autoAlpha: 1,
-                  y: 0,
-                  duration: duration ? 0.5 : 0,
-                  ease: "power3.out",
-                  immediateRender: false,
-                },
-                duration ? 0.28 : 0
-              );
-            } else {
-              tl.to(
-                copy,
-                {
-                  autoAlpha: 0,
-                  y: 10,
-                  duration: duration ? 0.22 : 0,
-                  ease: "power2.in",
-                },
-                0
-              );
-            }
-          }
-
-          if (img) {
-            tl.to(
-              img,
-              {
-                scale: isActive ? 1.03 : 1.1,
-                duration: duration ? 0.9 : 0,
-                ease: "power2.out",
-              },
-              0
-            );
-          }
-        });
+      let last = 0;
+      const setActiveVisual = (index: number) => {
+        if (index === last) return;
+        last = index;
+        setMobileActive(index);
       };
 
-      const first = !deckLaidOut.current;
-      deckLaidOut.current = true;
-      apply(!first);
+      const tl = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: stage,
+          start: "top 12%",
+          end: () => `+=${Math.round(window.innerHeight * 2.1)}`,
+          pin: true,
+          pinSpacing: true,
+          pinType: "fixed",
+          scrub: 0.35,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const p = self.progress;
+            setActiveVisual(p < 0.33 ? 0 : p < 0.66 ? 1 : 2);
+          },
+        },
+      });
 
-      const onResize = () => apply(false);
+      // Hold Mehr, then morph to Noor, then Rozana.
+      tl.to({}, { duration: 0.22 })
+
+        // Mehr → Noor
+        .to(bands[0], { height: idle, duration: 0.28 }, 0.22)
+        .to(bands[1], { height: active, duration: 0.28 }, 0.22)
+        .to(
+          bands[0].querySelector(".house-band-copy"),
+          { autoAlpha: 0, y: 8, duration: 0.16 },
+          0.22
+        )
+        .to(
+          bands[0].querySelector(".house-band-strip"),
+          { autoAlpha: 1, duration: 0.16 },
+          0.22
+        )
+        .to(
+          bands[1].querySelector(".house-band-strip"),
+          { autoAlpha: 0, duration: 0.16 },
+          0.22
+        )
+        .to(
+          bands[1].querySelector(".house-band-copy"),
+          { autoAlpha: 1, y: 0, duration: 0.2 },
+          0.3
+        )
+        .to(bands[0].querySelector("img"), { scale: 1.08, duration: 0.28 }, 0.22)
+        .to(bands[1].querySelector("img"), { scale: 1.02, duration: 0.28 }, 0.22)
+
+        .to({}, { duration: 0.18 })
+
+        // Noor → Rozana
+        .to(bands[1], { height: idle, duration: 0.28 }, 0.68)
+        .to(bands[2], { height: active, duration: 0.28 }, 0.68)
+        .to(
+          bands[1].querySelector(".house-band-copy"),
+          { autoAlpha: 0, y: 8, duration: 0.16 },
+          0.68
+        )
+        .to(
+          bands[1].querySelector(".house-band-strip"),
+          { autoAlpha: 1, duration: 0.16 },
+          0.68
+        )
+        .to(
+          bands[2].querySelector(".house-band-strip"),
+          { autoAlpha: 0, duration: 0.16 },
+          0.68
+        )
+        .to(
+          bands[2].querySelector(".house-band-copy"),
+          { autoAlpha: 1, y: 0, duration: 0.2 },
+          0.76
+        )
+        .to(bands[1].querySelector("img"), { scale: 1.08, duration: 0.28 }, 0.68)
+        .to(bands[2].querySelector("img"), { scale: 1.02, duration: 0.28 }, 0.68)
+
+        .to({}, { duration: 0.18 });
+
+      const onResize = () => {
+        const next = measure();
+        const idx = last;
+        bands.forEach((band, i) => {
+          gsap.set(band, { height: i === idx ? next.active : next.idle });
+        });
+        ScrollTrigger.refresh();
+      };
       window.addEventListener("resize", onResize);
-      return () => window.removeEventListener("resize", onResize);
+      const t1 = window.setTimeout(() => ScrollTrigger.refresh(), 400);
+      const t2 = window.setTimeout(() => ScrollTrigger.refresh(), 1200);
+
+      return () => {
+        window.removeEventListener("resize", onResize);
+        window.clearTimeout(t1);
+        window.clearTimeout(t2);
+        tl.scrollTrigger?.kill();
+        tl.kill();
+      };
     },
-    { scope: deckRef, dependencies: [mobileActive], revertOnUpdate: false }
+    { scope: rootRef }
   );
-
-  const onDeckTouchStart = (e: TouchEvent) => {
-    touchStartY.current = e.touches[0].clientY;
-    touchLocked.current = false;
-  };
-
-  const onDeckTouchMove = (e: TouchEvent) => {
-    if (touchLocked.current) return;
-    const delta = touchStartY.current - e.touches[0].clientY;
-    if (Math.abs(delta) < 56) return;
-    touchLocked.current = true;
-    if (delta > 0) selectHouse(mobileActive + 1);
-    else selectHouse(mobileActive - 1);
-  };
 
   return (
     <section
@@ -426,7 +435,7 @@ export function CatalogsShowcase() {
         <p className="houses-lede mt-5 max-w-md text-[14px] leading-[1.75] text-muted">
           Bridal warmth, high-jewellery light, and gold for every day —
           composed under three names, made by the same atelier.{" "}
-          <span className="md:hidden">Tap or swipe a house to step inside.</span>
+          <span className="md:hidden">Scroll to step through each house.</span>
           <span className="hidden md:inline">
             Rest a cursor on one to step inside.
           </span>
@@ -498,16 +507,16 @@ export function CatalogsShowcase() {
         </div>
       </div>
 
-      {/* Mobile — elastic house deck (21st-inspired expandable stack) */}
-      <div className="relative z-10 px-5 pb-16 sm:px-8 md:hidden">
+      {/* Mobile — scroll-driven house expands (Mehr → Noor → Rozana) */}
+      <div
+        ref={mobileStageRef}
+        className="relative z-10 px-5 pb-16 sm:px-8 md:hidden"
+      >
         <div
           ref={deckRef}
           className="house-deck flex h-[min(78svh,640px)] flex-col gap-2 overflow-hidden rounded-[1.5rem] shadow-[0_24px_60px_rgba(14,12,10,0.12)]"
-          onTouchStart={onDeckTouchStart}
-          onTouchMove={onDeckTouchMove}
-          role="listbox"
-          aria-label="Choose a house"
-          aria-activedescendant={`house-band-${CATALOGS[mobileActive]}`}
+          role="list"
+          aria-label="The three houses"
         >
           {CATALOGS.map((slug, i) => {
             const item = catalogMeta[slug];
@@ -517,24 +526,10 @@ export function CatalogsShowcase() {
               <div
                 key={slug}
                 id={`house-band-${slug}`}
-                role="option"
-                aria-selected={isActive}
                 className="house-band relative shrink-0 overflow-hidden rounded-[1.15rem]"
                 style={{ flex: "0 0 auto" }}
+                aria-current={isActive ? "true" : undefined}
               >
-                <button
-                  type="button"
-                  className="absolute inset-0 z-[1] cursor-pointer"
-                  aria-label={
-                    isActive
-                      ? `House ${NUMS[slug]} ${item.title}, selected`
-                      : `Show house ${NUMS[slug]} — ${item.title}`
-                  }
-                  onClick={() => {
-                    if (!isActive) selectHouse(i);
-                  }}
-                />
-
                 <Image
                   src={item.image}
                   alt=""
@@ -555,7 +550,6 @@ export function CatalogsShowcase() {
                   }}
                 />
 
-                {/* Collapsed strip label — opacity owned by GSAP */}
                 <div
                   className="house-band-strip pointer-events-none absolute inset-0 z-[2] flex items-center justify-between px-5"
                   aria-hidden={isActive}
@@ -569,12 +563,15 @@ export function CatalogsShowcase() {
                   <span className="font-display text-[1.35rem] uppercase leading-none tracking-[0.04em] text-ivory">
                     {item.title}
                   </span>
-                  <span className="font-display text-base text-ivory/55" lang="ur" dir="rtl">
+                  <span
+                    className="font-display text-base text-ivory/55"
+                    lang="ur"
+                    dir="rtl"
+                  >
                     {item.urduHint}
                   </span>
                 </div>
 
-                {/* Expanded story — opacity owned by GSAP */}
                 <div className="house-band-copy pointer-events-none absolute inset-x-0 bottom-0 z-[2] p-6">
                   <p
                     className="text-[10px] font-medium tracking-[0.3em] uppercase"
@@ -585,7 +582,11 @@ export function CatalogsShowcase() {
                   <h3 className="mt-2 font-display text-[clamp(2.25rem,9vw,3rem)] font-normal uppercase leading-[0.95] text-ivory">
                     {item.title}
                   </h3>
-                  <p className="mt-1.5 font-display text-lg text-ivory/60" lang="ur" dir="rtl">
+                  <p
+                    className="mt-1.5 font-display text-lg text-ivory/60"
+                    lang="ur"
+                    dir="rtl"
+                  >
                     {item.urduHint}
                   </p>
                   <p className="mt-3 max-w-xs text-[13px] leading-[1.65] text-ivory/65">
@@ -595,7 +596,6 @@ export function CatalogsShowcase() {
                     href={`/catalogs/${slug}`}
                     className="pointer-events-auto mt-5 inline-flex items-center gap-3 text-[10px] font-medium tracking-[0.24em] text-ivory uppercase"
                     tabIndex={isActive ? 0 : -1}
-                    onClick={(e) => e.stopPropagation()}
                   >
                     Open the house
                     <span className="h-px w-8 bg-current" aria-hidden />
@@ -608,25 +608,20 @@ export function CatalogsShowcase() {
 
         <div
           className="mt-5 flex items-center justify-center gap-2"
-          role="tablist"
-          aria-label="House index"
+          aria-hidden
         >
           {CATALOGS.map((slug, i) => {
             const isActive = i === mobileActive;
             return (
-              <button
+              <span
                 key={slug}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                aria-label={`${catalogMeta[slug].title}`}
-                onClick={() => selectHouse(i)}
-                className="h-1.5 rounded-full transition-[width,background-color] duration-500"
+                className="h-1.5 rounded-full"
                 style={{
                   width: isActive ? 28 : 8,
                   backgroundColor: isActive
                     ? HOUSE_ACCENTS[slug]
                     : "rgba(14,12,10,0.18)",
+                  transition: "width 0.35s ease, background-color 0.35s ease",
                 }}
               />
             );

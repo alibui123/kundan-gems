@@ -111,9 +111,15 @@ export function HomePage({
         <Navigation />
         <Hero />
 
+        {/* White shell only wraps manifesto — materials pin sits on void,
+            so a pin spacer can never flash boutique white. */}
         <div className="boutique relative z-10 rounded-t-[1.75rem] bg-white shadow-[0_-32px_80px_rgba(14,12,10,0.14)] sm:rounded-t-[2.25rem] md:rounded-t-[2.5rem]">
           <Manifesto />
-          <MaterialsRiver />
+        </div>
+
+        <MaterialsRiver />
+
+        <div className="relative z-10 bg-white">
           <MaisonTicker />
           <CatalogsShowcase />
           <FeaturedCollections />

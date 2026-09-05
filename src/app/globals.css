@@ -1229,6 +1229,12 @@
   .river-breathe {
     animation: river-breathe 9s ease-in-out infinite alternate;
   }
+
+  @media (max-width: 767px) {
+    .river-breathe {
+      animation: none;
+    }
+  }
 }
 
 @keyframes kundan-logo-fill {
