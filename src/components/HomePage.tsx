@@ -53,9 +53,7 @@ export function HomePage({
           const revealItems = gsap.utils.toArray<HTMLElement>(".reveal-item");
           gsap.set(revealItems, {
             opacity: 0,
-            y: isDesktop ? 52 : 30,
-            scale: 0.97,
-            filter: "blur(7px)",
+            y: isDesktop ? 36 : 24,
           });
 
           ScrollTrigger.batch(revealItems, {
@@ -65,11 +63,9 @@ export function HomePage({
               gsap.to(batch, {
                 opacity: 1,
                 y: 0,
-                scale: 1,
-                filter: "blur(0px)",
-                duration: 0.95,
+                duration: 0.75,
                 ease: "power3.out",
-                stagger: 0.08,
+                stagger: 0.06,
                 overwrite: true,
               });
             },
@@ -89,9 +85,7 @@ export function HomePage({
                 gsap.set(el, {
                   opacity: 1,
                   y: 0,
-                  scale: 1,
-                  filter: "blur(0px)",
-                  clearProps: "transform,filter",
+                  clearProps: "transform",
                 });
               }
             });

@@ -8,22 +8,18 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 // Mobile browsers fire resize events when the address bar collapses/expands
-// mid-scroll. Left unhandled, ScrollTrigger treats that as a real layout
-// change and re-measures pinned sections while the user is inside one —
-// which is what breaks pins (like the materials section) on phones.
+// mid-scroll. Left unhandled, ScrollTrigger re-measures pinned sections
+// mid-gesture and the materials river pin can drop.
 ScrollTrigger.config({ ignoreMobileResize: true });
 
 /**
- * Site-wide inertia scrolling (fine pointer only).
- * Syncs Lenis → ScrollTrigger for scrubbed parallax / reveals.
+ * Homepage smooth scroll via Lenis, synced to GSAP's ticker so
+ * ScrollTrigger pins/scrubs stay frame-aligned.
  */
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
-    ).matches;
-    const finePointer = window.matchMedia(
-      "(hover: hover) and (pointer: fine)"
     ).matches;
 
     if (reduceMotion) {
@@ -31,27 +27,23 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    if (!finePointer) {
-      // Touch scroll has no Lenis to sync from, and real mobile browsers
-      // have enough scroll quirks (address-bar resize, momentum/rubber-band
-      // scrolling, layout-vs-visual-viewport drift) that GSAP's pin (the
-      // materials section) can silently fail to hold — the page just
-      // scrolls straight through it. normalizeScroll is GSAP's own fix for
-      // exactly this; scoped to touch only so desktop's Lenis is untouched.
-      ScrollTrigger.normalizeScroll(true);
-      requestAnimationFrame(() => ScrollTrigger.refresh());
-      return () => {
-        ScrollTrigger.normalizeScroll(false);
-      };
-    }
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
 
+    // Snappy lerp reads smoother than a long duration ease — heavy duration
+    // is what makes the page feel behind the wheel / finger.
     const lenis = new Lenis({
-      duration: 0.85,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      autoRaf: false,
+      lerp: coarse ? 0.14 : 0.1,
       smoothWheel: true,
-      syncTouch: false,
-      touchMultiplier: 1.05,
-      wheelMultiplier: 0.95,
+      // Touch: gentle sync so materials pin stays tied to scroll without
+      // GSAP normalizeScroll (which felt laggy on this page).
+      syncTouch: coarse,
+      syncTouchLerp: 0.08,
+      touchInertiaExponent: 1.5,
+      wheelMultiplier: coarse ? 1 : 0.85,
+      touchMultiplier: 1.15,
+      orientation: "vertical",
+      gestureOrientation: "vertical",
     });
 
     const w = window as Window & { __lenis?: Lenis };
@@ -66,15 +58,17 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     gsap.ticker.lagSmoothing(0);
 
     requestAnimationFrame(() => ScrollTrigger.refresh());
+    const t1 = window.setTimeout(() => ScrollTrigger.refresh(), 400);
+    const t2 = window.setTimeout(() => ScrollTrigger.refresh(), 1200);
 
     const onVisibility = () => {
-      if (document.visibilityState === "visible") {
-        lenis.start();
-      }
+      if (document.visibilityState === "visible") lenis.start();
     };
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
       document.removeEventListener("visibilitychange", onVisibility);
       gsap.ticker.remove(ticker);
       if (w.__lenis === lenis) delete w.__lenis;
