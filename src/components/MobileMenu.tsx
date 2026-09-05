@@ -52,7 +52,7 @@ function buildTree(links: MenuLink[]): NavNode[] {
       description: materialMeta[slug].subtitle,
       href: `/materials/${slug}`,
     })),
-    { label: "All materials", href: "/#gold", description: "Shop gold" },
+    { label: "All materials", href: "/#materials", description: "Shop gold" },
   ];
 
   const formChildren: SubLink[] = [

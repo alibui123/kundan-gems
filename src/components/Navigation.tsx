@@ -1,20 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { brand, navLinks } from "@/lib/data";
 import { useCart } from "@/components/CartProvider";
 import { BrandLogo } from "@/components/BrandLogo";
 import { MenuToggle, MobileMenu } from "@/components/MobileMenu";
+import { SPRING } from "@/lib/motion";
 
 type NavigationProps = {
   variant?: "auto" | "light" | "dark";
 };
 
 /**
- * On homepage hero: logo only.
- * After scroll: white field fades in + full masthead.
+ * Translucent floating chrome — materializes on scroll, content passes beneath.
+ * Logo-only on hero film; full masthead once boutique content arrives.
  */
 export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
   const pathname = usePathname();
@@ -22,6 +24,7 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const isHome = pathname === "/";
+  const reduce = useReducedMotion();
 
   const closeMenu = useCallback(() => setOpen(false), []);
   const toggleMenu = useCallback(() => setOpen((v) => !v), []);
@@ -88,8 +91,8 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
   };
 
   const solid = open || scrolled || !isHome;
-  const logoOnly = isHome && !scrolled && !open;
-  const onFilm = isHome && !solid;
+  const onHero = isHome && !scrolled && !open;
+  const onFilm = onHero;
 
   const primaryLinks = navLinks.filter(
     (l) => !["Home", "Contact"].includes(l.label)
@@ -100,94 +103,98 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
     href: resolveHref(link.label, link.href),
   }));
 
+  const chromeTransition = reduce
+    ? { duration: 0.2 }
+    : SPRING.default;
+
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-50">
-        {/* Glossy glass field — fades in on scroll */}
-        <div
+        <motion.div
           aria-hidden
-          className="pointer-events-none absolute inset-0 transition-opacity duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
-          style={{
-            opacity: solid ? 1 : 0,
-            background:
-              "linear-gradient(180deg, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.28) 100%)",
-            backdropFilter: "blur(14px) saturate(140%)",
-            WebkitBackdropFilter: "blur(14px) saturate(140%)",
-            boxShadow:
-              "inset 0 1px 0 rgba(255,255,255,0.55), 0 1px 0 rgba(26,23,20,0.04)",
-            borderBottom: "1px solid rgba(255,255,255,0.22)",
-          }}
+          className={`pointer-events-none absolute inset-0 ${
+            solid ? "material-glass" : ""
+          }`}
+          initial={false}
+          animate={{ opacity: solid ? 1 : 0 }}
+          transition={chromeTransition}
         />
 
         <div
-          className={`nav-mast relative mx-auto w-full max-w-[1600px] px-4 transition-[padding] duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] sm:px-6 lg:px-10 ${
-            logoOnly ? "py-5" : "pt-3 pb-0"
+          className={`nav-mast relative mx-auto w-full max-w-[1200px] px-5 sm:px-8 ${
+            onHero ? "py-4" : "py-3"
           }`}
         >
-          {/* Three-slot bar — logo always dead-center */}
           <div className="relative grid h-11 grid-cols-[1fr_auto_1fr] items-center lg:h-12">
-            <div
-              className={`flex items-center gap-1 justify-self-start overflow-hidden transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
-                logoOnly
-                  ? "pointer-events-none -translate-x-2 opacity-0"
-                  : "translate-x-0 opacity-100"
-              }`}
+            <motion.div
+              className="flex items-center gap-1 justify-self-start overflow-hidden"
+              initial={false}
+              animate={{
+                opacity: onHero ? 0 : 1,
+                x: onHero ? -8 : 0,
+              }}
+              transition={chromeTransition}
+              style={{ pointerEvents: onHero ? "none" : "auto" }}
             >
               <MenuToggle
                 open={open}
                 onClick={toggleMenu}
-                className={open || solid ? "text-ink" : "text-ivory"}
+                className={`pressable rounded-full p-1 ${
+                  open || solid ? "text-ink" : "text-ivory"
+                }`}
               />
-            </div>
+            </motion.div>
 
             <Link
               href="/"
-              className="z-[70] col-start-2 inline-flex justify-self-center"
+              className="z-[70] col-start-2 inline-flex justify-self-center pressable"
               aria-label={brand.name}
               onClick={closeMenu}
             >
               <BrandLogo
                 size="mark"
                 priority
-                className={`h-9 w-auto transition-[filter] duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] lg:h-10 ${
+                className={`h-9 w-auto transition-[filter] duration-300 lg:h-10 ${
                   onFilm ? "brightness-0 invert" : ""
                 }`}
               />
             </Link>
 
-            <div
-              className={`flex items-center justify-self-end overflow-hidden transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
-                logoOnly
-                  ? "pointer-events-none translate-x-2 opacity-0"
-                  : "translate-x-0 opacity-100"
-              }`}
+            <motion.div
+              className="flex items-center justify-self-end overflow-hidden"
+              initial={false}
+              animate={{
+                opacity: onHero ? 0 : 1,
+                x: onHero ? 8 : 0,
+              }}
+              transition={chromeTransition}
+              style={{ pointerEvents: onHero ? "none" : "auto" }}
             >
               <button
                 type="button"
                 aria-label={`Cart, ${count} items`}
-                tabIndex={logoOnly ? -1 : 0}
+                tabIndex={onHero ? -1 : 0}
                 onClick={() => {
                   closeMenu();
                   openCart();
                 }}
-                className={`relative transition-colors duration-700 ${
+                className={`pressable relative rounded-full p-1.5 transition-colors duration-200 ${
                   solid ? "text-ink" : "text-ivory"
                 }`}
               >
                 <CartIcon />
                 {count > 0 && (
-                  <span className="absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 text-[9px] font-medium text-void">
+                  <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 text-[10px] font-semibold text-void">
                     {count}
                   </span>
                 )}
               </button>
-            </div>
+            </motion.div>
           </div>
 
-          {/* Links + rule — fade/slide in with the white field */}
           <div
-            className={`grid transition-[grid-template-rows,opacity] duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
-              logoOnly
+            className={`grid transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+              onHero
                 ? "grid-rows-[0fr] opacity-0"
                 : "grid-rows-[1fr] opacity-100"
             }`}
@@ -195,29 +202,27 @@ export function Navigation({ variant: _variant = "auto" }: NavigationProps) {
             <div className="overflow-hidden">
               <nav
                 aria-label="Primary"
-                className="mt-2 hidden justify-center pb-3 lg:flex"
-                aria-hidden={logoOnly}
+                className="mt-1 hidden justify-center pb-2 lg:flex"
+                aria-hidden={onHero}
               >
-                <ul className="flex items-center gap-8 xl:gap-10">
+                <ul className="flex items-center gap-7 xl:gap-9">
                   {primaryLinks.map((link) => (
                     <li key={link.label}>
                       <Link
                         href={resolveHref(link.label, link.href)}
-                        tabIndex={logoOnly ? -1 : 0}
-                        className="nav-link-draw relative text-[10px] font-medium tracking-[0.26em] text-ink/70 uppercase transition-colors duration-500 hover:text-ink"
+                        tabIndex={onHero ? -1 : 0}
+                        className={`pressable relative rounded-md px-1 py-0.5 text-[13px] font-medium tracking-[-0.01em] transition-colors duration-200 ${
+                          solid
+                            ? "text-ink/65 hover:text-ink"
+                            : "text-ivory/70 hover:text-ivory"
+                        }`}
                       >
                         {link.label}
-                        <span className="nav-underline" aria-hidden />
                       </Link>
                     </li>
                   ))}
                 </ul>
               </nav>
-
-              <div
-                className="mt-1 h-[3px] border-t border-b border-ink/8"
-                aria-hidden
-              />
             </div>
           </div>
         </div>

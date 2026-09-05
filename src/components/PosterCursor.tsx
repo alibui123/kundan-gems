@@ -6,8 +6,8 @@ import { motion, useReducedMotion } from "motion/react";
 const EASE = [0.23, 1, 0.32, 1] as const;
 
 /**
- * Quiet gold ring for material poster hover — fine pointer only.
- * Spread `bind` onto the poster Link; render `cue` inside it.
+ * Quiet gold ring cursor cue — fine pointer only.
+ * Spread `bind` onto the hoverable stage; render `cue` inside it.
  */
 export function usePosterCursor(label = "View") {
   const reduce = useReducedMotion();

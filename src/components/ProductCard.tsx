@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useRef, useState, type PointerEvent } from "react";
 import { useCart } from "@/components/CartProvider";
 import { ProductImageFrame } from "@/components/ProductImageFrame";
 
@@ -32,6 +32,34 @@ export function ProductCard({
   const [liked, setLiked] = useState(false);
   const [imgError, setImgError] = useState(false);
   const { addItem } = useCart();
+  const tiltRef = useRef<HTMLDivElement>(null);
+  const frame = useRef(0);
+
+  const onTiltMove = useCallback((e: PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const el = tiltRef.current;
+    if (!el) return;
+    el.style.transition = "none";
+    const rect = el.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    cancelAnimationFrame(frame.current);
+    frame.current = requestAnimationFrame(() => {
+      el.style.transform = `perspective(900px) rotateX(${(-py * 7).toFixed(
+        2
+      )}deg) rotateY(${(px * 7).toFixed(2)}deg) scale3d(1.02,1.02,1.02)`;
+    });
+  }, []);
+
+  const onTiltLeave = useCallback(() => {
+    const el = tiltRef.current;
+    if (!el) return;
+    cancelAnimationFrame(frame.current);
+    el.style.transition = "transform 0.5s cubic-bezier(0.23,1,0.32,1)";
+    el.style.transform =
+      "perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)";
+  }, []);
 
   const productHref = href ?? (slug ? `/collections/rings/${slug}` : undefined);
 
@@ -54,7 +82,12 @@ export function ProductCard({
 
   return (
     <article className="reveal-item group min-w-[72%] snap-start md:min-w-0">
-      <div className="relative">
+      <div
+        ref={tiltRef}
+        onPointerMove={onTiltMove}
+        onPointerLeave={onTiltLeave}
+        className="relative will-change-transform"
+      >
         {productHref ? (
           <Link href={productHref} className="block">
             <CardMedia

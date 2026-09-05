@@ -51,35 +51,33 @@ const icons = {
 export function AtelierPromise() {
   return (
     <section id="atelier" className="bg-white">
-      <div className="reveal-image group/poster relative min-h-[80svh] overflow-hidden bg-void md:min-h-[90svh]">
+      <div className="reveal-image group/poster relative min-h-[78svh] overflow-hidden bg-[#f5efe2] md:min-h-[88svh]">
         <div className="absolute inset-0" data-parallax-media>
           <div
-            className="absolute inset-[-10%] will-change-transform"
+            className="absolute inset-[-8%] will-change-transform"
             data-parallax-layer
           >
             <Image
-              src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&fit=crop&w=1600&q=85"
-              alt="Jeweller crafting a fine piece by hand"
+              src="/hero/blend-model-gold.png"
+              alt="Kundan layered kundan necklaces and jhumka earrings, studio portrait"
               fill
               sizes="100vw"
-              className="poster-zoom-img object-cover"
+              className="poster-zoom-img object-cover object-[70%_center] sm:object-[64%_center] md:object-[56%_center]"
             />
           </div>
         </div>
         <div
-          className="pointer-events-none absolute inset-0 z-[1]"
+          className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-[#f5efe2] via-[#f5efe2]/45 to-transparent md:bg-gradient-to-r md:from-[#f5efe2] md:via-[#f5efe2]/38 md:to-transparent"
           aria-hidden
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(14,12,10,0.35) 0%, transparent 45%, rgba(14,12,10,0.7) 100%)",
-          }}
         />
-        <div className="absolute inset-0 z-[2] flex flex-col items-center justify-end px-6 pb-16 text-center sm:pb-20">
+        <div className="relative z-[2] flex min-h-[78svh] flex-col items-center justify-end px-6 pb-14 text-center sm:px-10 sm:pb-16 md:min-h-[88svh] md:max-w-md md:items-start md:justify-center md:py-24 md:pl-14 md:text-left lg:pl-20">
           <p className="text-[10px] tracking-[0.36em] text-gold uppercase">
             Backstage
           </p>
-          <h2 className="mt-4 font-display text-[clamp(2.25rem,5vw,4rem)] font-normal tracking-[0.06em] text-ivory uppercase">
-            Craft without compromise
+          <h2 className="mt-4 font-display text-[clamp(2.25rem,5vw,3.75rem)] font-normal leading-[1.05] tracking-[0.04em] text-ink uppercase">
+            Craft without
+            <br />
+            compromise
           </h2>
         </div>
       </div>

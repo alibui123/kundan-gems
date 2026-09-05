@@ -1,23 +1,26 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useRef, type MouseEvent } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { brand } from "@/lib/data";
+import { StoryScrollCue } from "@/components/story/StoryScrollCue";
+import { Magnetic } from "@/components/Magnetic";
 
-const NAV_OFFSET = 96;
 const HERO_FILM = "/hero/bridal-gold.mp4";
 const HERO_POSTER = "/hero/bridal-gold-poster.jpg";
-const EASE = [0.23, 1, 0.32, 1] as const;
+const NAV_OFFSET = 72;
 
 /**
- * Hallmark Manifesto × runway — declaration over film.
- * Roman display only (no italic headers). Oversized solid CTA below the fold cue.
+ * Single-screen cinematic hero. The film and the full wordmark carry the
+ * identity; the boutique rises over it on scroll via `position: sticky`
+ * (cheap, no pin/scrub math).
  */
 export function Hero() {
+  const rootRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const scrollingRef = useRef(false);
-  const reduce = useReducedMotion();
 
   const getLenis = () =>
     (
@@ -48,13 +51,13 @@ export function Hero() {
       };
       const lenis = getLenis();
       if (lenis) {
-        lenis.scrollTo(y, { duration: 1.35, onComplete: finish });
+        lenis.scrollTo(y, { duration: 0.9, onComplete: finish });
         window.setTimeout(() => {
           if (scrollingRef.current) finish();
-        }, 2000);
+        }, 1500);
       } else {
         window.scrollTo({ top: y, behavior: "smooth" });
-        window.setTimeout(finish, 700);
+        window.setTimeout(finish, 600);
       }
     },
     []
@@ -62,7 +65,13 @@ export function Hero() {
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || reduce) return;
+    if (!video) return;
+
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (reduce) return;
+
     const sync = () => {
       if (document.hidden) {
         video.pause();
@@ -71,13 +80,14 @@ export function Hero() {
       const boutique = document.querySelector(".boutique");
       const covered =
         boutique !== null &&
-        boutique.getBoundingClientRect().top < window.innerHeight * 0.36;
+        boutique.getBoundingClientRect().top < window.innerHeight * 0.3;
       if (covered) {
         video.pause();
         return;
       }
       if (video.paused) void video.play().catch(() => {});
     };
+
     let ticking = false;
     const onScroll = () => {
       if (ticking) return;
@@ -87,8 +97,9 @@ export function Hero() {
         sync();
       });
     };
+
     void video.play().catch(() => {});
-    video.playbackRate = 0.88;
+    video.playbackRate = 0.85;
     sync();
     window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("visibilitychange", sync);
@@ -97,123 +108,125 @@ export function Hero() {
       document.removeEventListener("visibilitychange", sync);
       video.pause();
     };
-  }, [reduce]);
+  }, []);
+
+  useGSAP(
+    () => {
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
+      if (reduce) {
+        gsap.set(
+          [".hero-mark", ".hero-sub", ".hero-line", ".hero-ctas", ".hero-cue"],
+          { clearProps: "all", opacity: 1 }
+        );
+        return;
+      }
+
+      gsap.set(".hero-mark-inner", { yPercent: 115 });
+      gsap.set(".hero-sub-inner", { yPercent: 115 });
+      gsap.set(".hero-line-inner", { yPercent: 115 });
+      gsap.set(".hero-ctas", { opacity: 0, y: 16 });
+      gsap.set(".hero-cue", { opacity: 0 });
+
+      gsap
+        .timeline({ defaults: { ease: "power3.out" }, delay: 0.3 })
+        .to(".hero-mark-inner", { yPercent: 0, duration: 1.15 }, 0)
+        .to(".hero-sub-inner", { yPercent: 0, duration: 0.9 }, 0.28)
+        .to(".hero-line-inner", { yPercent: 0, duration: 1, stagger: 0.06 }, 0.46)
+        .to(".hero-ctas", { opacity: 1, y: 0, duration: 0.8 }, 0.75)
+        .to(".hero-cue", { opacity: 1, duration: 0.8 }, 1.15);
+    },
+    { scope: rootRef }
+  );
 
   return (
     <section
+      ref={rootRef}
       id="hero"
       className="hero sticky top-0 z-0 h-[100svh] min-h-[100svh] overflow-hidden bg-void"
       aria-label={brand.fullName}
     >
-      <div
-        data-hero-cover
-        className="relative h-full w-full will-change-transform"
-      >
-        <div className="absolute inset-0 overflow-hidden">
-          <div
-            data-hero-parallax
-            className="absolute inset-0 will-change-transform md:inset-[-8%]"
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="hero-kenburns absolute inset-0 will-change-transform md:inset-[-4%]">
+          <video
+            ref={videoRef}
+            className="absolute inset-0 h-full w-full object-cover object-[center_30%] sm:object-[48%_26%] md:object-[48%_center] motion-reduce:hidden"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={HERO_POSTER}
+            disablePictureInPicture
+            aria-hidden
           >
-            {reduce ? (
-              <Image
-                src={HERO_POSTER}
-                alt={`${brand.fullName} — bridal gold jewellery`}
-                fill
-                priority
-                sizes="100vw"
-                className="object-cover object-[center_32%] sm:object-[48%_28%] md:object-[48%_center]"
-              />
-            ) : (
-              <video
-                ref={videoRef}
-                className="absolute inset-0 h-full w-full object-cover object-[center_32%] sm:object-[48%_28%] md:object-[48%_center]"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-                poster={HERO_POSTER}
-                disablePictureInPicture
-                aria-hidden
-              >
-                <source src={HERO_FILM} type="video/mp4" />
-              </video>
-            )}
-          </div>
+            <source src={HERO_FILM} type="video/mp4" />
+          </video>
+          <Image
+            src={HERO_POSTER}
+            alt={`${brand.fullName} — bridal gold jewellery`}
+            fill
+            priority
+            sizes="100vw"
+            className="hidden object-cover object-[center_30%] motion-reduce:block sm:object-[48%_26%] md:object-[48%_center]"
+          />
         </div>
+      </div>
 
-        <div
-          className="pointer-events-none absolute inset-0"
-          aria-hidden
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(14,12,10,0.45) 0%, rgba(14,12,10,0.15) 40%, rgba(14,12,10,0.55) 100%)",
-          }}
-        />
+      <div
+        className="pointer-events-none absolute inset-0"
+        aria-hidden
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(14,12,10,0.42) 0%, rgba(14,12,10,0.05) 40%, rgba(14,12,10,0.72) 100%)",
+        }}
+      />
+      <div className="cinematic-grain pointer-events-none absolute inset-0" aria-hidden />
 
-        <div className="relative z-10 mx-auto flex h-full min-h-[100svh] max-w-[1600px] flex-col items-center justify-end px-6 pb-20 pt-28 text-center sm:px-10 sm:pb-24 md:pb-28 lg:pb-32">
-          <motion.p
-            className="text-[10px] font-medium tracking-[0.4em] text-ivory/50 uppercase"
-            initial={reduce ? false : { opacity: 0, x: -24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 0.2 }}
-          >
-           
-          </motion.p>
+      <div className="relative z-10 flex h-full min-h-[100svh] flex-col items-center justify-end px-6 pb-24 text-center sm:pb-28 md:pb-32">
+        <h1 className="hero-mark overflow-hidden">
+          <span className="hero-mark-inner block font-display type-display font-medium tracking-[-0.03em] text-ivory">
+            {brand.name}
+          </span>
+        </h1>
 
-          <h1 className="mt-8 font-display font-normal text-ivory">
-            <span className="block overflow-hidden">
-              <motion.span
-                className="block text-[clamp(4rem,14vw,9.5rem)] leading-[0.85] tracking-[0.04em] uppercase"
-                initial={reduce ? false : { x: "-12%", opacity: 0 }}
-                animate={{ x: "0%", opacity: 1 }}
-                transition={{ duration: 1.15, ease: EASE, delay: 0.35 }}
-              >
-                Kundan
-              </motion.span>
-            </span>
-            <span className="mt-2 block overflow-hidden">
-              <motion.span
-                className="block text-[clamp(1.5rem,4vw,2.75rem)] leading-none tracking-[0.35em] uppercase text-gold"
-                initial={reduce ? false : { x: "12%", opacity: 0 }}
-                animate={{ x: "0%", opacity: 1 }}
-                transition={{ duration: 1.15, ease: EASE, delay: 0.5 }}
-              >
-                GEMS
-              </motion.span>
-            </span>
-          </h1>
+        <p className="hero-sub mt-2 overflow-hidden sm:mt-3">
+          <span className="hero-sub-inner cinematic-glow-text block text-[13px] font-semibold tracking-[0.34em] text-gold-bright uppercase sm:text-[14px]">
+            Gems and Jewellers
+          </span>
+        </p>
 
-          <motion.p
-            className="mt-10 max-w-md text-[14px] leading-[1.75] text-ivory/65"
-            initial={reduce ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, ease: EASE, delay: 0.85 }}
-          >
-            
-          </motion.p>
+        <p className="mt-6 max-w-md overflow-hidden">
+          <span className="hero-line-inner block text-[15px] leading-[1.6] text-ivory/70 sm:text-[16px]">
+            For the morning of, and every year after.
+          </span>
+        </p>
 
-          <motion.div
-            className="mt-12 flex flex-wrap items-center justify-center gap-6"
-            initial={reduce ? false : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 1.05 }}
-          >
+        <div className="hero-ctas mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <Magnetic strength={0.3} className="inline-flex">
             <a
               href="#catalogs"
               onClick={(e) => goToSection(e, "catalogs")}
-              className="btn-hero-atelier group"
+              className="btn-hero-atelier pressable"
             >
-              <span>Shop Collection</span>
+              <span>Shop the houses</span>
             </a>
+          </Magnetic>
+          <Magnetic strength={0.3} className="inline-flex">
             <a
               href="#materials"
               onClick={(e) => goToSection(e, "materials")}
-              className="link-draw link-draw-gold text-[10px] font-medium tracking-[0.26em] text-ivory/55 uppercase hover:text-gold"
+              className="btn-hero-secondary pressable"
             >
-              Materials
+              Explore materials
             </a>
-          </motion.div>
+          </Magnetic>
+        </div>
+
+        <div className="hero-cue mt-12">
+          <StoryScrollCue visible />
         </div>
       </div>
     </section>
