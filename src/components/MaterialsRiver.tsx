@@ -120,7 +120,7 @@ export function MaterialsRiver() {
       }
 
       panels.forEach((p) => {
-        if (p.breathe) p.breathe.style.animation = "none";
+        if (p.breathe) gsap.set(p.breathe, { clearProps: "animation" });
       });
 
       gsap.set(panels[0].img, { clipPath: "inset(0% 0% 0% 0%)", autoAlpha: 1 });

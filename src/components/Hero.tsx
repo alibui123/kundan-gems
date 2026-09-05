@@ -104,6 +104,20 @@ export function Hero() {
         return;
       }
 
+      const kenburns = rootRef.current?.querySelector<HTMLElement>(
+        ".hero-kenburns"
+      );
+      if (kenburns) {
+        gsap.set(kenburns, { scale: 1, transformOrigin: "50% 40%" });
+        gsap.to(kenburns, {
+          scale: 1.06,
+          duration: 26,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+        });
+      }
+
       gsap.set(".hero-mark-inner", { yPercent: 115 });
       gsap.set(".hero-sub-inner", { yPercent: 115 });
       gsap.set(".hero-line-inner", { yPercent: 115 });

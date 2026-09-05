@@ -1134,22 +1134,9 @@
     }
   }
 
+  /* Image/text motion owned by GSAP — keep classes as hooks only. */
   .poster-zoom-img {
-    transform: scale(1);
-    transition: transform 1.15s var(--ease-out);
     will-change: transform;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .group\/poster:hover .poster-zoom-img,
-    .editorial-panel.group:hover .poster-zoom-img {
-      transform: scale(1.05);
-    }
-
-    .group\/poster:hover .poster-glow,
-    .editorial-panel.group:hover .poster-glow {
-      opacity: 1;
-    }
   }
 
   .poster-glow {
@@ -1159,7 +1146,6 @@
     z-index: 1;
     opacity: 0;
     box-shadow: inset 0 0 90px rgba(184, 154, 94, 0.14);
-    transition: opacity 0.9s var(--ease-out);
   }
 
   .input-luxe {
@@ -1176,15 +1162,8 @@
     .btn-outline-luxe,
     .btn-outline-luxe-light,
     .btn-solid-luxe,
-    .poster-zoom-img,
-    .poster-glow,
     .input-luxe {
       transition: none;
-    }
-
-    .group\/poster:hover .poster-zoom-img,
-    .editorial-panel.group:hover .poster-zoom-img {
-      transform: none;
     }
 
     .btn-outline-luxe:hover,
@@ -1201,40 +1180,17 @@
   }
 }
 
-@keyframes hero-kenburns {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.055);
-  }
+/* Hero / ticker / river image loops: GSAP only (no CSS keyframes). */
+.hero-kenburns {
+  will-change: transform;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .hero-kenburns {
-    animation: hero-kenburns 26s ease-in-out infinite alternate;
-  }
+.river-breathe {
+  will-change: transform;
 }
 
-@keyframes river-breathe {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.035);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .river-breathe {
-    animation: river-breathe 9s ease-in-out infinite alternate;
-  }
-
-  @media (max-width: 767px) {
-    .river-breathe {
-      animation: none;
-    }
-  }
+.maison-marquee {
+  will-change: transform;
 }
 
 @keyframes kundan-logo-fill {
@@ -1252,19 +1208,6 @@
   animation: kundan-logo-fill 2.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-@keyframes maison-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.maison-marquee {
-  animation: maison-marquee 32s linear infinite;
-}
-
 .maison-grain {
   pointer-events: none;
   position: absolute;
@@ -1277,10 +1220,6 @@
 @media (prefers-reduced-motion: reduce) {
   .loader-fill {
     clip-path: inset(0 0 0 0);
-    animation: none;
-  }
-
-  .maison-marquee {
     animation: none;
   }
 }

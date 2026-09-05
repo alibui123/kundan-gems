@@ -1,5 +1,13 @@
+"use client";
+
 import Image from "next/image";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { craftSteps, promises } from "@/lib/data";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const icons = {
   gem: (
@@ -47,23 +55,115 @@ const icons = {
   ),
 };
 
-/** Runway atelier — bleed image + claim strip. */
+/** Runway atelier — bleed image + claim strip. Image motion via GSAP. */
 export function AtelierPromise() {
+  const rootRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const root = rootRef.current;
+      if (!root) return;
+
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+      const layer = root.querySelector<HTMLElement>("[data-parallax-layer]");
+      const img = root.querySelector<HTMLElement>("[data-atelier-img]");
+      const title = root.querySelector<HTMLElement>("[data-atelier-title]");
+      const eyebrow = root.querySelector<HTMLElement>("[data-atelier-eyebrow]");
+      const poster = root.querySelector<HTMLElement>("[data-atelier-poster]");
+
+      if (reduce) {
+        gsap.set([layer, img, title, eyebrow], { clearProps: "all" });
+        return;
+      }
+
+      if (eyebrow) gsap.set(eyebrow, { autoAlpha: 0, y: 16 });
+      if (title) gsap.set(title, { autoAlpha: 0, y: 28 });
+
+      if (poster && (eyebrow || title)) {
+        ScrollTrigger.create({
+          trigger: poster,
+          start: "top 75%",
+          once: true,
+          onEnter: () => {
+            const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+            if (eyebrow) tl.to(eyebrow, { autoAlpha: 1, y: 0, duration: 0.7 }, 0);
+            if (title) tl.to(title, { autoAlpha: 1, y: 0, duration: 0.9 }, 0.12);
+          },
+        });
+      }
+
+      if (layer) {
+        gsap.fromTo(
+          layer,
+          { scale: 1.08 },
+          {
+            scale: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: poster,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 0.6,
+            },
+          }
+        );
+      }
+
+      if (img && poster) {
+        const fine = window.matchMedia("(hover: hover) and (pointer: fine)")
+          .matches;
+        if (fine) {
+          const enter = () =>
+            gsap.to(img, {
+              scale: 1.05,
+              duration: 1.15,
+              ease: "power2.out",
+              overwrite: "auto",
+            });
+          const leave = () =>
+            gsap.to(img, {
+              scale: 1,
+              duration: 1.15,
+              ease: "power2.out",
+              overwrite: "auto",
+            });
+          poster.addEventListener("pointerenter", enter);
+          poster.addEventListener("pointerleave", leave);
+          return () => {
+            poster.removeEventListener("pointerenter", enter);
+            poster.removeEventListener("pointerleave", leave);
+          };
+        }
+      }
+    },
+    { scope: rootRef }
+  );
+
   return (
-    <section id="atelier" className="bg-white">
-      <div className="reveal-image group/poster relative min-h-[78svh] overflow-hidden bg-[#f5efe2] md:min-h-[88svh]">
+    <section ref={rootRef} id="atelier" className="bg-white">
+      <div
+        data-atelier-poster
+        className="reveal-image relative min-h-[78svh] overflow-hidden bg-[#f5efe2] md:min-h-[88svh]"
+      >
         <div className="absolute inset-0" data-parallax-media>
           <div
             className="absolute inset-[-8%] will-change-transform"
             data-parallax-layer
           >
-            <Image
-              src="/hero/blend-model-gold.png"
-              alt="Kundan layered kundan necklaces and jhumka earrings, studio portrait"
-              fill
-              sizes="100vw"
-              className="poster-zoom-img object-cover object-[70%_center] sm:object-[64%_center] md:object-[56%_center]"
-            />
+            <div
+              data-atelier-img
+              className="relative h-full w-full will-change-transform"
+            >
+              <Image
+                src="/hero/blend-model-gold.png"
+                alt="Kundan layered kundan necklaces and jhumka earrings, studio portrait"
+                fill
+                sizes="100vw"
+                className="object-cover object-[70%_center] sm:object-[64%_center] md:object-[56%_center]"
+              />
+            </div>
           </div>
         </div>
         <div
@@ -71,10 +171,16 @@ export function AtelierPromise() {
           aria-hidden
         />
         <div className="relative z-[2] flex min-h-[78svh] flex-col items-center justify-end px-6 pb-14 text-center sm:px-10 sm:pb-16 md:min-h-[88svh] md:max-w-md md:items-start md:justify-center md:py-24 md:pl-14 md:text-left lg:pl-20">
-          <p className="text-[10px] tracking-[0.36em] text-gold uppercase">
+          <p
+            data-atelier-eyebrow
+            className="text-[10px] tracking-[0.36em] text-gold uppercase"
+          >
             Backstage
           </p>
-          <h2 className="mt-4 font-display text-[clamp(2.25rem,5vw,3.75rem)] font-normal leading-[1.05] tracking-[0.04em] text-ink uppercase">
+          <h2
+            data-atelier-title
+            className="mt-4 font-display text-[clamp(2.25rem,5vw,3.75rem)] font-normal leading-[1.05] tracking-[0.04em] text-ink uppercase"
+          >
             Craft without
             <br />
             compromise
