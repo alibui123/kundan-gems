@@ -151,7 +151,7 @@ export function CatalogsShowcase() {
         },
       ];
 
-      if (finePointer && panels.length && triptych) {
+      if (finePointer && panels.length && triptych && contextSafe) {
         const activate = contextSafe((active: HTMLElement) => {
           panels.forEach((panel) => {
             const isActive = panel === active;
