@@ -2,8 +2,8 @@
 
 /**
  * Houses chapter — vertical cover (same grammar as hero → boutique).
- * Previous maison stays put; the next rises from below and covers it.
- * GSAP: cover scrub + image settle + veil lift + SplitText synced.
+ * Desktop: scrub + settle + veil + SplitText.
+ * Mobile: transform scrub without snap / SplitText (less flicker).
  */
 
 import Image from "next/image";
@@ -144,7 +144,7 @@ export function CatalogsShowcase() {
         });
       };
 
-      const setLook = (index: number) => {
+      const setLook = (index: number, immediate = false) => {
         layers.forEach((p, i) => {
           const on = i === index;
           p.panel.setAttribute("aria-hidden", on ? "false" : "true");
@@ -159,19 +159,22 @@ export function CatalogsShowcase() {
           });
         });
         root.dataset.house = CATALOGS[index];
-        setRail(index);
-        setProgress(index);
+        setRail(index, immediate);
+        setProgress(index, immediate);
       };
 
-      // Mehr in place; Noor & Rozana wait below (like boutique under the fold)
-      gsap.set(layers[0].panel, { top: "0%", y: 0, clearProps: "transform" });
-      gsap.set(layers[1].panel, { top: "100%", y: 0, clearProps: "transform" });
-      gsap.set(layers[2].panel, { top: "100%", y: 0, clearProps: "transform" });
+      // Cover grammar: panel slides via top (stable with absolute positioning)
+      gsap.set(layers[0].panel, { top: "0%", clearProps: "transform" });
+      gsap.set(layers[1].panel, { top: "100%", clearProps: "transform" });
+      gsap.set(layers[2].panel, { top: "100%", clearProps: "transform" });
 
       layers.forEach((p, i) => {
-        gsap.set(p.media, { scale: i === 0 ? 1 : 1.12, yPercent: i === 0 ? 0 : 6 });
-        gsap.set(p.veil, { autoAlpha: i === 0 ? 0 : 0.55 });
-        gsap.set(p.edge, { autoAlpha: 0, scaleY: 0.4 });
+        gsap.set(p.media, {
+          scale: i === 0 ? 1 : 1.1,
+          yPercent: i === 0 ? 0 : 5,
+        });
+        gsap.set(p.veil, { autoAlpha: i === 0 ? 0 : 0.5 });
+        if (p.edge) gsap.set(p.edge, { autoAlpha: 0, scaleY: 0.4 });
       });
 
       if (reduce) {
@@ -182,43 +185,51 @@ export function CatalogsShowcase() {
           gsap.set(p.copy, { autoAlpha: i === 0 ? 1 : 0 });
         });
         gsap.set([thesis, chapter], { autoAlpha: 1 });
-        setLook(0);
+        setLook(0, true);
         return;
       }
 
-      layers.forEach((p) => {
-        gsap.set(p.copy, { autoAlpha: 0 });
-        if (p.title) {
-          p.split = SplitText.create(p.title, {
-            type: "chars",
-            charsClass: "house-char inline-block will-change-transform",
-          });
-          gsap.set(p.split.chars, {
-            yPercent: 130,
-            autoAlpha: 0,
-            rotateX: -55,
-          });
-        }
-        gsap.set([p.mark, p.essence, p.urdu, p.body, p.cta], {
-          autoAlpha: 0,
-          y: 20,
-        });
-      });
-
-      if (thesis) gsap.set(thesis, { autoAlpha: 0, y: 16 });
-      if (chapter) gsap.set(chapter, { autoAlpha: 0, y: 12 });
-      gsap.set(progressFills, { scaleX: 0, transformOrigin: "left center" });
-      setLook(0);
-      setRail(0, true);
-      setProgress(-1, true);
+      const mm = gsap.matchMedia();
 
       const hideCopy = (p: HouseLayer, at: number, tl: gsap.core.Timeline) => {
         tl.to(p.copy, { autoAlpha: 0, duration: 0.12, ease: "power2.in" }, at);
       };
 
-      const showCopy = (p: HouseLayer, at: number, tl: gsap.core.Timeline) => {
-        const chars = p.split?.chars ?? [];
+      const showCopySimple = (
+        p: HouseLayer,
+        at: number,
+        tl: gsap.core.Timeline
+      ) => {
+        const bits = [p.mark, p.title, p.essence, p.urdu, p.body, p.cta].filter(
+          Boolean
+        ) as HTMLElement[];
         tl.set(p.copy, { autoAlpha: 1 }, at)
+          .set(bits, { autoAlpha: 0, y: 14 }, at)
+          .to(
+            bits,
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.2,
+              stagger: 0.03,
+              ease: "power2.out",
+            },
+            at + 0.02
+          );
+      };
+
+      const showCopySplit = (
+        p: HouseLayer,
+        at: number,
+        tl: gsap.core.Timeline
+      ) => {
+        const chars = p.split?.chars ?? [];
+        if (!chars.length) {
+          showCopySimple(p, at, tl);
+          return;
+        }
+        tl.set(p.copy, { autoAlpha: 1 }, at)
+          .set(p.title, { autoAlpha: 1, y: 0, clearProps: "transform" }, at)
           .set(chars, { yPercent: 130, autoAlpha: 0, rotateX: -55 }, at)
           .set(
             [p.mark, p.essence, p.urdu, p.body, p.cta],
@@ -260,16 +271,16 @@ export function CatalogsShowcase() {
           );
       };
 
-      /** Rise from below and cover — with settle, veil, and gold edge. */
       const coverFromBelow = (
         incoming: HouseLayer,
         outgoing: HouseLayer,
         at: number,
-        tl: gsap.core.Timeline
+        tl: gsap.core.Timeline,
+        rich: boolean
       ) => {
-        const dur = 0.42;
+        const dur = rich ? 0.42 : 0.36;
 
-        if (incoming.edge) {
+        if (rich && incoming.edge) {
           tl.fromTo(
             incoming.edge,
             { autoAlpha: 0, scaleY: 0.3 },
@@ -282,13 +293,9 @@ export function CatalogsShowcase() {
           );
         }
 
-        tl.to(
-          incoming.panel,
-          { top: "0%", duration: dur, ease: "none" },
-          at
-        );
+        tl.to(incoming.panel, { top: "0%", duration: dur, ease: "none" }, at);
 
-        if (incoming.media) {
+        if (rich && incoming.media) {
           tl.to(
             incoming.media,
             {
@@ -299,22 +306,28 @@ export function CatalogsShowcase() {
             },
             at
           );
+        } else if (incoming.media) {
+          tl.set(incoming.media, { scale: 1, yPercent: 0 }, at + dur * 0.4);
         }
 
         if (incoming.veil) {
-          tl.to(
-            incoming.veil,
-            { autoAlpha: 0, duration: dur * 0.7, ease: "power2.out" },
-            at + 0.08
-          );
+          if (rich) {
+            tl.to(
+              incoming.veil,
+              { autoAlpha: 0, duration: dur * 0.7, ease: "power2.out" },
+              at + 0.08
+            );
+          } else {
+            tl.set(incoming.veil, { autoAlpha: 0 }, at + dur * 0.5);
+          }
         }
 
-        if (outgoing.media) {
+        if (rich && outgoing.media) {
           tl.to(
             outgoing.media,
             {
-              scale: 1.06,
-              yPercent: -4,
+              scale: 1.05,
+              yPercent: -3,
               duration: dur,
               ease: "power2.inOut",
             },
@@ -323,16 +336,58 @@ export function CatalogsShowcase() {
         }
 
         if (outgoing.veil) {
-          tl.to(
-            outgoing.veil,
-            { autoAlpha: 0.35, duration: dur * 0.5, ease: "power1.in" },
-            at
-          );
+          if (rich) {
+            tl.to(
+              outgoing.veil,
+              { autoAlpha: 0.32, duration: dur * 0.5, ease: "power1.in" },
+              at
+            );
+          } else {
+            tl.set(outgoing.veil, { autoAlpha: 0.25 }, at);
+          }
         }
       };
 
-      const buildTimeline = () => {
+      const buildTimeline = (rich: boolean) => {
         const tl = gsap.timeline({ defaults: { ease: "none" } });
+        const show = rich ? showCopySplit : showCopySimple;
+
+        layers.forEach((p) => {
+          gsap.set(p.copy, { autoAlpha: 0 });
+          // Keep title wrapper visible for SplitText; hide only non-title bits
+          gsap.set(
+            [p.mark, p.essence, p.urdu, p.body, p.cta].filter(Boolean),
+            { autoAlpha: 0, y: rich ? 20 : 14 }
+          );
+          if (p.title) {
+            if (rich) gsap.set(p.title, { autoAlpha: 1, y: 0 });
+            else gsap.set(p.title, { autoAlpha: 0, y: 14 });
+          }
+        });
+
+        if (rich) {
+          layers.forEach((p) => {
+            if (!p.title) return;
+            try {
+              p.split = SplitText.create(p.title, {
+                type: "chars",
+                charsClass: "house-char inline-block will-change-transform",
+              });
+              gsap.set(p.split.chars, {
+                yPercent: 130,
+                autoAlpha: 0,
+                rotateX: -55,
+              });
+            } catch {
+              p.split = null;
+              gsap.set(p.title, { autoAlpha: 0, y: 20 });
+            }
+          });
+        }
+
+        if (thesis) gsap.set(thesis, { autoAlpha: 0, y: 16 });
+        if (chapter) gsap.set(chapter, { autoAlpha: 0, y: 12 });
+        gsap.set(progressFills, { scaleX: 0, transformOrigin: "left center" });
 
         if (chapter) {
           tl.to(chapter, { autoAlpha: 1, y: 0, duration: 0.1 }, 0);
@@ -341,61 +396,48 @@ export function CatalogsShowcase() {
           tl.to(thesis, { autoAlpha: 1, y: 0, duration: 0.12 }, 0.04);
         }
 
-        // Soft settle on Mehr media as chapter opens
-        if (layers[0].media) {
+        if (rich && layers[0].media) {
           tl.fromTo(
             layers[0].media,
             { scale: 1.06, yPercent: 3 },
             { scale: 1, yPercent: 0, duration: 0.2, ease: "maison" },
             0
           );
+        } else if (layers[0].media) {
+          gsap.set(layers[0].media, { scale: 1, yPercent: 0 });
         }
 
-        showCopy(layers[0], 0.06, tl);
-        tl.to(
-          progressFills[0],
-          { scaleX: 1, duration: 0.1, ease: "maison" },
-          0.08
-        )
+        show(layers[0], 0.06, tl);
+        tl.to(progressFills[0], { scaleX: 1, duration: 0.1 }, 0.08)
           .addLabel("mehr", 0)
-          .to({}, { duration: 0.12 }, 0.1);
+          .to({}, { duration: rich ? 0.12 : 0.14 }, 0.1);
 
-        hideCopy(layers[0], 0.24, tl);
-        coverFromBelow(layers[1], layers[0], 0.26, tl);
-        showCopy(layers[1], 0.52, tl);
-        tl.to(
-          progressFills[1],
-          { scaleX: 1, duration: 0.1, ease: "maison" },
-          0.54
-        )
-          .addLabel("noor", 0.58)
-          .to({}, { duration: 0.1 }, 0.58);
+        hideCopy(layers[0], rich ? 0.24 : 0.28, tl);
+        coverFromBelow(layers[1], layers[0], rich ? 0.26 : 0.3, tl, rich);
+        show(layers[1], rich ? 0.52 : 0.55, tl);
+        tl.to(progressFills[1], { scaleX: 1, duration: 0.1 }, rich ? 0.54 : 0.56)
+          .addLabel("noor", rich ? 0.58 : 0.6)
+          .to({}, { duration: rich ? 0.1 : 0.12 }, rich ? 0.58 : 0.6);
 
-        hideCopy(layers[1], 0.7, tl);
-        coverFromBelow(layers[2], layers[1], 0.72, tl);
-        showCopy(layers[2], 0.96, tl);
-        tl.to(
-          progressFills[2],
-          { scaleX: 1, duration: 0.1, ease: "maison" },
-          0.98
-        )
-          .addLabel("rozana", 1.02)
+        hideCopy(layers[1], rich ? 0.7 : 0.74, tl);
+        coverFromBelow(layers[2], layers[1], rich ? 0.72 : 0.76, tl, rich);
+        show(layers[2], rich ? 0.96 : 1.0, tl);
+        tl.to(progressFills[2], { scaleX: 1, duration: 0.1 }, rich ? 0.98 : 1.02)
+          .addLabel("rozana", rich ? 1.02 : 1.06)
           .to({}, { duration: 0.08 });
 
         return tl;
       };
 
       let lastIndex = 0;
-      let step = 0;
-      const mm = gsap.matchMedia();
 
-      const progressToIndex = (p: number, mobile: boolean) => {
-        if (mobile) return p < 0.25 ? 0 : p < 0.75 ? 1 : 2;
-        return p < 0.34 ? 0 : p < 0.66 ? 1 : 2;
-      };
+      const progressToIndex = (p: number) =>
+        p < 0.34 ? 0 : p < 0.66 ? 1 : 2;
 
       mm.add("(min-width: 768px)", () => {
-        const tl = buildTimeline();
+        const tl = buildTimeline(true);
+        setLook(0, true);
+
         const st = ScrollTrigger.create({
           animation: tl,
           trigger: track,
@@ -404,65 +446,45 @@ export function CatalogsShowcase() {
           scrub: 1.05,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            const next = progressToIndex(self.progress, false);
+            const next = progressToIndex(self.progress);
             if (next !== lastIndex) {
               lastIndex = next;
               setLook(next);
             }
           },
         });
+
         const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
         return () => {
           cancelAnimationFrame(raf);
           st.kill();
           tl.kill();
+          layers.forEach((p) => {
+            p.split?.revert();
+            p.split = null;
+          });
         };
       });
 
       mm.add("(max-width: 767px)", () => {
-        const tl = buildTimeline();
+        const tl = buildTimeline(false);
+        setLook(0, true);
+
         const st = ScrollTrigger.create({
           animation: tl,
           trigger: track,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.85,
-          invalidateOnRefresh: true,
-          onEnter: () => {
-            step = 0;
-          },
-          onEnterBack: () => {
-            step = 2;
-          },
-          snap: {
-            snapTo: (_value, stSnap) => {
-              const dir = stSnap?.direction ?? 0;
-              if (dir > 0) return Math.min(1, (step + 1) / 2);
-              if (dir < 0) return Math.max(0, (step - 1) / 2);
-              return step / 2;
-            },
-            duration: 0.85,
-            delay: 0.04,
-            ease: "power2.inOut",
-            inertia: false,
-            onComplete: (stSnap) => {
-              if (!stSnap) return;
-              const next = progressToIndex(stSnap.progress, true);
-              step = next;
-              if (next !== lastIndex) {
-                lastIndex = next;
-                setLook(next);
-              }
-            },
-          },
+          scrub: 0.55,
           onUpdate: (self) => {
-            const next = progressToIndex(self.progress, true);
+            const next = progressToIndex(self.progress);
             if (next !== lastIndex) {
               lastIndex = next;
-              setLook(next);
+              setLook(next, true);
             }
           },
         });
+
         const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
         return () => {
           cancelAnimationFrame(raf);
@@ -489,7 +511,7 @@ export function CatalogsShowcase() {
     >
       <div
         ref={trackRef}
-        className="relative h-[320vh] bg-void motion-reduce:h-[100svh] md:h-[360vh]"
+        className="relative h-[260vh] bg-void motion-reduce:h-[100svh] md:h-[360vh]"
       >
         <div
           ref={stageRef}
@@ -508,10 +530,7 @@ export function CatalogsShowcase() {
                 }}
                 aria-hidden={houseIndex !== 0}
               >
-                <div
-                  data-house-media
-                  className="absolute inset-0 will-change-transform"
-                >
+                <div data-house-media className="absolute inset-0">
                   <Image
                     src={item.image}
                     alt=""
@@ -530,10 +549,9 @@ export function CatalogsShowcase() {
                   aria-hidden
                 />
 
-                {/* Leading edge light as the sheet rises */}
                 <div
                   data-house-edge
-                  className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 origin-top opacity-0"
+                  className="pointer-events-none absolute inset-x-0 top-0 z-[1] hidden h-24 origin-top opacity-0 md:block"
                   aria-hidden
                   style={{
                     background:
@@ -542,7 +560,7 @@ export function CatalogsShowcase() {
                 />
 
                 <div
-                  className="cinematic-grain pointer-events-none absolute inset-0 z-[1] opacity-[0.32]"
+                  className="cinematic-grain pointer-events-none absolute inset-0 z-[1] hidden opacity-[0.32] md:block"
                   aria-hidden
                 />
                 <div

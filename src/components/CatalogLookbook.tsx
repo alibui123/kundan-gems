@@ -170,7 +170,7 @@ export function CatalogLookbook({ meta, products }: CatalogLookbookProps) {
         </div>
 
         {products.length > 0 ? (
-          <div className="lb-products grid gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-12">
+          <div className="lb-products product-grid">
             {products.map((product) => (
               <div key={product.id} className="lb-card">
                 <ProductCard

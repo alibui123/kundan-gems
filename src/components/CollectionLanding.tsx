@@ -116,7 +116,7 @@ export function CollectionLanding({ collection, previews }: Props) {
               Receive a quiet note when new pieces arrive — never noise.
             </p>
             <Link
-              href="/#newsletter"
+              href="/contact"
               className="mt-8 inline-flex h-[52px] items-center rounded-full bg-gold px-8 text-[12px] tracking-[0.16em] text-void uppercase"
             >
               Join the list

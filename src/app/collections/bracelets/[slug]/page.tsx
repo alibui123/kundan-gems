@@ -64,7 +64,7 @@ export default async function BraceletDetailPage({ params }: PageProps) {
                 View all
               </Link>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="product-grid">
               {related.map((item) => (
                 <ProductCard
                   key={item.id}

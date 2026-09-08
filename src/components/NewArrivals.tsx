@@ -25,10 +25,7 @@ export function NewArrivals({ products }: { products: Product[] }) {
           </Link>
         </div>
 
-        <div
-          data-lenis-prevent
-          className="-mx-5 flex gap-5 overflow-x-auto overscroll-x-contain px-5 pb-2 snap-x snap-mandatory scrollbar-none md:mx-0 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-4"
-        >
+        <div className="product-grid">
           {products.map((product) => (
             <ProductCard
               key={product.id}
@@ -39,7 +36,7 @@ export function NewArrivals({ products }: { products: Product[] }) {
               price={formatPrice(product.price)}
               priceValue={product.price}
               image={product.image}
-              aspect="portrait"
+              aspect="square"
               size={product.sizes[1] ?? product.sizes[0]}
             />
           ))}

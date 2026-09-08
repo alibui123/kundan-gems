@@ -8,13 +8,13 @@ export const brand = {
 };
 
 export const navLinks = [
-  { label: "Home", href: "#" },
-  { label: "Catalogs", href: "#catalogs" },
-  { label: "Materials", href: "#gold" },
-  { label: "Forms", href: "#collections" },
-  { label: "The Edit", href: "#the-edit" },
-  { label: "Atelier", href: "#atelier" },
-  { label: "Contact", href: "#newsletter" },
+  { label: "Home", href: "/" },
+  { label: "Catalogs", href: "/catalogs/mehr" },
+  { label: "Materials", href: "/materials/gold" },
+  { label: "Forms", href: "/collections/rings" },
+  { label: "The Edit", href: "/collections/new-arrivals" },
+  { label: "Atelier", href: "/atelier" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export const promises = [

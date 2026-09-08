@@ -4,9 +4,8 @@ import type { Metadata } from "next";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { ProductCard } from "@/components/ProductCard";
-import { RingsHero } from "@/components/RingsHero";
-import { RingsFeatured } from "@/components/RingsFeatured";
-import { RingsGuide } from "@/components/RingsGuide";
+import { FormCollectionHero } from "@/components/FormCollectionHero";
+import { collectionJourney } from "@/lib/collections";
 import {
   CollectionPagination,
   KeepGridInView,
@@ -15,17 +14,16 @@ import { NextCollectionNav } from "@/components/NextCollectionNav";
 import {
   MATERIAL_FILTERS,
   formatPrice,
-  getProducts,
   getProductsPage,
   parseMaterialFilter,
   productHref,
-  toRingProduct,
 } from "@/lib/products";
+
+const collection = collectionJourney.find((c) => c.slug === "rings")!;
 
 export const metadata: Metadata = {
   title: "Rings Collection — Kundan",
-  description:
-    "Explore eternal bands and signature rings from the Kundan atelier.",
+  description: collection.description,
 };
 
 type PageProps = {
@@ -45,13 +43,6 @@ export default async function RingsCollectionPage({ searchParams }: PageProps) {
     material
   );
 
-  const allRings = await getProducts({ category: "rings" });
-  const featuredRaw =
-    allRings.find((r) => r.is_signature) ??
-    allRings.find((r) => r.badge === "Signature") ??
-    allRings[0];
-  const featured = featuredRaw ? toRingProduct(featuredRaw) : null;
-
   const paginationQuery = material ? { material } : undefined;
 
   const heading =
@@ -62,9 +53,11 @@ export default async function RingsCollectionPage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-white">
       <Navigation variant="dark" />
-      <RingsHero pieceCount={allRings.length} />
-
-      {featured && <RingsFeatured product={featured} />}
+      <FormCollectionHero
+        title="Rings"
+        accent="Eternal"
+        description={collection.description}
+      />
 
       <main className="pb-8 md:pb-12">
         <div className="container-luxury pt-16 md:pt-24">
@@ -119,7 +112,7 @@ export default async function RingsCollectionPage({ searchParams }: PageProps) {
               No rings in this material yet.
             </p>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-7">
+            <div className="product-grid">
               {items.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -145,8 +138,6 @@ export default async function RingsCollectionPage({ searchParams }: PageProps) {
             anchorId="rings-grid"
           />
         </div>
-
-        <RingsGuide />
       </main>
 
       <NextCollectionNav currentSlug="rings" />

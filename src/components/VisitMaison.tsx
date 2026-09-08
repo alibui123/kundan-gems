@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
-import { Magnetic } from "@/components/Magnetic";
 
 const EASE = [0.23, 1, 0.32, 1] as const;
 
@@ -37,14 +36,12 @@ export function VisitMaison() {
             <p className="reveal-item mt-4 text-[13px] tracking-[0.06em] text-ivory/45">
               Tue–Sun · 11:00 – 19:00 · Closed Mondays
             </p>
-            <Magnetic strength={0.28} className="reveal-item mt-10 inline-flex">
-              <Link
-                href="mailto:hello@kundan.atelier"
-                className="btn-outline-luxe-light inline-flex h-14 items-center px-9 text-[10px] font-medium tracking-[0.26em] uppercase"
-              >
-                Book an appointment
-              </Link>
-            </Magnetic>
+            <Link
+              href="mailto:hello@kundan.atelier"
+              className="btn-solid-luxe reveal-item mt-10 inline-flex h-14 items-center px-9 text-[10px] font-medium tracking-[0.26em] uppercase"
+            >
+              Book an appointment
+            </Link>
           </div>
 
           <div className="border-t border-ivory/12 pt-12 md:border-t-0 md:border-l md:pt-0 md:pl-14 lg:pl-20">
@@ -74,7 +71,7 @@ export function VisitMaison() {
                 type="email"
                 required
                 placeholder="Your email"
-                className="input-luxe h-14 flex-1 border border-ivory/25 bg-transparent px-5 text-[14px] text-ivory outline-none placeholder:text-ivory/35"
+                className="input-luxe h-14 flex-1 rounded-full border border-ivory/20 bg-ivory/[0.04] px-6 text-[14px] text-ivory outline-none placeholder:text-ivory/40 focus:border-gold/55 focus:bg-ivory/[0.06]"
               />
               <motion.button
                 type="submit"

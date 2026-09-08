@@ -48,6 +48,7 @@ export const materialMeta: Record<
     description: string;
     story: string;
     image: string;
+    heroWide: string;
     secondaryImage: string;
     accent: string;
     campaign: {
@@ -66,6 +67,7 @@ export const materialMeta: Record<
     story:
       "Cut for silence as much as sparkle. Our diamonds are chosen for proportion and fire — set so light seems to rest inside the piece rather than shout from it.",
     image: "/materials/diamond/river-of-lights.png",
+    heroWide: "/materials/diamond/hero-wide.png",
     secondaryImage: kundanProductImages.rings,
     accent: "from-white/20 via-gold/10 to-transparent",
     campaign: {
@@ -85,6 +87,7 @@ export const materialMeta: Record<
     story:
       "Gold that feels lived-in from the first wear. We favour warm alloys and considered weight — architecture for the hand, the wrist, the neck.",
     image: "/materials/gold/river-of-warmth.png",
+    heroWide: "/materials/gold/hero-wide.png",
     secondaryImage: kundanProductImages.bracelets,
     accent: "from-amber-200/25 via-gold/20 to-transparent",
     campaign: {
@@ -103,6 +106,7 @@ export const materialMeta: Record<
     story:
       "Color held with discipline. Rubies are placed where a single note of red can carry an entire composition — intimate, never theatrical.",
     image: "/materials/ruby/river-of-fire.png",
+    heroWide: "/materials/ruby/hero-wide.png",
     secondaryImage: kundanProductImages.necklaces,
     accent: "from-rose-400/25 via-gold/10 to-transparent",
     campaign: {

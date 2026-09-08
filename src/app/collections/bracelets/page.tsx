@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { ProductCard } from "@/components/ProductCard";
-import { BraceletsHero } from "@/components/BraceletsHero";
+import { FormCollectionHero } from "@/components/FormCollectionHero";
 import { NextCollectionNav } from "@/components/NextCollectionNav";
 import { KeepGridInView } from "@/components/CollectionPagination";
 import { collectionJourney } from "@/lib/collections";
@@ -34,10 +34,7 @@ export default async function BraceletsPage({ searchParams }: PageProps) {
   const material = parseMaterialFilter(params.material);
   const activeFilter = material ?? "all";
 
-  const [allBracelets, bracelets] = await Promise.all([
-    getProducts({ category: "bracelets" }),
-    getProducts({ category: "bracelets", material }),
-  ]);
+  const bracelets = await getProducts({ category: "bracelets", material });
 
   const heading =
     activeFilter === "all"
@@ -48,9 +45,9 @@ export default async function BraceletsPage({ searchParams }: PageProps) {
     <div className="min-h-screen bg-white">
       <Navigation variant="dark" />
 
-      <BraceletsHero
-        pieceCount={allBracelets.length}
-        image={collection.image}
+      <FormCollectionHero
+        title="Bracelets"
+        accent="Brilliance"
         description={collection.description}
       />
 
@@ -104,7 +101,7 @@ export default async function BraceletsPage({ searchParams }: PageProps) {
               No bracelets in this material yet.
             </p>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-7">
+            <div className="product-grid">
               {bracelets.map((piece) => (
                 <ProductCard
                   key={piece.id}
@@ -183,7 +180,7 @@ export default async function BraceletsPage({ searchParams }: PageProps) {
                 Receive a quiet note when atelier pieces arrive — never noise.
               </p>
               <Link
-                href="/#newsletter"
+                href="/contact"
                 className="mt-8 inline-flex h-[52px] items-center rounded-full bg-gold px-8 text-[12px] tracking-[0.16em] text-void uppercase"
               >
                 Join the list

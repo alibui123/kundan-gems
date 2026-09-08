@@ -139,7 +139,7 @@ export function MaisonEdit({ newArrivals, bestSellers }: MaisonEditProps) {
         ) : (
           <div
             ref={gridRef}
-            className="grid grid-cols-2 gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6 md:grid-cols-2 md:gap-6 lg:grid-cols-4"
+            className="product-grid"
           >
             {products.map((product) => (
               <ProductCard
@@ -152,7 +152,6 @@ export function MaisonEdit({ newArrivals, bestSellers }: MaisonEditProps) {
                 priceValue={product.price}
                 image={product.image}
                 aspect="square"
-                compact
                 size={product.sizes[1] ?? product.sizes[0]}
               />
             ))}

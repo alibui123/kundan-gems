@@ -3,13 +3,12 @@ import type { Metadata } from "next";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { ProductCard } from "@/components/ProductCard";
-import { BestSellersHero } from "@/components/BestSellersHero";
+import { FormCollectionHero } from "@/components/FormCollectionHero";
 import {
   formatPrice,
   getBestsellers,
   productHref,
 } from "@/lib/products";
-import { kundanProductImages } from "@/lib/product-assets";
 
 export const metadata: Metadata = {
   title: "Best Sellers — Kundan",
@@ -19,22 +18,15 @@ export const metadata: Metadata = {
 
 export default async function BestSellersPage() {
   const products = await getBestsellers();
-  const primary =
-    products[0]?.image ?? kundanProductImages.rings;
-  const secondary =
-    products[1]?.image ??
-    products[0]?.gallery?.[1] ??
-    kundanProductImages.necklaces;
 
   return (
     <div className="min-h-screen bg-white">
       <Navigation variant="dark" />
 
-      <BestSellersHero
-        pieceCount={products.length}
-        primaryImage={primary}
-        secondaryImage={secondary}
-        topName={products[0]?.name}
+      <FormCollectionHero
+        title="Best Sellers"
+        accent="Desired"
+        description="The most sought pieces from the atelier — ranked by client demand across the maison."
       />
 
       <main className="pb-8 md:pb-12">
@@ -66,7 +58,7 @@ export default async function BestSellersPage() {
               Best sellers will appear here shortly.
             </p>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-7">
+            <div className="product-grid">
               {products.map((product) => (
                 <div key={product.id} className="relative">
                   <span className="pointer-events-none absolute top-3 left-3 z-20 rounded-full bg-void/80 px-3 py-1.5 text-[10px] tracking-[0.16em] text-gold uppercase backdrop-blur-sm">

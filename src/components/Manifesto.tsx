@@ -14,7 +14,7 @@ const PILLARS = [
 ];
 
 /**
- * Maison philosophy — centered dark salon, sticky scrub type only.
+ * Maison philosophy — desktop sticky scrub; mobile auto-plays the same reveal.
  */
 export function Manifesto() {
   const rootRef = useRef<HTMLElement>(null);
@@ -53,47 +53,111 @@ export function Manifesto() {
         return;
       }
 
-      gsap.set(eyebrow, { autoAlpha: 0, y: 20 });
-      gsap.set(lines, { yPercent: 110 });
-      gsap.set(rule, { scaleX: 0, transformOrigin: "center center" });
-      gsap.set(body, { autoAlpha: 0, y: 24 });
-      gsap.set(urdu, { autoAlpha: 0, y: 16 });
-      gsap.set(pillars, { autoAlpha: 0, y: 28 });
+      const setHidden = () => {
+        gsap.set(eyebrow, { autoAlpha: 0, y: 20 });
+        gsap.set(lines, { yPercent: 110 });
+        gsap.set(rule, { scaleX: 0, transformOrigin: "center center" });
+        gsap.set(body, { autoAlpha: 0, y: 24 });
+        gsap.set(urdu, { autoAlpha: 0, y: 16 });
+        gsap.set(pillars, { autoAlpha: 0, y: 28 });
+      };
 
-      const tl = gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: track,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 0.65,
-          invalidateOnRefresh: true,
-        },
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 768px)", () => {
+        setHidden();
+
+        const tl = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: track,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.65,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        tl.to(eyebrow, { autoAlpha: 1, y: 0, duration: 0.12 }, 0)
+          .to(
+            lines,
+            {
+              yPercent: 0,
+              duration: 0.22,
+              stagger: 0.08,
+              ease: "power2.out",
+            },
+            0.08
+          )
+          .to(rule, { scaleX: 1, duration: 0.14 }, 0.28)
+          .to(body, { autoAlpha: 1, y: 0, duration: 0.14 }, 0.32)
+          .to(urdu, { autoAlpha: 1, y: 0, duration: 0.12 }, 0.38)
+          .to(
+            pillars,
+            { autoAlpha: 1, y: 0, duration: 0.16, stagger: 0.05 },
+            0.48
+          )
+          .to({}, { duration: 0.2 });
+
+        const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
+        return () => {
+          cancelAnimationFrame(raf);
+          tl.scrollTrigger?.kill();
+          tl.kill();
+        };
       });
 
-      tl.to(eyebrow, { autoAlpha: 1, y: 0, duration: 0.12 }, 0)
-        .to(
-          lines,
-          { yPercent: 0, duration: 0.22, stagger: 0.08, ease: "power2.out" },
-          0.08
-        )
-        .to(rule, { scaleX: 1, duration: 0.14 }, 0.28)
-        .to(body, { autoAlpha: 1, y: 0, duration: 0.14 }, 0.32)
-        .to(urdu, { autoAlpha: 1, y: 0, duration: 0.12 }, 0.38)
-        .to(
-          pillars,
-          { autoAlpha: 1, y: 0, duration: 0.16, stagger: 0.05 },
-          0.48
-        )
-        .to({}, { duration: 0.2 });
+      // Mobile: same sequence, auto-plays once when the section enters view
+      mm.add("(max-width: 767px)", () => {
+        setHidden();
 
-      const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
+        const tl = gsap.timeline({
+          defaults: { ease: "power3.out" },
+          paused: true,
+        });
 
-      return () => {
-        cancelAnimationFrame(raf);
-        tl.scrollTrigger?.kill();
-        tl.kill();
-      };
+        tl.to(eyebrow, { autoAlpha: 1, y: 0, duration: 0.55 }, 0)
+          .to(
+            lines,
+            {
+              yPercent: 0,
+              duration: 0.7,
+              stagger: 0.1,
+              ease: "power2.out",
+            },
+            0.12
+          )
+          .to(rule, { scaleX: 1, duration: 0.45, ease: "power2.out" }, 0.45)
+          .to(body, { autoAlpha: 1, y: 0, duration: 0.55 }, 0.55)
+          .to(urdu, { autoAlpha: 1, y: 0, duration: 0.5 }, 0.68)
+          .to(
+            pillars,
+            { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08 },
+            0.82
+          );
+
+        const st = ScrollTrigger.create({
+          trigger: root,
+          start: "top 78%",
+          once: true,
+          onEnter: () => tl.play(0),
+        });
+
+        // If already in view on load (e.g. deep link / short viewport)
+        requestAnimationFrame(() => {
+          if (st.isActive || st.progress > 0) tl.play(0);
+          else if (root.getBoundingClientRect().top < window.innerHeight * 0.85) {
+            tl.play(0);
+          }
+        });
+
+        return () => {
+          st.kill();
+          tl.kill();
+        };
+      });
+
+      return () => mm.revert();
     },
     { scope: rootRef }
   );
@@ -105,10 +169,10 @@ export function Manifesto() {
       className="boutique relative z-10 bg-void text-ivory"
       aria-label="Maison philosophy"
     >
-      <div ref={trackRef} className="relative h-[180vh] md:h-[200vh]">
+      <div ref={trackRef} className="relative md:h-[200vh]">
         <div
           ref={stageRef}
-          className="sticky top-0 flex min-h-[100svh] items-center justify-center overflow-hidden"
+          className="flex min-h-[100svh] items-center justify-center overflow-hidden md:sticky md:top-0"
         >
           <div
             className="pointer-events-none absolute inset-0"

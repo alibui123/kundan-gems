@@ -6,7 +6,6 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { brand } from "@/lib/data";
 import { StoryScrollCue } from "@/components/story/StoryScrollCue";
-import { Magnetic } from "@/components/Magnetic";
 
 const HERO_FILM = "/hero/bridal-gold.mp4";
 const HERO_POSTER = "/hero/bridal-gold-poster.jpg";
@@ -199,24 +198,20 @@ export function Hero() {
         </p>
 
         <div className="hero-ctas mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-          <Magnetic strength={0.3} className="inline-flex">
-            <a
-              href="#catalogs"
-              onClick={(e) => goToSection(e, "catalogs")}
-              className="btn-hero-atelier pressable"
-            >
-              <span>Shop the houses</span>
-            </a>
-          </Magnetic>
-          <Magnetic strength={0.3} className="inline-flex">
-            <a
-              href="#materials"
-              onClick={(e) => goToSection(e, "materials")}
-              className="btn-hero-secondary pressable"
-            >
-              Explore materials
-            </a>
-          </Magnetic>
+          <a
+            href="#catalogs"
+            onClick={(e) => goToSection(e, "catalogs")}
+            className="btn-hero-atelier pressable"
+          >
+            <span>Shop catalogs</span>
+          </a>
+          <a
+            href="#materials"
+            onClick={(e) => goToSection(e, "materials")}
+            className="btn-hero-secondary pressable"
+          >
+            Discover the Collection
+          </a>
         </div>
 
         <div className="hero-cue mt-12">

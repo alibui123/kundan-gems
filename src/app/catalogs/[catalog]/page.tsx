@@ -49,7 +49,7 @@ export default async function CatalogPage({ params }: PageProps) {
     <div className="min-h-screen bg-white">
       <Navigation variant="dark" />
 
-      <CatalogHero catalog={catalog} pieceCount={products.length} />
+      <CatalogHero catalog={catalog} />
 
       <main>
         <CatalogLookbook meta={meta} products={products} />

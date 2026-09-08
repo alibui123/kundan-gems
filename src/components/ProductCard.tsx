@@ -16,10 +16,15 @@ type ProductCardProps = {
   image: string;
   aspect?: "portrait" | "square";
   size?: string;
-  /** Denser card for mobile grids (e.g. On the floor). */
+  /** Horizontal snap rail (legacy carousels). Default is homepage grid density. */
+  rail?: boolean;
+  /** @deprecated Homepage density is now the default. Kept for call-site compatibility. */
   compact?: boolean;
 };
 
+/**
+ * Product card — same density as homepage “On the floor” everywhere.
+ */
 export function ProductCard({
   id,
   slug,
@@ -28,9 +33,9 @@ export function ProductCard({
   price,
   priceValue,
   image,
-  aspect = "portrait",
+  aspect = "square",
   size,
-  compact = false,
+  rail = false,
 }: ProductCardProps) {
   const [liked, setLiked] = useState(false);
   const [imgError, setImgError] = useState(false);
@@ -86,9 +91,7 @@ export function ProductCard({
   return (
     <article
       className={`reveal-item group ${
-        compact
-          ? "min-w-0"
-          : "min-w-[72%] snap-start md:min-w-0"
+        rail ? "min-w-[72%] snap-start md:min-w-0" : "min-w-0"
       }`}
     >
       <div
@@ -105,7 +108,7 @@ export function ProductCard({
               aspect={aspect}
               imgError={imgError}
               onImgError={() => setImgError(true)}
-              compact={compact}
+              rail={rail}
             />
           </Link>
         ) : (
@@ -115,18 +118,14 @@ export function ProductCard({
             aspect={aspect}
             imgError={imgError}
             onImgError={() => setImgError(true)}
-            compact={compact}
+            rail={rail}
           />
         )}
         <button
           type="button"
           aria-label={liked ? "Remove from wishlist" : "Add to wishlist"}
           onClick={() => setLiked((v) => !v)}
-          className={`absolute z-10 flex items-center justify-center bg-white/90 text-ink/70 shadow-sm transition-colors hover:text-gold ${
-            compact
-              ? "top-1.5 right-1.5 h-7 w-7 md:top-3 md:right-3 md:h-8 md:w-8"
-              : "top-3 right-3 h-8 w-8"
-          }`}
+          className="absolute top-1.5 right-1.5 z-10 flex h-7 w-7 items-center justify-center bg-white/90 text-ink/70 shadow-sm transition-colors hover:text-gold md:top-3 md:right-3 md:h-8 md:w-8"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden>
             <path
@@ -140,42 +139,22 @@ export function ProductCard({
         </button>
       </div>
 
-      <div className={compact ? "mt-2.5 px-0.5 md:mt-4" : "mt-4 px-0.5"}>
+      <div className="mt-2.5 px-0.5 md:mt-4">
         {productHref ? (
           <Link href={productHref} className="block">
-            <h3
-              className={`font-display font-light text-ink transition-colors hover:text-gold ${
-                compact
-                  ? "line-clamp-2 text-[0.95rem] leading-snug md:text-xl"
-                  : "text-lg md:text-xl"
-              }`}
-            >
+            <h3 className="line-clamp-2 font-display text-[0.95rem] leading-snug font-light text-ink transition-colors hover:text-gold md:text-xl">
               {name}
             </h3>
-            <p
-              className={`text-muted ${
-                compact ? "mt-0.5 text-[11px] md:mt-1 md:text-[13px]" : "mt-1 text-[13px]"
-              }`}
-            >
+            <p className="mt-0.5 text-[11px] text-muted md:mt-1 md:text-[13px]">
               {price}
             </p>
           </Link>
         ) : (
           <>
-            <h3
-              className={`font-display font-light text-ink ${
-                compact
-                  ? "line-clamp-2 text-[0.95rem] leading-snug md:text-xl"
-                  : "text-lg md:text-xl"
-              }`}
-            >
+            <h3 className="line-clamp-2 font-display text-[0.95rem] leading-snug font-light text-ink md:text-xl">
               {name}
             </h3>
-            <p
-              className={`text-muted ${
-                compact ? "mt-0.5 text-[11px] md:mt-1 md:text-[13px]" : "mt-1 text-[13px]"
-              }`}
-            >
+            <p className="mt-0.5 text-[11px] text-muted md:mt-1 md:text-[13px]">
               {price}
             </p>
           </>
@@ -183,11 +162,7 @@ export function ProductCard({
         <button
           type="button"
           onClick={handleAdd}
-          className={`w-full border border-border font-medium tracking-[0.14em] text-ink uppercase transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-ivory ${
-            compact
-              ? "mt-2 py-1.5 text-[9px] md:mt-4 md:py-2.5 md:text-[10px]"
-              : "mt-4 py-2.5 text-[10px]"
-          }`}
+          className="mt-2 w-full border border-border py-1.5 text-[9px] font-medium tracking-[0.14em] text-ink uppercase transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-ivory md:mt-4 md:py-2.5 md:text-[10px]"
         >
           Add to cart
         </button>
@@ -202,14 +177,14 @@ function CardMedia({
   aspect,
   imgError,
   onImgError,
-  compact = false,
+  rail = false,
 }: {
   name: string;
   image: string;
   aspect: "portrait" | "square";
   imgError: boolean;
   onImgError: () => void;
-  compact?: boolean;
+  rail?: boolean;
 }) {
   if (imgError) {
     return (
@@ -235,9 +210,9 @@ function CardMedia({
       alt={name}
       aspect={aspect}
       sizes={
-        compact
-          ? "(max-width: 768px) 45vw, 25vw"
-          : "(max-width: 768px) 72vw, 25vw"
+        rail
+          ? "(max-width: 768px) 72vw, 25vw"
+          : "(max-width: 768px) 45vw, 25vw"
       }
       onError={onImgError}
       hoverScale

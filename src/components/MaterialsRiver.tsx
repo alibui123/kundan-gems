@@ -43,9 +43,8 @@ const TITLE_LINES: Record<Material, [string, string]> = {
 };
 
 /**
- * Materials salon — same sticky scrub + two-column editorial grammar
- * as the philosophy chapter. Gold → Diamond (horizontal wipe),
- * Diamond → Ruby (vertical wipe), with masked type + rail.
+ * Materials salon — sticky scrub wipes: Gold → Diamond (H), Diamond → Ruby (V).
+ * Desktop keeps flash + Ken Burns; mobile keeps the wipe feel, lighter scrub.
  */
 export function MaterialsRiver() {
   const rootRef = useRef<HTMLElement>(null);
@@ -118,7 +117,7 @@ export function MaterialsRiver() {
         });
       };
 
-      const setLook = (index: number) => {
+      const setLook = (index: number, immediate = false) => {
         panels.forEach((p, i) => {
           if (!p.copy) return;
           const on = i === index;
@@ -128,7 +127,7 @@ export function MaterialsRiver() {
           if (link) link.tabIndex = on ? 0 : -1;
         });
         root.dataset.look = materialMeta[ORDER[index]].title;
-        setRail(index);
+        setRail(index, immediate);
       };
 
       if (reduce) {
@@ -136,7 +135,7 @@ export function MaterialsRiver() {
           gsap.set(p.img, { clipPath: "none", autoAlpha: i === 0 ? 1 : 0 });
           gsap.set(p.copy, { autoAlpha: i === 0 ? 1 : 0 });
         });
-        setLook(0);
+        setLook(0, true);
         return;
       }
 
@@ -147,8 +146,6 @@ export function MaterialsRiver() {
       gsap.set(panels[0].frame, { scale: 1 });
       gsap.set([panels[1].frame, panels[2].frame], { scale: 1.06 });
 
-      // Only one copy stack visible at a time — inactive layers at autoAlpha 0
-      // so tags/titles never overlap into an illegible mash.
       panels.forEach((p, i) => {
         gsap.set(p.eyebrow, { autoAlpha: 1, y: 0 });
         gsap.set(p.lines, { yPercent: 0 });
@@ -160,120 +157,145 @@ export function MaterialsRiver() {
 
       if (flash) gsap.set(flash, { autoAlpha: 0 });
       if (chapterRail) gsap.set(chapterRail, { autoAlpha: 1 });
-      setLook(0);
+      setLook(0, true);
 
       const hideCopy = (
         p: (typeof panels)[number],
         at: number,
         tl: gsap.core.Timeline
       ) => {
-        tl.to(
-          p.copy,
-          { autoAlpha: 0, duration: 0.12, ease: "power2.in" },
-          at
-        );
+        tl.to(p.copy, { autoAlpha: 0, duration: 0.1, ease: "power2.in" }, at);
       };
 
       const showCopy = (
         p: (typeof panels)[number],
         at: number,
-        tl: gsap.core.Timeline
+        tl: gsap.core.Timeline,
+        rich: boolean
       ) => {
-        tl.set(
-          p.lines,
-          { yPercent: 115 },
-          at
-        )
-          .set(p.eyebrow, { autoAlpha: 0, y: 14 }, at)
+        tl.set(p.lines, { yPercent: rich ? 115 : 100 }, at)
+          .set(p.eyebrow, { autoAlpha: 0, y: rich ? 14 : 10 }, at)
           .set(p.rule, { scaleX: 0, transformOrigin: "left center" }, at)
-          .set(p.body, { autoAlpha: 0, y: 16 }, at)
-          .set(p.cta, { autoAlpha: 0, y: 12 }, at)
+          .set(p.body, { autoAlpha: 0, y: rich ? 16 : 10 }, at)
+          .set(p.cta, { autoAlpha: 0, y: rich ? 12 : 8 }, at)
           .set(p.copy, { autoAlpha: 1 }, at)
-          .to(p.eyebrow, { autoAlpha: 1, y: 0, duration: 0.1 }, at)
+          .to(p.eyebrow, { autoAlpha: 1, y: 0, duration: rich ? 0.1 : 0.08 }, at)
           .to(
             p.lines,
-            { yPercent: 0, duration: 0.18, stagger: 0.05, ease: "power2.out" },
-            at + 0.04
+            {
+              yPercent: 0,
+              duration: rich ? 0.18 : 0.14,
+              stagger: rich ? 0.05 : 0.04,
+              ease: "power2.out",
+            },
+            at + 0.03
           )
-          .to(p.rule, { scaleX: 1, duration: 0.1 }, at + 0.14)
+          .to(p.rule, { scaleX: 1, duration: rich ? 0.1 : 0.08 }, at + 0.12)
           .to(
             p.body,
-            { autoAlpha: 1, y: 0, duration: 0.12, ease: "power2.out" },
-            at + 0.16
+            { autoAlpha: 1, y: 0, duration: rich ? 0.12 : 0.1, ease: "power2.out" },
+            at + 0.14
           )
           .to(
             p.cta,
-            { autoAlpha: 1, y: 0, duration: 0.1, ease: "power2.out" },
-            at + 0.2
+            { autoAlpha: 1, y: 0, duration: rich ? 0.1 : 0.08, ease: "power2.out" },
+            at + 0.18
           );
       };
 
-      const buildTimeline = () => {
+      /** Keep wipe grammar; `rich` adds flash + Ken Burns scale. */
+      const buildTimeline = (rich: boolean) => {
         const tl = gsap.timeline({ defaults: { ease: "none" } });
+        const wipe = rich ? 0.28 : 0.24;
         tl.addLabel("gold", 0);
 
-        // Hold gold, then Gold → Diamond (horizontal shared-seam wipe)
-        tl.to({}, { duration: 0.18 }, 0);
-        hideCopy(panels[0], 0.2, tl);
+        tl.to({}, { duration: rich ? 0.18 : 0.16 }, 0);
+        hideCopy(panels[0], rich ? 0.2 : 0.18, tl);
         tl.to(
           panels[1].img,
-          { clipPath: "inset(0% 0% 0% 0%)", duration: 0.28, ease: "power2.inOut" },
-          0.22
-        )
-          .to(
-            panels[0].img,
-            { clipPath: "inset(0% 0% 0% 100%)", duration: 0.28, ease: "power2.inOut" },
-            0.22
-          )
-          .to(panels[1].frame, { scale: 1, duration: 0.3, ease: "power2.out" }, 0.22)
-          .to(panels[0].frame, { scale: 1.04, duration: 0.28 }, 0.22);
-        showCopy(panels[1], 0.32, tl);
-        tl.fromTo(
-          flash,
-          { autoAlpha: 0 },
-          { autoAlpha: 0.35, duration: 0.06, ease: "none" },
-          0.3
-        )
-          .to(flash, { autoAlpha: 0, duration: 0.12 }, 0.38)
-          .addLabel("diamond", 0.5);
+          { clipPath: "inset(0% 0% 0% 0%)", duration: wipe, ease: "power2.inOut" },
+          rich ? 0.22 : 0.2
+        ).to(
+          panels[0].img,
+          {
+            clipPath: "inset(0% 0% 0% 100%)",
+            duration: wipe,
+            ease: "power2.inOut",
+          },
+          rich ? 0.22 : 0.2
+        );
 
-        // Hold diamond, then Diamond → Ruby (vertical wipe)
-        tl.to({}, { duration: 0.12 }, 0.5);
-        hideCopy(panels[1], 0.62, tl);
+        if (rich) {
+          tl.to(panels[1].frame, { scale: 1, duration: 0.3, ease: "power2.out" }, 0.22).to(
+            panels[0].frame,
+            { scale: 1.04, duration: 0.28 },
+            0.22
+          );
+        } else {
+          tl.set(panels[1].frame, { scale: 1 }, rich ? 0.22 : 0.2);
+        }
+
+        showCopy(panels[1], rich ? 0.32 : 0.3, tl, rich);
+
+        if (rich && flash) {
+          tl.fromTo(
+            flash,
+            { autoAlpha: 0 },
+            { autoAlpha: 0.35, duration: 0.06, ease: "none" },
+            0.3
+          ).to(flash, { autoAlpha: 0, duration: 0.12 }, 0.38);
+        }
+
+        tl.addLabel("diamond", rich ? 0.5 : 0.48);
+        tl.to({}, { duration: rich ? 0.12 : 0.14 }, rich ? 0.5 : 0.48);
+        hideCopy(panels[1], rich ? 0.62 : 0.6, tl);
         tl.to(
           panels[2].img,
-          { clipPath: "inset(0% 0% 0% 0%)", duration: 0.28, ease: "power2.inOut" },
-          0.64
-        )
-          .to(
-            panels[1].img,
-            { clipPath: "inset(100% 0% 0% 0%)", duration: 0.28, ease: "power2.inOut" },
-            0.64
-          )
-          .to(panels[2].frame, { scale: 1, duration: 0.3, ease: "power2.out" }, 0.64)
-          .to(panels[1].frame, { scale: 1.04, duration: 0.28 }, 0.64);
-        showCopy(panels[2], 0.74, tl);
-        tl.fromTo(
-          flash,
-          { autoAlpha: 0 },
-          { autoAlpha: 0.35, duration: 0.06, ease: "none" },
-          0.72
-        )
-          .to(flash, { autoAlpha: 0, duration: 0.12 }, 0.8)
-          .addLabel("ruby", 1)
-          .to({}, { duration: 0.12 });
+          { clipPath: "inset(0% 0% 0% 0%)", duration: wipe, ease: "power2.inOut" },
+          rich ? 0.64 : 0.62
+        ).to(
+          panels[1].img,
+          {
+            clipPath: "inset(100% 0% 0% 0%)",
+            duration: wipe,
+            ease: "power2.inOut",
+          },
+          rich ? 0.64 : 0.62
+        );
 
+        if (rich) {
+          tl.to(panels[2].frame, { scale: 1, duration: 0.3, ease: "power2.out" }, 0.64).to(
+            panels[1].frame,
+            { scale: 1.04, duration: 0.28 },
+            0.64
+          );
+        } else {
+          tl.set(panels[2].frame, { scale: 1 }, 0.62);
+        }
+
+        showCopy(panels[2], rich ? 0.74 : 0.72, tl, rich);
+
+        if (rich && flash) {
+          tl.fromTo(
+            flash,
+            { autoAlpha: 0 },
+            { autoAlpha: 0.35, duration: 0.06, ease: "none" },
+            0.72
+          ).to(flash, { autoAlpha: 0, duration: 0.12 }, 0.8);
+        }
+
+        tl.addLabel("ruby", 1).to({}, { duration: 0.1 });
         return tl;
       };
 
       let lastIndex = 0;
-      let step = 0;
-
       const mm = gsap.matchMedia();
 
-      // Shared sticky scrub on every breakpoint (philosophy grammar)
+      const progressToIndex = (p: number) =>
+        p < 0.34 ? 0 : p < 0.66 ? 1 : 2;
+
       mm.add("(min-width: 768px)", () => {
-        const tl = buildTimeline();
+        const tl = buildTimeline(true);
         const st = ScrollTrigger.create({
           animation: tl,
           trigger: track,
@@ -282,7 +304,7 @@ export function MaterialsRiver() {
           scrub: 0.9,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            const next = self.progress < 0.36 ? 0 : self.progress < 0.68 ? 1 : 2;
+            const next = progressToIndex(self.progress);
             if (next !== lastIndex) {
               lastIndex = next;
               setLook(next);
@@ -297,49 +319,22 @@ export function MaterialsRiver() {
         };
       });
 
+      // Mobile: same wipes, no snap / flash / scale thrash
       mm.add("(max-width: 767px)", () => {
-        const tl = buildTimeline();
+        gsap.set([panels[1].frame, panels[2].frame], { scale: 1 });
+        const tl = buildTimeline(false);
         const st = ScrollTrigger.create({
           animation: tl,
           trigger: track,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.75,
-          invalidateOnRefresh: true,
-          onEnter: () => {
-            step = 0;
-          },
-          onEnterBack: () => {
-            step = 2;
-          },
-          snap: {
-            snapTo: (_value, stSnap) => {
-              const dir = stSnap?.direction ?? 0;
-              if (dir > 0) return Math.min(1, (step + 1) / 2);
-              if (dir < 0) return Math.max(0, (step - 1) / 2);
-              return step / 2;
-            },
-            duration: 0.85,
-            delay: 0.05,
-            ease: "power2.inOut",
-            inertia: false,
-            onComplete: (stSnap) => {
-              if (!stSnap) return;
-              const next =
-                stSnap.progress < 0.25 ? 0 : stSnap.progress < 0.75 ? 1 : 2;
-              step = next;
-              if (next !== lastIndex) {
-                lastIndex = next;
-                setLook(next);
-              }
-            },
-          },
+          scrub: 0.45,
+          fastScrollEnd: true,
           onUpdate: (self) => {
-            const next =
-              self.progress < 0.25 ? 0 : self.progress < 0.75 ? 1 : 2;
+            const next = progressToIndex(self.progress);
             if (next !== lastIndex) {
               lastIndex = next;
-              setLook(next);
+              setLook(next, true);
             }
           },
         });
@@ -366,7 +361,7 @@ export function MaterialsRiver() {
     >
       <div
         ref={trackRef}
-        className="relative h-[320vh] bg-void motion-reduce:h-[100svh] md:h-[360vh]"
+        className="relative h-[260vh] bg-void motion-reduce:h-[100svh] md:h-[360vh]"
       >
         <div
           ref={stageRef}
@@ -383,7 +378,7 @@ export function MaterialsRiver() {
               >
                 <div
                   data-mat-frame={key}
-                  className="relative h-full w-full will-change-transform"
+                  className="relative h-full w-full md:will-change-transform"
                 >
                   <Image
                     src={photo.src}
@@ -402,7 +397,7 @@ export function MaterialsRiver() {
 
           <div
             data-mat-flash
-            className="pointer-events-none absolute inset-0 z-[1] opacity-0 mix-blend-screen"
+            className="pointer-events-none absolute inset-0 z-[1] hidden opacity-0 mix-blend-screen md:block"
             aria-hidden
             style={{
               background:
@@ -411,7 +406,7 @@ export function MaterialsRiver() {
           />
 
           <div
-            className="cinematic-grain pointer-events-none absolute inset-0 z-[1] opacity-40"
+            className="cinematic-grain pointer-events-none absolute inset-0 z-[1] hidden opacity-40 md:block"
             aria-hidden
           />
           <div
@@ -462,15 +457,15 @@ export function MaterialsRiver() {
                       <span className="block overflow-hidden">
                         <span
                           data-mat-line
-                          className="block font-display text-[clamp(2.4rem,8vw,6rem)] font-medium leading-[0.95] tracking-[-0.02em] text-ivory"
+                          className="block py-[0.22em] font-display text-[clamp(2.4rem,8vw,6rem)] font-medium leading-none tracking-[-0.02em] text-ivory"
                         >
                           {lineA}
                         </span>
                       </span>
-                      <span className="mt-1 block overflow-hidden sm:mt-2">
+                      <span className="-mt-[0.12em] block overflow-hidden">
                         <span
                           data-mat-line
-                          className="block font-display text-[clamp(2.4rem,8vw,6rem)] font-medium leading-[0.95] tracking-[-0.02em] text-gold"
+                          className="block py-[0.22em] font-display text-[clamp(2.4rem,8vw,6rem)] font-medium leading-none tracking-[-0.02em] text-gold"
                         >
                           {lineB}
                         </span>
@@ -568,7 +563,11 @@ function RiverCursorCue() {
   }, []);
 
   return (
-    <div ref={hostRef} className="absolute inset-0 z-[4]" {...bind}>
+    <div
+      ref={hostRef}
+      className="pointer-events-none absolute inset-0 z-[4] md:pointer-events-auto"
+      {...bind}
+    >
       {cue}
     </div>
   );

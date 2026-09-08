@@ -12,11 +12,10 @@ gsap.registerPlugin(useGSAP);
 
 type CatalogHeroProps = {
   catalog: Catalog;
-  pieceCount: number;
 };
 
 /** Full-bleed catalog hero — calm, photographic, maison-grade. */
-export function CatalogHero({ catalog, pieceCount }: CatalogHeroProps) {
+export function CatalogHero({ catalog }: CatalogHeroProps) {
   const meta = catalogMeta[catalog];
   const rootRef = useRef<HTMLElement>(null);
 
@@ -73,7 +72,7 @@ export function CatalogHero({ catalog, pieceCount }: CatalogHeroProps) {
             Home
           </Link>
           <span className="mx-2 text-ivory/25">/</span>
-          <Link href="/#catalogs" className="transition-colors hover:text-gold">
+          <Link href="/catalogs/mehr" className="transition-colors hover:text-gold">
             Catalogs
           </Link>
           <span className="mx-2 text-ivory/25">/</span>
@@ -98,13 +97,10 @@ export function CatalogHero({ catalog, pieceCount }: CatalogHeroProps) {
           <div className="ch-cta mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
             <a
               href="#catalog-grid"
-              className="inline-flex h-12 items-center bg-gold px-8 text-[11px] font-medium tracking-[0.18em] text-void uppercase transition-colors hover:bg-gold-bright"
+              className="btn-hero-atelier pressable text-[11px] tracking-[0.18em] uppercase"
             >
               View the collection
             </a>
-            <span className="text-[11px] tracking-[0.18em] text-ivory/45 uppercase">
-              {pieceCount > 0 ? `${pieceCount} pieces` : meta.subtitle}
-            </span>
           </div>
         </div>
       </div>

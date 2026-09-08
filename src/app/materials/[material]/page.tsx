@@ -46,9 +46,9 @@ export default async function MaterialPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navigation variant="light" />
+      <Navigation variant="dark" />
 
-      <MaterialHero material={material} pieceCount={products.length} />
+      <MaterialHero material={material} />
 
       <main className="pb-8 md:pb-12">
         <div className="container-luxury pt-16 md:pt-24">
@@ -77,7 +77,7 @@ export default async function MaterialPage({ params }: PageProps) {
               Pieces in {meta.title.toLowerCase()} are arriving soon.
             </p>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-7">
+            <div className="product-grid">
               {products.map((product) => (
                 <ProductCard
                   key={product.id}
