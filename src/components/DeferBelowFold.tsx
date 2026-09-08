@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 
 /**
- * Mount children after the first paint + a short idle window so hero
+ * Mount children after the first paint + a short delay so hero
  * text animation isn’t competing with heavy images on mobile.
  */
 export function DeferBelowFold({
@@ -16,30 +16,19 @@ export function DeferBelowFold({
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    let timeoutId = 0;
-    let idleId = 0;
+    let cancelled = false;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-    const show = () => setReady(true);
-
-    const start = () => {
-      if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-        idleId = window.requestIdleCallback(show, { timeout: delayMs });
-      } else {
-        timeoutId = window.setTimeout(show, delayMs);
-      }
-    };
-
-    // Wait one frame so the hero timeline can bind first.
     const raf = requestAnimationFrame(() => {
-      timeoutId = window.setTimeout(start, 120);
+      timeoutId = setTimeout(() => {
+        if (!cancelled) setReady(true);
+      }, delayMs);
     });
 
     return () => {
+      cancelled = true;
       cancelAnimationFrame(raf);
-      window.clearTimeout(timeoutId);
-      if (idleId && "cancelIdleCallback" in window) {
-        window.cancelIdleCallback(idleId);
-      }
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
     };
   }, [delayMs]);
 
